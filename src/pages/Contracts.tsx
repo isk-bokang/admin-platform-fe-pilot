@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { ContractApi } from "./apis/ContractApi"
 import { ContractDeployApi } from "./apis/ContractDeployApi"
-import { TargListView } from "./utils/OutputDiv"
+import { TargListView, TargView } from "./utils/OutputDiv"
 
 function Contracts(){
     return (
@@ -72,5 +72,29 @@ export function ContractListDiv() {
     </div>)
 
 }
+
+export function ContractByPropDiv(prop : {contractId : string}) {
+
+    const [contract, setContract] = useState<any>()
+
+    useEffect(() => {
+        if (prop.contractId != null){
+            ContractApi.getContract(prop.contractId)
+                .then(res => {
+                    setContract({
+                        id: res.data.id,
+                        name: res.data.name,
+                        contractType: res.data.contractType
+                    })
+                })}
+    }, [prop.contractId])
+
+
+    return (
+    <div id="contract">
+        {contract && <TargView targ={contract}/>}
+    </div>)
+}
+
 
 export default Contracts

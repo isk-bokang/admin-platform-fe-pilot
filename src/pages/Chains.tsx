@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { ChainApi } from "./apis/ChainApi"
-import { TargListView } from "./utils/OutputDiv"
+import { TargListView, TargView } from "./utils/OutputDiv"
 
 function Chains(){
     return (
@@ -39,4 +39,27 @@ export function ChainListDiv() {
 }
 
 export default Chains
+
+export function ChainByPropDiv(prop : {chainSeq : string}) {
+    const [chain, setChain] = useState<ListViewChain>()
+
+    useEffect(() => {
+        if (prop.chainSeq != null){
+            ChainApi.getChain(prop.chainSeq)
+                .then(res => {
+                    setChain({
+                        id: res.data.chainSeq,
+                        chainId: res.data.chainId,
+                        name: res.data.chainName,
+                        rpcUrl : res.data.rpcUrl,
+                    })
+                })}
+    }, [prop.chainSeq])
+
+
+    return (
+    <div id="chain">
+        {chain && <TargView targ={chain}/>}
+    </div>)
+}
 
