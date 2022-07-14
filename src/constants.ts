@@ -7,10 +7,10 @@ export enum Color {
 };
 
 export enum RouteName {
-  USER = 'users',
-  USER_ID = ':userId',
-  ISKRA = 'iskras',
-  WALLET = 'wallets',
-  WALLET_ID = ':walletId',
-  ISK = 'isks',
+  CONTRACTS = 'contracts',
+  CONTRACT_META_DATA = 'meta_contracts',
+  DEPLOYED_CONTRACTS = 'deployed_contracts',
+  CHAINS = 'chains',
+  CHAIN_META_DATA = 'meta_chains',
+  DEPLOY_CONTRACT = 'deploy',
 };

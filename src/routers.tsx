@@ -2,17 +2,11 @@ import React, { CSSProperties } from 'react';
 import { UserOutlined, BankOutlined, CopyrightOutlined, WalletOutlined } from '@ant-design/icons';
 import { RoutePage, SidebarRoute } from './common/common.interface';
 import { RouteName } from './constants';
-import Isk from './pages/ISK';
-import User from './pages/User';
-import UserDetail from './pages/UserDetail';
-import Wallet from './pages/Wallet';
-import WalletDetail from './pages/WalletDetail';
-import Home from './pages/Home';
 
-const SIDEBAR_ICON_STYLE: CSSProperties = {
-  width: '20px',
-  height: '20px',
-};
+import Home from './pages/Home';
+import Contracts from './pages/Contracts';
+import Chains from './pages/Chains';
+import Deploy from './pages/Deploy';
 
 export const routePages: RoutePage[] = [
   {
@@ -20,57 +14,64 @@ export const routePages: RoutePage[] = [
     page: <Home />,
   },
   {
-    key: RouteName.USER,
-    page: <User />,
-    children: [
+    key: RouteName.CONTRACTS,
+    page: <Contracts />,
+    children : [
       {
-        key: RouteName.USER_ID,
-        page: <UserDetail />
-      }
+        key: RouteName.CONTRACT_META_DATA,
+        page: <Contracts />,
+      },
+      {
+        key: RouteName.DEPLOYED_CONTRACTS,
+        page: <Contracts />,
+      },
     ]
   },
   {
-    key: RouteName.ISKRA,
-    children: [
+    key: RouteName.CHAINS,
+    page: <Chains />,
+    children:[
       {
-        key: RouteName.ISK,
-        page: <Isk/>
+        key: RouteName.CHAIN_META_DATA,
+        page: <Chains />,
       },
-      {
-        key: RouteName.WALLET,
-        page: <Wallet/>,
-        children: [
-          {
-            key: RouteName.WALLET_ID,
-            page: <WalletDetail/>
-          }
-        ]
-      }
-    ],
-  }
+    ]
+  },
+  {
+    key: RouteName.DEPLOY_CONTRACT,
+    page: <Deploy />,
+  },
 ];
 
 export const sidebarRouters: SidebarRoute[] = [
   {
-    key: RouteName.USER,
-    label: 'User',
-    icon: <UserOutlined style={SIDEBAR_ICON_STYLE} />,
-  },
-  {
-    key: RouteName.ISKRA,
-    label: 'Iskra',
-    icon: <BankOutlined style={SIDEBAR_ICON_STYLE} />,
+    key: RouteName.CONTRACTS,
+    label: 'CONTRACT',
+
     children: [
       {
-        key: RouteName.ISK,
-        label: 'ISK',
-        icon: <CopyrightOutlined style={SIDEBAR_ICON_STYLE} />,
+        key: RouteName.CONTRACT_META_DATA,
+        label: 'Contract Metadata',
       },
       {
-        key: RouteName.WALLET,
-        label: 'Wallet',
-        icon: <WalletOutlined style={SIDEBAR_ICON_STYLE} />,
+        key: RouteName.DEPLOYED_CONTRACTS,
+        label: 'Deployed Contracts',
       }
     ]
   },
+  {
+    key : RouteName.CHAINS,
+    label : "CHAIN",
+    children : [
+      {
+        key: RouteName.CHAIN_META_DATA,
+        label: 'Chain Metadata',
+      }
+    ]
+  },
+  {
+    key : RouteName.DEPLOY_CONTRACT,
+    label : "DEPLOY"
+  }
+
 ];
