@@ -1,3 +1,4 @@
+import Table, { ColumnsType } from "antd/lib/table";
 import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 
 
@@ -43,12 +44,27 @@ export function InputTargDiv(prop: targProps) {
 type radioProp = { targList: any[], setTarg: Dispatch<SetStateAction<string>> }
 
 export function RadioTargListDiv(prop: radioProp) {
+    const [columns, setColumns] = useState<ColumnsType<any>>([])
+    const [data, setData] = useState<any[]>([])
+
     const [keys, setKeys] = useState<string[]>([])
     const groupNumber = Math.random()
     useEffect(() => {
-        let tmpKeys: string[] = []
-        setKeys(tmpKeys.concat(Object.keys(prop.targList[0])))
-
+        setData(prop.targList.map(item => {
+            item.key = item.id
+            return item
+        }))
+        setColumns(
+            Object.keys(prop.targList[0]).map(item => {
+                return {
+                    title: item,
+                    dataIndex: item,
+                    key: item
+                }
+            }).filter(item =>{
+                return item.title !== 'key'
+            })
+        )
     }, [prop.targList])
 
     function onChangeHandle(e : ChangeEvent<HTMLInputElement>){
@@ -58,35 +74,12 @@ export function RadioTargListDiv(prop: radioProp) {
 
 
     return (
-        <div>
-            <table>
-                <thead>
-                    <th> select </th>
-                    {
-                        keys.map(key => {
-                            return (<th> {key} </th>)
-                        })
-                    }
-                </thead>
-                <tbody>
-                {
-                        prop.targList.map( (val, idx)=>{
-                            return <tr >
-                                <td id={val}>
-                                    <input onChange={onChangeHandle} type="radio" name={`${groupNumber}`} value={`${val.id}`}/>
-                                </td>
-                                {Object.entries(val).map((entry) =>{
-                                    return(
-                                        <td> {entry[1] as string} </td>
-                                    )
-                                })}
-
-                            </tr>
-                        } )
-                    }
-                </tbody>
-            </table>
-        </div>
+        <Table columns={columns} dataSource={data} rowSelection={{
+            type : "radio",
+            onChange : (key, row)=>{
+                prop.setTarg(key.toString())
+            }
+        }} />
     )
 
 }
