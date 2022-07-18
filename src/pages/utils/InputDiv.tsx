@@ -1,7 +1,21 @@
+import { Form, Input } from "antd";
+import TextArea from "antd/lib/input/TextArea";
 import Table, { ColumnsType } from "antd/lib/table";
 import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 
 
+
+export enum inputTypes {
+    NORMAL,
+    TEXTAREA,
+    FILE,
+    CONTRACT_TYPE
+}
+
+export interface InputType {
+    key : string,
+    type : inputTypes
+}
 
 
 type targProps = { targ: any, setTarg: Dispatch<SetStateAction<any>> }
@@ -21,21 +35,15 @@ export function InputTargDiv(prop: targProps) {
     }
 
     return (
-        <div>
-            <table border={1} style={{ alignItems: "left" }}  >
-                <tbody>
-                    {
-                        keys.map(key => {
-                            return (
-                                <tr key={key + '_tr'}>
-                                    <th id={key + '_th'}>{key}</th>
-                                    <td id={key + 'td'} key={key + 'td'}> <textarea id={key} onChange={onChangeHandle} /> </td>
-                                </tr>
-                            )
-                        })}
-                </tbody>
-            </table>
-        </div>
+        <Form layout="vertical">
+            {keys.map( item=>{
+                return(
+                    <Form.Item label = {item} key={item} name={item} >
+                        <Input></Input>
+                    </Form.Item>
+                )
+            } )}
+        </Form>
     )
 
 }

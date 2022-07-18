@@ -4,7 +4,7 @@ import { RoutePage, SidebarRoute } from './common/common.interface';
 import { RouteName } from './constants';
 
 import Home from './pages/Home';
-import Contracts, { ContractListDiv, DeployedContractListDiv } from './pages/Contracts';
+import Contracts, { ContractListDiv, DeployedContractListDiv, RegisterContractDiv } from './pages/Contracts';
 import Chains, { ChainListDiv } from './pages/Chains';
 import Deploy from './pages/Deploy';
 
@@ -24,6 +24,10 @@ export const routePages: RoutePage[] = [
       {
         key: RouteName.DEPLOYED_CONTRACTS,
         page: <DeployedContractListDiv />,
+      },
+      {
+        key: RouteName.REGISTER_CONTRACT,
+        page: <RegisterContractDiv />,
       },
     ]
   },
