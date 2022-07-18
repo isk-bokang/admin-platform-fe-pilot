@@ -1,3 +1,4 @@
+import { Button, Descriptions, Input } from "antd"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { ChainApi } from "./apis/ChainApi"
 import { Abi, ContractApi } from "./apis/ContractApi"
@@ -8,9 +9,9 @@ import { ContractByPropDiv, ListViewContract } from "./Contracts"
 import { RadioTargListDiv } from "./utils/InputDiv"
 import { DetailView, TargView } from "./utils/OutputDiv"
 
-function Deploy(){
+function Deploy() {
     return (
-        <div> <ContractDeployDiv/> </div>
+        <div> <ContractDeployDiv /> </div>
     )
 }
 
@@ -47,21 +48,22 @@ export function ContractDeployDiv() {
         }
     }
 
-    function onClickDeployHandle(){
+    function onClickDeployHandle() {
         ContractDeployApi.deployContract({
-            serviceId : serviceId,
-            contractId : contractId,
-            chainSeq : chainId, 
-            deployParams : paramList
+            serviceId: serviceId,
+            contractId: contractId,
+            chainSeq: chainId,
+            deployParams: paramList
         })
-        .then(()=>{
-            alert('DEPLOY DONE')
-            window.location.href = "/contracts/deployed"
-        })
-        .catch(err =>{
-            alert("FATAL ERROR : DEPLOY FAIL")
-            console.error(err)
-        })
+            .then(() => {
+                alert('DEPLOY DONE')
+                window.location.href = "/contracts/deployed"
+            })
+            .catch(err => {
+                alert("FATAL ERROR : DEPLOY FAIL")
+                window.location.href = "/deploy"
+                console.error(err)
+            })
     }
 
 
@@ -70,13 +72,15 @@ export function ContractDeployDiv() {
             {curStep === STEPS.SELECT_TARGETS && <SelectTargets serviceSetter={setServiceId} chainSetter={setChainId} contractSetter={setContractId} />}
             {curStep === STEPS.SET_CONSTRUCTOR_PARAMS && <SetConstructorParams contractId={contractId} params={paramList} paramSetter={setParamList} />}
             {curStep !== STEPS.DEPLOY && <hr />}
-            {curStep !== STEPS.DEPLOY && <button onClick={onClickNextStepHandle}> NEXT STEP </button>}
+            {curStep !== STEPS.DEPLOY && <Button onClick={onClickNextStepHandle}> NEXT STEP </Button>}
             {curStep !== STEPS.DEPLOY && <hr />}
-            {(curStep > STEPS.SELECT_TARGETS) && <ChainByPropDiv chainSeq={chainId}/>}
-            {(curStep > STEPS.SELECT_TARGETS) && <ServiceByPropDiv serviceId={serviceId}/>}
-            {(curStep > STEPS.SELECT_TARGETS) && <ContractByPropDiv contractId={contractId}/>}
+            {(curStep > STEPS.SELECT_TARGETS) && <ChainByPropDiv chainSeq={chainId} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ServiceByPropDiv serviceId={serviceId} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ContractByPropDiv contractId={contractId} />}
+
             {(curStep > STEPS.SET_CONSTRUCTOR_PARAMS) && <GetConstructorParams contractId={contractId} params={paramList} />}
-            {curStep === STEPS.DEPLOY && <button onClick={onClickDeployHandle}> DEPLOY </button>}
+
+            {curStep === STEPS.DEPLOY && <Button type="primary" onClick={onClickDeployHandle}> DEPLOY </Button>}
 
 
         </div>)
@@ -105,16 +109,15 @@ function GetConstructorParams(prop: GetConstructorParamsProp) {
     }, [prop.contractId])
     return (
         <>
-            <table>
+            <Descriptions title={"PARAMS"} bordered>
                 {constructorAbi?.inputs.map((item, idx) => {
                     return (
-                        <tr id={item.name} key={item.name}>
-                            <td> {item.name} </td>
-                            <td> {prop.params[idx]} </td>
-                        </tr>
+                        <Descriptions.Item key={item.name} label={item.name}  span={3}>
+                            {prop.params[idx]}
+                        </Descriptions.Item >
                     )
                 })}
-            </table>
+            </Descriptions>
         </>
     )
 }
@@ -149,20 +152,17 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
     }
     return (
         <>
-            <table>
-                {constructorAbi?.inputs.map((item, idx) => {
-                    return (
-                        <tr id={item.name} key={item.name}>
-                            <td> {item.name} </td>
-                            <td>
-                                {item.type.includes('int') && <input id={`${idx}`} type={"number"} onChange={onChangeHandle} />}
-                                {item.type.includes('address') && <input id={`${idx}`} type={"text"} onChange={onChangeHandle} />}
-                                {item.type.includes('data') && <input id={`${idx}`} type={"text"} onChange={onChangeHandle} />}
-                            </td>
-                        </tr>
-                    )
-                })}
-            </table>
+
+            {constructorAbi?.inputs.map((item, idx) => {
+                return (
+                    <>
+                        {item.type.includes('int') && <Input id={`${idx}`} type={"number"} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
+                        {item.type.includes('address') && <Input id={`${idx}`} type={"text"} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
+                        {item.type.includes('data') && <Input id={`${idx}`} type={"text"} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
+                    </>
+                )
+            })}
+
         </>
     )
 }
@@ -259,22 +259,22 @@ export function SelectService(prop: setterProp) {
 }
 
 
-export function ServiceByPropDiv(prop : {serviceId : string}){
+export function ServiceByPropDiv(prop: { serviceId: string }) {
     const [service, setService] = useState<GetServiceDto>()
-    useEffect( ()=>{
+    useEffect(() => {
         ServiceApi.getService(prop.serviceId)
-        .then(res =>{
-            setService({
-                id: res.data.id,
-                name: res.data.name,
-                category: res.data.category
+            .then(res => {
+                setService({
+                    id: res.data.id,
+                    name: res.data.name,
+                    category: res.data.category
+                })
             })
-        })
-    }, [prop.serviceId] )
+    }, [prop.serviceId])
 
-    return(
+    return (
         <div>
-            {service && <DetailView targ={service} title = "SERVICE"/>}
+            {service && <DetailView targ={service} title="SERVICE" />}
         </div>
     )
 }
