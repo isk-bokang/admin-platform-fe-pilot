@@ -1,6 +1,8 @@
-import { Form, Input } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { Button, Form, Input } from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import Table, { ColumnsType } from "antd/lib/table";
+import Upload, { RcFile, UploadFile } from "antd/lib/upload";
 import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
 
 
@@ -93,3 +95,53 @@ export function RadioTargListDiv(prop: radioProp) {
 }
 
 
+export function JsonChooseDiv(props : any){
+    let isRemoved : boolean = false;
+
+    function readJsonFileByUrl(fileData: RcFile) {
+
+        const fileReader = new FileReader();
+    
+        return new Promise( (resolve, reject) => {
+            fileReader.onloadend = () => {
+                resolve(JSON.parse(fileReader.result as string));
+            }
+    
+            return new Promise((resolve, reject) => {
+                fileReader.onerror = () => {
+                    fileReader.abort();
+                    reject(null);
+                };
+    
+    
+                fileReader.readAsText(fileData);
+            })
+        })
+    }
+
+    async function onChangeHandleURL(targFile : UploadFile){
+        if (!isRemoved)
+            props.setJsonFile(await readJsonFileByUrl(targFile.originFileObj!!))
+        isRemoved = false
+        targFile.status = "success"
+    }
+    async function onRemoveHandle() {
+        props.setJsonFile([])
+        isRemoved = true
+    }
+
+
+    return (
+        <div>
+            <Upload
+                accept=".json"
+                action={''}
+                maxCount={1}
+                onChange={(info) => onChangeHandleURL(info.file)}
+                onRemove={() => { onRemoveHandle() }}
+            >
+                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+            </Upload>
+        </div>
+    )
+}

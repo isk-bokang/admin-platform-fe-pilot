@@ -11,6 +11,7 @@ export enum RouteName {
   CONTRACT_META_DATA = 'metadata',
   DEPLOYED_CONTRACTS = 'deployed',
   REGISTER_CONTRACT = 'register',
+  CONTRACT_DETAIL = ':contractId',
 
   CHAINS = 'chains',
   CHAIN_META_DATA = 'meta_chains',

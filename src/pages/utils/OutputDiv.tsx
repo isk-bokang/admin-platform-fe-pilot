@@ -1,7 +1,10 @@
-import { Table } from "antd"
+
+
+import { Table, Descriptions, Typography } from "antd"
+
 import { ColumnsType } from "antd/lib/table"
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+const { Paragraph, Text } = Typography;
 
 type listProps = { targList: any[] }
 
@@ -19,17 +22,18 @@ export function TargListView(prop: listProps) {
                 return {
                     title: item,
                     dataIndex: item,
-                    key: item
+                    key: item,
                 }
             }).filter(item =>{
                 return item.title !== 'key'
             })
         )
+
     }, [prop.targList])
 
     return (
         <div>
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={data}/>
         </div>
     )
 }
@@ -63,6 +67,32 @@ export function TargView(prop: targProps) {
         </div>
     )
 
+
+}
+
+export function DetailView(prop: targProps){
+
+    const [ellipsis, setEllipsis] = useState(true);
+    return(
+        <Descriptions bordered>
+            {
+                Object.entries(prop.targ).map((entry) =>{
+                    return(
+                        <>
+                        {(entry[0] && entry[1]) && 
+                        <Descriptions.Item label={entry[0]} span={3} > 
+                        <Paragraph ellipsis={ellipsis ? { rows: 2, expandable: true, symbol: 'more' } : false}>
+                            {entry[1]}
+                        </Paragraph>
+                        
+                         </Descriptions.Item>}
+                         </>
+                    )
+                })
+                
+            }
+        </Descriptions >
+    )
 
 }
 
