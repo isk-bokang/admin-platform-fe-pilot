@@ -189,7 +189,7 @@ interface DeployedContractDetail {
     address: string
 }
 
-export function DeployedDetailByPropDiv(prop: { deployedId: string }) {
+export function DeployedContractByPropDiv(prop: { deployedId: string }) {
     const [deployedContract, setDeployedContract] = useState<DeployedContractDetail>()
     const [chainInfo, setChainInfo] = useState<GetChainDto>()
     const [serviceInfo, setServiceInfo] = useState<GetServiceDto>()
@@ -224,10 +224,9 @@ export function DeployedDetailByPropDiv(prop: { deployedId: string }) {
 
 export function DeployedDetailDiv() {
     const { deployedId } = useParams()
-    console.log(deployedId)
     return (
         <div>
-            {deployedId && <DeployedDetailByPropDiv deployedId={deployedId} />}
+            {deployedId && <DeployedContractByPropDiv deployedId={deployedId} />}
         </div>
     )
 }

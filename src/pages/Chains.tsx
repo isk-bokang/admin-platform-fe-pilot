@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import { ChainApi } from "./apis/ChainApi"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
 
@@ -62,4 +63,14 @@ export function ChainByPropDiv(prop : {chainSeq : string}) {
         {chain && <DetailView targ={chain} title = "CHAIN"/>}
     </div>)
 }
+
+export function ChainDetailDiv(){
+    const { chainSeq } = useParams()
+    return (
+        <div>
+            {chainSeq && <ChainByPropDiv chainSeq={chainSeq} />}
+        </div>
+    )
+}
+
 

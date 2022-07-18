@@ -5,7 +5,7 @@ import { RouteName } from './constants';
 
 import Home from './pages/Home';
 import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/Contracts';
-import Chains, { ChainListDiv } from './pages/Chains';
+import Chains, { ChainDetailDiv, ChainListDiv } from './pages/Chains';
 import Deploy from './pages/Deploy';
 
 export const routePages: RoutePage[] = [
@@ -16,11 +16,11 @@ export const routePages: RoutePage[] = [
   {
     key: RouteName.CONTRACTS,
     page: <Contracts />,
-    children : [
+    children: [
       {
         key: RouteName.CONTRACT_META_DATA,
         page: <ContractListDiv />,
-        children : [
+        children: [
           {
             key: RouteName.CONTRACT_DETAIL,
             page: <ContractDetailDiv />,
@@ -30,7 +30,7 @@ export const routePages: RoutePage[] = [
       {
         key: RouteName.DEPLOYED_CONTRACTS,
         page: <DeployedContractListDiv />,
-        children : [
+        children: [
           {
             key: RouteName.DEPLOYED_DETAIL,
             page: <DeployedDetailDiv />,
@@ -47,10 +47,16 @@ export const routePages: RoutePage[] = [
   {
     key: RouteName.CHAINS,
     page: <Chains />,
-    children:[
+    children: [
       {
         key: RouteName.CHAIN_META_DATA,
         page: <ChainListDiv />,
+        children: [
+          {
+            key: RouteName.CHAIN_DETAIL,
+            page: <ChainDetailDiv />
+          }
+        ]
       },
     ]
   },
@@ -77,9 +83,9 @@ export const sidebarRouters: SidebarRoute[] = [
     ]
   },
   {
-    key : RouteName.CHAINS,
-    label : "CHAIN",
-    children : [
+    key: RouteName.CHAINS,
+    label: "CHAIN",
+    children: [
       {
         key: RouteName.CHAIN_META_DATA,
         label: 'Chain Metadata',
@@ -87,8 +93,8 @@ export const sidebarRouters: SidebarRoute[] = [
     ]
   },
   {
-    key : RouteName.DEPLOY_CONTRACT,
-    label : "DEPLOY"
+    key: RouteName.DEPLOY_CONTRACT,
+    label: "DEPLOY"
   }
 
 ];

@@ -16,6 +16,7 @@ export enum RouteName {
 
   CHAINS = 'chains',
   CHAIN_META_DATA = 'meta_chains',
+  CHAIN_DETAIL = ':chainSeq',
 
   DEPLOY_CONTRACT = 'deploy',
 };
