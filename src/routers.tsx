@@ -5,7 +5,7 @@ import { RouteName } from './constants';
 
 import Home from './pages/Home';
 import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/Contracts';
-import Chains, { ChainDetailDiv, ChainListDiv } from './pages/Chains';
+import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/Chains';
 import Deploy from './pages/Deploy';
 
 export const routePages: RoutePage[] = [
@@ -55,8 +55,12 @@ export const routePages: RoutePage[] = [
           {
             key: RouteName.CHAIN_DETAIL,
             page: <ChainDetailDiv />
-          }
+          },
         ]
+      },
+      {
+        key: RouteName.REGISTER_CHAIN,
+        page: <RegisterChainDiv />
       },
     ]
   },
@@ -89,7 +93,8 @@ export const sidebarRouters: SidebarRoute[] = [
       {
         key: RouteName.CHAIN_META_DATA,
         label: 'Chain Metadata',
-      }
+      },
+      
     ]
   },
   {

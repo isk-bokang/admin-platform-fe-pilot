@@ -22,11 +22,31 @@ export class GetChainDto {
     }
 }
 
+export class PostChainDto {
+    chainName: string;
+    chainId: string;
+    rpcUrl: string;
+
+    constructor(
+        chainName: string,
+        chainId: string,
+        rpcUrl: string
+    ) {
+        this.chainName = chainName
+        this.chainId = chainId
+        this.rpcUrl = rpcUrl
+    }
+}
+
 export class ChainApi {
     static getChainList() {
         return axios.get<GetChainDto[]>(`${targURL}`)
     }
-    static getChain(chainSeq : string){
+    static getChain(chainSeq: string) {
         return axios.get<GetChainDto>(`${targURL}/${chainSeq}`)
     }
+    static postChain(data : PostChainDto){
+        return axios.post<GetChainDto>(`${targURL}`, data)
+    }
+
 }
