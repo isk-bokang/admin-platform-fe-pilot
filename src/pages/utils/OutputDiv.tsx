@@ -6,7 +6,7 @@ import { ColumnsType } from "antd/lib/table"
 import { useEffect, useState } from "react"
 const { Paragraph, Text } = Typography;
 
-type listProps = { targList: any[] }
+type listProps = { targList: any[] , connectPath ?: string, title ?: string }
 
 export function TargListView(prop: listProps) {
     const [columns, setColumns] = useState<ColumnsType<any>>([])
@@ -33,7 +33,10 @@ export function TargListView(prop: listProps) {
             key: 'Detail',
             render(value, record, index) {
                 function onClickHandle(){
-                    window.location.href =`${window.location.href}/${record.id}`
+                    if(prop.connectPath)
+                        window.location.href =`/${prop.connectPath}/${record.id}`
+                    else
+                        window.location.href =`${window.location.href}/${record.id}`
                 }
                 return(<Button onClick={onClickHandle}> See Detail </Button>)
             },
@@ -44,7 +47,8 @@ export function TargListView(prop: listProps) {
 
     return (
         <div>
-            <Table columns={columns} dataSource={data}/>
+            {prop.title && <h4>{prop.title}</h4>}
+            <Table columns={columns} dataSource={data} />
         </div>
     )
 }

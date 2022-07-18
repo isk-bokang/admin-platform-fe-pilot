@@ -17,7 +17,7 @@ function Contracts() {
     )
 }
 
-interface DeployedContracts {
+export interface DeployedContracts {
     id: string
     contractName: string
     serviceName: string
@@ -48,6 +48,7 @@ export function DeployedContractListDiv() {
 
     return (<div>
         {deployedContractList.length !== 0 && <TargListView targList={deployedContractList} />}
+        <Button onClick={() => window.location.href = "/deploy"}> DEPLOY </Button>
     </div>)
 }
 

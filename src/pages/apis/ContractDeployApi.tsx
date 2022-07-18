@@ -48,13 +48,21 @@ class DeployRequestDto{
 
 
 export class ContractDeployApi {
-    static getDeployedContracts(){
-        return axios.get<DeployedContractsDto[]>(`${targURL}`)
+    
+    static getDeployedContracts(param ?: {chainId ?: string , serviceId ?: string}){
+        console.log(param)
+        if(param){
+            return axios.get<DeployedContractsDto[]>(`${targURL}`, {params : param})
+        }
+        else 
+            return axios.get<DeployedContractsDto[]>(`${targURL}`)
     }
+
     static deployContract(req : DeployRequestDto){
         console.log(req)
         return axios.post<DeployedContractsDto>(`${targURL}`, req)
     }
+    
     static getDeployedCotract(deployedId : string){
         return axios.get<DeployedContractsDto>(`${targURL}/${deployedId}`)
     }

@@ -2,6 +2,8 @@ import { Button, Form, Input } from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ChainApi, PostChainDto } from "./apis/ChainApi"
+import { ContractDeployApi } from "./apis/ContractDeployApi"
+import { DeployedContracts } from "./Contracts"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
 
 function Chains() {
@@ -45,7 +47,7 @@ export default Chains
 
 export function ChainByPropDiv(prop: { chainSeq: string }) {
     const [chain, setChain] = useState<ListViewChain>()
-
+    const [deployedContractList, setDeployedContractList] = useState<DeployedContracts[]>([])
     useEffect(() => {
         if (prop.chainSeq != null) {
             ChainApi.getChain(prop.chainSeq)
@@ -57,6 +59,22 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                         rpcUrl: res.data.rpcUrl,
                     })
                 })
+
+                ContractDeployApi.getDeployedContracts({chainId : prop.chainSeq})
+                .then(res => {
+                    console.log(res.data)
+                    setDeployedContractList(
+                        res.data.map(item => {
+                            return {
+                                id: item.id,
+                                contractName: item.contract.name,
+                                serviceName: item.service.name,
+                                chainId: item.chain.chainId,
+                                address: item.address
+                            }
+                        })
+                    )
+                })
         }
     }, [prop.chainSeq])
 
@@ -64,6 +82,8 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
     return (
         <div id="chain">
             {chain && <DetailView targ={chain} title="CHAIN" />}
+            <hr></hr>
+            {deployedContractList.length>0 && <TargListView targList={deployedContractList} title="DEPLOYED CONTRACTS" connectPath="contract/deployed"  />}
         </div>)
 }
 
