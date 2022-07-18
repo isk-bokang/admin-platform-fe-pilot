@@ -1,4 +1,5 @@
 import { Button, Form, Input, Select } from "antd"
+import { RuleObject } from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
 import { Option } from "antd/lib/mentions"
 import React, { useEffect, useState } from "react"
@@ -97,10 +98,20 @@ export function RegisterContractDiv(){
         console.log(registerDto)
         ContractApi.postContract(registerDto).then(
             (ret)=>{
-                console.log(ret)
-                //window.location.href="/contracts/metadata"
+                window.location.href="/contracts/metadata"
             }
         )
+    }
+    
+
+    async function validAbi(rule:RuleObject, value : any){
+        try{
+            JSON.parse(value)
+        }
+        catch{
+            throw new Error("ABI must be JSON")
+        }
+        return true
     }
 
     return(
@@ -118,7 +129,7 @@ export function RegisterContractDiv(){
                     </Select>
                 </Form.Item>
                 <Form.Item label="ABI" name = 'abi'
-                rules={[{ required: true, message: 'Require ABI' }]}>
+                rules={[{ required: true, message: 'ABI Must Be JSON', validator: validAbi }]}>
                     <TextArea></TextArea>
                 </Form.Item>
                 <Form.Item label="ByteCode" name = 'bytecode'
