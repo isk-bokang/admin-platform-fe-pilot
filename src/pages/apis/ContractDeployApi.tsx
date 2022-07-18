@@ -1,15 +1,16 @@
 import axios from "axios";
 import { GetChainDto } from "./ChainApi";
 import { GetContractDto } from "./ContractApi";
+import { GetServiceDto } from "./ServiceApi";
 
 const targURL = "http://localhost:8090/deployed/contracts"
 
-export class DeployedContractDto {
+export class DeployedContractsDto {
     readonly id: string
     readonly address: string
 
     readonly contract: GetContractDto
-    readonly service: any
+    readonly service: GetServiceDto
     readonly chain : GetChainDto
 
     constructor(
@@ -26,6 +27,7 @@ export class DeployedContractDto {
         this.chain = chain
     }
 }
+
 
 class DeployRequestDto{
     readonly serviceId : string
@@ -47,13 +49,15 @@ class DeployRequestDto{
 
 export class ContractDeployApi {
     static getDeployedContracts(){
-        return axios.get<DeployedContractDto[]>(`${targURL}`)
+        return axios.get<DeployedContractsDto[]>(`${targURL}`)
     }
     static deployContract(req : DeployRequestDto){
         console.log(req)
-        return axios.post<DeployedContractDto>(`${targURL}`, req)
+        return axios.post<DeployedContractsDto>(`${targURL}`, req)
     }
-
+    static getDeployedCotract(deployedId : string){
+        return axios.get<DeployedContractsDto>(`${targURL}/${deployedId}`)
+    }
 
 
 }

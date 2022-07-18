@@ -6,7 +6,7 @@ import { GetServiceDto, ServiceApi } from "./apis/ServiceApi"
 import { ChainByPropDiv, ListViewChain } from "./Chains"
 import { ContractByPropDiv, ListViewContract } from "./Contracts"
 import { RadioTargListDiv } from "./utils/InputDiv"
-import { TargView } from "./utils/OutputDiv"
+import { DetailView, TargView } from "./utils/OutputDiv"
 
 function Deploy(){
     return (
@@ -56,7 +56,7 @@ export function ContractDeployDiv() {
         })
         .then(()=>{
             alert('DEPLOY DONE')
-            window.location.href = "/deployed"
+            window.location.href = "/contracts/deployed"
         })
         .catch(err =>{
             alert("FATAL ERROR : DEPLOY FAIL")
@@ -259,7 +259,7 @@ export function SelectService(prop: setterProp) {
 }
 
 
-function ServiceByPropDiv(prop : {serviceId : string}){
+export function ServiceByPropDiv(prop : {serviceId : string}){
     const [service, setService] = useState<GetServiceDto>()
     useEffect( ()=>{
         ServiceApi.getService(prop.serviceId)
@@ -274,7 +274,7 @@ function ServiceByPropDiv(prop : {serviceId : string}){
 
     return(
         <div>
-            {service && <TargView targ={service}/>}
+            {service && <DetailView targ={service} title = "SERVICE"/>}
         </div>
     )
 }

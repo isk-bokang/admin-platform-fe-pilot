@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { ChainApi } from "./apis/ChainApi"
-import { TargListView, TargView } from "./utils/OutputDiv"
+import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
 
 function Chains(){
     return (
@@ -59,7 +59,7 @@ export function ChainByPropDiv(prop : {chainSeq : string}) {
 
     return (
     <div id="chain">
-        {chain && <TargView targ={chain}/>}
+        {chain && <DetailView targ={chain} title = "CHAIN"/>}
     </div>)
 }
 

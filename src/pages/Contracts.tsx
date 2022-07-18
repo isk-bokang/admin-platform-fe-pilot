@@ -4,8 +4,10 @@ import TextArea from "antd/lib/input/TextArea"
 import { Option } from "antd/lib/mentions"
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { ContractApi, PostContractDto } from "./apis/ContractApi"
+import { GetChainDto } from "./apis/ChainApi"
+import { ContractApi, GetContractDto, PostContractDto } from "./apis/ContractApi"
 import { ContractDeployApi } from "./apis/ContractDeployApi"
+import { GetServiceDto } from "./apis/ServiceApi"
 import { InputTargDiv, InputType, inputTypes } from "./utils/InputDiv"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
 
@@ -168,7 +170,7 @@ export function ContractByPropDiv(prop: { contractId: string }) {
 
     return (
         <div id="contract">
-            {contract && <DetailView targ={contract} />}
+            {contract && <DetailView targ={contract} title="CONTRACT" />}
         </div>)
 }
 
@@ -178,6 +180,55 @@ export function ContractDetailDiv() {
         <>
             {contractId && <ContractByPropDiv contractId={contractId} />}
         </>
+    )
+}
+
+
+interface DeployedContractDetail {
+    deployedId: string,
+    address: string
+}
+
+export function DeployedDetailByPropDiv(prop: { deployedId: string }) {
+    const [deployedContract, setDeployedContract] = useState<DeployedContractDetail>()
+    const [chainInfo, setChainInfo] = useState<GetChainDto>()
+    const [serviceInfo, setServiceInfo] = useState<GetServiceDto>()
+    const [contractInfo, setContractInfo] = useState<GetContractDto>()
+    useEffect(() => {
+        if (prop.deployedId != null) {
+            ContractDeployApi.getDeployedCotract(prop.deployedId)
+                .then(res => {
+                    setChainInfo(res.data.chain)
+                    setServiceInfo(res.data.service)
+                    setContractInfo(res.data.contract)
+                    setDeployedContract(
+                        {
+                            deployedId: res.data.id,
+                            address: res.data.address
+                        }
+                    )
+                })
+        }
+    }, [prop.deployedId])
+
+    return (
+        <>
+            {deployedContract && <DetailView targ={deployedContract} title="DEPLOYED CONTRACT" />}
+            {contractInfo && <DetailView targ={contractInfo} title="CONTRACT" />}
+            {chainInfo && <DetailView targ={chainInfo} title="CHAIN" />}
+            {serviceInfo && <DetailView targ={serviceInfo} title="SERVICE" />}
+
+        </>
+    )
+}
+
+export function DeployedDetailDiv() {
+    const { deployedId } = useParams()
+    console.log(deployedId)
+    return (
+        <div>
+            {deployedId && <DeployedDetailByPropDiv deployedId={deployedId} />}
+        </div>
     )
 }
 

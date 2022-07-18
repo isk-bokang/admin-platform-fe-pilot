@@ -33,7 +33,7 @@ export function TargListView(prop: listProps) {
             key: 'Detail',
             render(value, record, index) {
                 function onClickHandle(){
-                    window.location.href =record.id
+                    window.location.href =`${window.location.href}/${record.id}`
                 }
                 return(<Button onClick={onClickHandle}> See Detail </Button>)
             },
@@ -50,7 +50,7 @@ export function TargListView(prop: listProps) {
 }
 
 
-type targProps = { targ: any }
+type targProps = { targ: any , title ? : string}
 
 export function TargView(prop: targProps) {
     const [columns, setColumns] = useState<ColumnsType<any[]>>([])
@@ -65,7 +65,6 @@ export function TargView(prop: targProps) {
                     title: item,
                     dataIndex: item,
                     key: item,
-                    render :  text => <a> {item} </a>
                 }
             }).filter(item =>{
                 return item.title !== 'key'
@@ -88,14 +87,14 @@ export function DetailView(prop: targProps){
 
     const [ellipsis, setEllipsis] = useState(true);
     return(
-        <Descriptions bordered>
+        <Descriptions bordered title={prop.title}>
             {
                 Object.entries(prop.targ).map((entry) =>{
                     return(
                         <>
                         {(entry[0] && entry[1]) && 
                         <Descriptions.Item label={entry[0]} span={3} > 
-                        <Paragraph ellipsis={ellipsis ? { rows: 2, expandable: true, symbol: 'more' } : false}>
+                        <Paragraph ellipsis={ellipsis ? { rows: 3, expandable: true, symbol: 'more' } : false}>
                             {entry[1]}
                         </Paragraph>
                         
