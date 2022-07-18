@@ -174,7 +174,6 @@ export function ContractByPropDiv(prop: { contractId: string }) {
 
 export function ContractDetailDiv() {
     const { contractId } = useParams()
-    console.log(contractId)
     return (
         <>
             {contractId && <ContractByPropDiv contractId={contractId} />}

@@ -1,6 +1,6 @@
 
 
-import { Table, Descriptions, Typography } from "antd"
+import { Table, Descriptions, Typography, Button } from "antd"
 
 import { ColumnsType } from "antd/lib/table"
 import { useEffect, useState } from "react"
@@ -17,16 +17,27 @@ export function TargListView(prop: listProps) {
             item.key = item.id
             return item
         }))
-        setColumns(
+        setColumns([...
             Object.keys(prop.targList[0]).map(item => {
                 return {
                     title: item,
                     dataIndex: item,
                     key: item,
                 }
-            }).filter(item =>{
+            }).filter(item => {
                 return item.title !== 'key'
             })
+        ,{
+            title: 'Detail',
+            dataIndex: 'Detail',
+            key: 'Detail',
+            render(value, record, index) {
+                function onClickHandle(){
+                    window.location.href =record.id
+                }
+                return(<Button onClick={onClickHandle}> See Detail </Button>)
+            },
+        }]
         )
 
     }, [prop.targList])
@@ -53,12 +64,15 @@ export function TargView(prop: targProps) {
                 return {
                     title: item,
                     dataIndex: item,
-                    key: item
+                    key: item,
+                    render :  text => <a> {item} </a>
                 }
             }).filter(item =>{
                 return item.title !== 'key'
             })
         )
+
+
     }, [prop.targ])
 
     return (
