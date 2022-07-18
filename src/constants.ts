@@ -7,15 +7,15 @@ export enum Color {
 };
 
 export enum RouteName {
-  CONTRACTS = 'contracts',
-  CONTRACT_META_DATA = 'metadata',
+  CONTRACTS = 'contract',
+  CONTRACT_META_DATA = 'contracts',
   DEPLOYED_CONTRACTS = 'deployed',
   REGISTER_CONTRACT = 'register',
   CONTRACT_DETAIL = ':contractId',
   DEPLOYED_DETAIL = ':deployedId',
 
-  CHAINS = 'chains',
-  CHAIN_META_DATA = 'metadata',
+  CHAINS = 'chain',
+  CHAIN_META_DATA = 'chains',
   CHAIN_DETAIL = ':chainSeq',
   REGISTER_CHAIN = 'register',
 
