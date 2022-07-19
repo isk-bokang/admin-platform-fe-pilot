@@ -50,7 +50,6 @@ class DeployRequestDto{
 export class ContractDeployApi {
     
     static getDeployedContracts(param ?: {chainId ?: string , serviceId ?: string}){
-        console.log(param)
         if(param){
             return axios.get<DeployedContractsDto[]>(`${targURL}`, {params : param})
         }
