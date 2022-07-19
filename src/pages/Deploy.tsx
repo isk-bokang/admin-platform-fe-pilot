@@ -114,7 +114,7 @@ function GetConstructorParams(prop: GetConstructorParamsProp) {
             <Descriptions title={"PARAMS"} bordered>
                 {constructorAbi?.inputs.map((item, idx) => {
                     return (
-                        <Descriptions.Item key={item.name} label={item.name}  span={3}>
+                        <Descriptions.Item key={item.name} label={item.name === 'amount' ? item.name + ' HEX' : item.name} span={3}>
                             {prop.params[idx]}
                         </Descriptions.Item >
                     )
@@ -151,8 +151,8 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
     }, [prop.contractId])
 
     function onChangeHandle(e: React.ChangeEvent<HTMLInputElement>) {
-        if(e.target.name === 'amount'){
-            if(tokenType.includes('20'))
+        if (e.target.name === 'amount') {
+            if (tokenType.includes('20'))
                 prop.params[parseInt(e.target.id)] = parseInt((e.target.value) + '0'.repeat(18)).toString(16)
             else (tokenType.includes('1155'))
                 prop.params[parseInt(e.target.id)] = parseInt(e.target.value).toString(16)
