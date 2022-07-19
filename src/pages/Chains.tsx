@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom"
 import { ChainApi, PostChainDto } from "./apis/ChainApi"
 import { ContractDeployApi } from "./apis/ContractDeployApi"
 import { DeployedContracts } from "./Contracts"
+import { NodeListDiv } from "./Nodes"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
 
 function Chains() {
@@ -37,10 +38,13 @@ export function ChainListDiv() {
             })
     }, [])
 
-    return (<div>
+    return (
+    <div>
         {chainList.length !== 0 && <TargListView targList={chainList} />}
         <Button onClick={() => window.location.href = "register"}> REGISTER </Button>
-    </div>)
+        
+    </div>
+    )
 }
 
 export default Chains
@@ -92,6 +96,7 @@ export function ChainDetailDiv() {
     return (
         <div>
             {chainSeq && <ChainByPropDiv chainSeq={chainSeq} />}
+            {chainSeq && <NodeListDiv chainSeq={chainSeq}/>}
         </div>
     )
 }
@@ -140,5 +145,7 @@ export function RegisterChainDiv() {
         </div>
     )
 }
+
+
 
 

@@ -19,5 +19,8 @@ export enum RouteName {
   CHAIN_DETAIL = ':chainSeq',
   REGISTER_CHAIN = 'register',
 
+  NODES = 'node',
+  NODE_DETAIL = ':nodeId',
+
   DEPLOY_CONTRACT = 'deploy',
 };
