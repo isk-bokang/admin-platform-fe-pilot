@@ -51,15 +51,16 @@ export function InputTargDiv(prop: targProps) {
 }
 
 
-type radioProp = { targList: any[], setTarg: Dispatch<SetStateAction<string>> }
+type radioProp = { targList: any[], setTarg: Dispatch<SetStateAction<string>>, defaultId ?: string }
 
 export function RadioTargListDiv(prop: radioProp) {
     const [columns, setColumns] = useState<ColumnsType<any>>([])
     const [data, setData] = useState<any[]>([])
-
     const [keys, setKeys] = useState<string[]>([])
     const groupNumber = Math.random()
+    
     useEffect(() => {
+        
         setData(prop.targList.map(item => {
             item.key = item.id
             return item
@@ -75,21 +76,20 @@ export function RadioTargListDiv(prop: radioProp) {
                 return item.title !== 'key'
             })
         )
-    }, [prop.targList])
-
-    function onChangeHandle(e : ChangeEvent<HTMLInputElement>){
-        prop.setTarg(e.target.value)
-        
-    }
-
+    }, [prop])
 
     return (
+        <>
         <Table columns={columns} dataSource={data} rowSelection={{
             type : "radio",
             onChange : (key, row)=>{
                 prop.setTarg(key.toString())
-            }
+                
+            },
+            defaultSelectedRowKeys : prop.defaultId ? [parseInt(prop.defaultId)] : undefined,
+            
         }} />
+        </>
     )
 
 }

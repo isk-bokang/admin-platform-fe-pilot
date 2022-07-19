@@ -23,6 +23,21 @@ export class GetNodeDto {
     }
 }
 
+export class PostNodeDto{
+    chainSeq : string
+    nodeType : string
+    ipAddress : string
+    constructor(
+        chainSeq : string,
+        nodeType : string,
+        ipAddress : string
+    ){
+        this.chainSeq = chainSeq
+        this.nodeType = nodeType
+        this.ipAddress = ipAddress 
+    }
+}
+
 
 export class NodeApi {
     static getNodes(param ?: {chainSeq : string}) {
@@ -34,6 +49,11 @@ export class NodeApi {
 
     static getNode(nodeId : string){
         return axios.get<GetNodeDto>(`${targURL}/${nodeId}`)
+    }
+
+    static registerNode(node : PostNodeDto){
+        console.log(node)
+        return axios.post<GetNodeDto>(`${targURL}`, node)
     }
 
 }

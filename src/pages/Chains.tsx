@@ -97,6 +97,7 @@ export function ChainDetailDiv() {
         <div>
             {chainSeq && <ChainByPropDiv chainSeq={chainSeq} />}
             {chainSeq && <NodeListDiv chainSeq={chainSeq}/>}
+            <Button onClick={()=>{window.location.href = `/node/register?chainSeq=${chainSeq}`}}> REGISTER NODE </Button>
         </div>
     )
 }

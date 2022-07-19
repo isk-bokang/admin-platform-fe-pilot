@@ -197,9 +197,9 @@ function SelectTargets(prop: settersProp) {
 }
 
 
-type setterProp = { idSetter: Dispatch<SetStateAction<string>> }
+type selectProp = { idSetter: Dispatch<SetStateAction<string>> , defaultId ?: string}
 
-export function SelectContract(prop: setterProp) {
+export function SelectContract(prop: selectProp) {
     const [contractList, setContractList] = useState<ListViewContract[]>([])
     useEffect(() => {
         ContractApi.getContractList()
@@ -218,12 +218,12 @@ export function SelectContract(prop: setterProp) {
 
     return (
         <div>
-            {contractList.length !== 0 && <RadioTargListDiv targList={contractList} setTarg={prop.idSetter} />}
+            {contractList.length !== 0 && <RadioTargListDiv targList={contractList} setTarg={prop.idSetter} defaultId={prop.defaultId ? prop.defaultId : undefined}/>}
         </div>
     )
 }
 
-export function SelectChain(prop: setterProp) {
+export function SelectChain(prop: selectProp) {
     const [chainList, setChainList] = useState<ListViewChain[]>([])
     useEffect(() => {
         ChainApi.getChainList()
@@ -239,14 +239,14 @@ export function SelectChain(prop: setterProp) {
                     })
                 )
             })
-    }, [])
+    }, [prop])
     return (
         <div>
-            {chainList.length !== 0 && <RadioTargListDiv targList={chainList} setTarg={prop.idSetter} />}
+            {chainList.length !== 0 && <RadioTargListDiv targList={chainList} setTarg={prop.idSetter} defaultId={prop.defaultId ? prop.defaultId : undefined}/>}
         </div>)
 }
 
-export function SelectService(prop: setterProp) {
+export function SelectService(prop: selectProp) {
     const [serviceList, setServiceList] = useState<GetServiceDto[]>([])
     useEffect(() => {
         ServiceApi.getServices()
@@ -265,7 +265,7 @@ export function SelectService(prop: setterProp) {
 
     return (
         <div>
-            {serviceList.length !== 0 && <RadioTargListDiv targList={serviceList} setTarg={prop.idSetter} />}
+            {serviceList.length !== 0 && <RadioTargListDiv targList={serviceList} setTarg={prop.idSetter} defaultId={prop.defaultId ? prop.defaultId : undefined}/>}
         </div>
     )
 }

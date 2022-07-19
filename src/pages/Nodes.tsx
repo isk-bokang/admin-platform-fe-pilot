@@ -1,9 +1,10 @@
-import { Button } from "antd"
+import { Button, Form, Input } from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { NodeApi } from "./apis/NodeApi"
+import { NodeApi, PostNodeDto } from "./apis/NodeApi"
+import { SelectChain } from "./Deploy"
 import { DetailView, TargListView } from "./utils/OutputDiv"
-
+import qs from "query-string"
 
 interface ListViewNode{
     id : string,
@@ -35,7 +36,7 @@ export function NodeListDiv(prop : {chainSeq ?: string}){
         <div>
             <h4>NODES</h4>
             {nodeList.length !== 0 && <TargListView targList={nodeList} connectPath="node"/>}
-            <Button> REGISTER NODE </Button>
+            
         </div>
     )
 }
@@ -78,8 +79,62 @@ function Nodes(){
     )
 }
 
-export function RegisterNode(prop : {chainSeq : string}){
+export function RegisterNodeDiv(){
     
+    return(
+        <>
+            <RegisterNodeByPropDiv chainSeq={qs.parse(window.location.search).chainSeq?.toString()}/>
+        </>
+    )
+}
+
+export function RegisterNodeByPropDiv(prop : {chainSeq ?: string}){
+    const [registerDto, setRegisterDto] = useState<PostNodeDto>()
+    const [chainSeq, setChainSeq] = useState<string>('')
+    const [form] = Form.useForm()
+
+    useEffect(()=>{
+        prop.chainSeq ? setChainSeq(prop.chainSeq) : null
+
+    }, [prop] )
+
+    function onChangeHandle() {
+        setRegisterDto({
+            nodeType: form.getFieldValue("nodeType"),
+            ipAddress: form.getFieldValue("ipAddress"),
+            chainSeq: chainSeq
+        })
+        console.log(registerDto)
+    }
+    function onClickHandle() {
+        if (registerDto != null) {
+            NodeApi.registerNode(registerDto).then(
+                (ret) => {
+                    window.location.href = "/chains/metadata"
+                }
+            )
+        }
+    }
+
+    return (
+        <div>
+            <SelectChain idSetter={setChainSeq} defaultId={prop.chainSeq} />
+            <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
+                <Form.Item label="Node Type" name='nodeType'
+                    rules={[{ required: true, message: 'Require Node Type' }]}>
+                    <Input />
+                </Form.Item>
+                <Form.Item label="IP ADDRESS" name='ipAddress'
+                    rules={[{ required: true, message: 'Require IP ADDRESS' }]}>
+                    <Input type={"number"} />
+                </Form.Item>
+
+                <Button htmlType="submit" > REGISTER </Button>
+
+            </Form>
+        </div>
+    )
+
 }
 
 export default Nodes

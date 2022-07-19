@@ -7,7 +7,7 @@ import Home from './pages/Home';
 import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/Contracts';
 import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/Chains';
 import Deploy from './pages/Deploy';
-import Nodes, { NodeDetailDiv } from './pages/Nodes';
+import Nodes, { NodeDetailDiv, RegisterNodeDiv } from './pages/Nodes';
 
 export const routePages: RoutePage[] = [
   {
@@ -72,6 +72,10 @@ export const routePages: RoutePage[] = [
       {
         key : RouteName.NODE_DETAIL,
         page : <NodeDetailDiv/>
+      },
+      {
+        key : RouteName.NODE_REGISTER,
+        page : <RegisterNodeDiv/>
       }
     ]
   },

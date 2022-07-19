@@ -21,6 +21,7 @@ export enum RouteName {
 
   NODES = 'node',
   NODE_DETAIL = ':nodeId',
+  NODE_REGISTER = 'register',
 
   DEPLOY_CONTRACT = 'deploy',
 };
