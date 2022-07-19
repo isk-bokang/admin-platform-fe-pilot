@@ -101,7 +101,7 @@ export function RegisterContractDiv() {
     function onClickHandle() {
         ContractApi.postContract(registerDto).then(
             (ret) => {
-                window.location.href = "/contracts/metadata"
+                window.location.href = "/contract/contracts"
             }
         )
     }

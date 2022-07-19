@@ -1,5 +1,7 @@
 import { Button, Descriptions, Input } from "antd"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { toBN, toHex } from "web3-utils"
+
 import { ChainApi } from "./apis/ChainApi"
 import { Abi, ContractApi } from "./apis/ContractApi"
 import { ContractDeployApi } from "./apis/ContractDeployApi"
@@ -57,7 +59,7 @@ export function ContractDeployDiv() {
         })
             .then(() => {
                 alert('DEPLOY DONE')
-                window.location.href = "/contracts/deployed"
+                window.location.href = "/contract/deployed"
             })
             .catch(err => {
                 alert("FATAL ERROR : DEPLOY FAIL")
@@ -128,9 +130,11 @@ type SetConstructorParamsProp = { contractId: string, params: string[], paramSet
 
 function SetConstructorParams(prop: SetConstructorParamsProp) {
     const [constructorAbi, setConstructorAbi] = useState<Abi>()
+    const [tokenType, setTokenType] = useState<string>('')
     useEffect(() => {
         ContractApi.getContract(prop.contractId)
             .then(res => {
+                setTokenType(res.data.contractType)
                 try {
                     const abi = JSON.parse(res.data.abi)
                     setConstructorAbi(abi.filter((item: Abi) => {
@@ -147,7 +151,14 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
     }, [prop.contractId])
 
     function onChangeHandle(e: React.ChangeEvent<HTMLInputElement>) {
-        prop.params[parseInt(e.target.id)] = e.target.value
+        if(e.target.name === 'amount'){
+            if(tokenType.includes('20'))
+                prop.params[parseInt(e.target.id)] = parseInt((e.target.value) + '0'.repeat(18)).toString(16)
+            else (tokenType.includes('1155'))
+                prop.params[parseInt(e.target.id)] = parseInt(e.target.value).toString(16)
+        }
+        else
+            prop.params[parseInt(e.target.id)] = e.target.value
         prop.paramSetter(prop.params)
     }
     return (
@@ -156,9 +167,10 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
             {constructorAbi?.inputs.map((item, idx) => {
                 return (
                     <>
-                        {item.type.includes('int') && <Input id={`${idx}`} type={"number"} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
-                        {item.type.includes('address') && <Input id={`${idx}`} type={"text"} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
-                        {item.type.includes('data') && <Input id={`${idx}`} type={"text"} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
+                        {item.type.includes('int') && <Input id={`${idx}`} type={"number"} name={item.name} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
+                        {item.type.includes('address') && <Input id={`${idx}`} type={"text"} name={item.name} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
+                        {item.type.includes('data') && <Input id={`${idx}`} type={"text"} name={item.name} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
+                        {item.type.includes('string') && <Input id={`${idx}`} type={"text"} name={item.name} placeholder={item.name.toUpperCase()} onChange={onChangeHandle} />}
                     </>
                 )
             })}
