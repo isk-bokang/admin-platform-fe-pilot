@@ -127,7 +127,7 @@ export function RegisterNodeByPropDiv(prop : {chainSeq ?: string}){
                 </Form.Item>
                 <Form.Item label="IP ADDRESS" name='ipAddress'
                     rules={[{ required: true, message: 'Require IP ADDRESS' }]}>
-                    <Input type={"number"} />
+                    <Input type={"text"} />
                 </Form.Item>
 
                 <Button htmlType="submit" > REGISTER </Button>
