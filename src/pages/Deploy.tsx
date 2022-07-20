@@ -1,6 +1,6 @@
+import { RouteName } from "../constants"
 import { Button, Descriptions, Input } from "antd"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
-import { toBN, toHex } from "web3-utils"
 
 import { ChainApi } from "./apis/ChainApi"
 import { Abi, ContractApi } from "./apis/ContractApi"
@@ -59,11 +59,11 @@ export function ContractDeployDiv() {
         })
             .then(() => {
                 alert('DEPLOY DONE')
-                window.location.href = "/contract/deployed"
+                window.location.href = `/${RouteName.CONTRACTS}/${RouteName.DEPLOYED_CONTRACTS}`
             })
             .catch(err => {
                 alert("FATAL ERROR : DEPLOY FAIL")
-                window.location.href = "/deploy"
+                window.location.href = `/${RouteName.DEPLOY_CONTRACT}`
                 console.error(err)
             })
     }
@@ -105,7 +105,7 @@ function GetConstructorParams(prop: GetConstructorParamsProp) {
                 catch {
                     alert("WARN : Check ABI Format")
                     console.error(res.data.abi)
-                    window.location.href = "/deployed/add"
+                    window.location.href = `/${RouteName.DEPLOY_CONTRACT}`
                 }
             })
     }, [prop.contractId])
@@ -145,7 +145,7 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
                 catch {
                     alert("WARN : Check ABI Format")
                     console.error(res.data.abi)
-                    window.location.href = "/deployed/add"
+                    window.location.href = `/${RouteName.DEPLOY_CONTRACT}`
                 }
             })
     }, [prop.contractId])

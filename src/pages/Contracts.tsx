@@ -1,3 +1,4 @@
+import { RouteName } from "../constants"
 import { Button, Form, Input, Select } from "antd"
 import { RuleObject } from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
@@ -48,7 +49,7 @@ export function DeployedContractListDiv() {
 
     return (<div>
         {deployedContractList.length !== 0 && <TargListView targList={deployedContractList} />}
-        <Button onClick={() => window.location.href = "/deploy"}> DEPLOY </Button>
+        <Button onClick={() => window.location.href = `/${RouteName.DEPLOY_CONTRACT}`}> DEPLOY </Button>
     </div>)
 }
 
@@ -79,7 +80,7 @@ export function ContractListDiv() {
     return (
         <div>
             {contractList.length !== 0 && <TargListView targList={contractList} />}
-            <Button onClick={() => window.location.href = "register"}> REGISTER </Button>
+            <Button onClick={() => window.location.href = `${RouteName.REGISTER_CHAIN}`}> REGISTER </Button>
         </div>
     )
 
@@ -101,7 +102,7 @@ export function RegisterContractDiv() {
     function onClickHandle() {
         ContractApi.postContract(registerDto).then(
             (ret) => {
-                window.location.href = "/contract/contracts"
+                window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
             }
         )
     }

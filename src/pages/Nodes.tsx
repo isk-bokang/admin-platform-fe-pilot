@@ -5,6 +5,7 @@ import { NodeApi, PostNodeDto } from "./apis/NodeApi"
 import { SelectChain } from "./Deploy"
 import { DetailView, TargListView } from "./utils/OutputDiv"
 import qs from "query-string"
+import { RouteName } from "../constants"
 
 interface ListViewNode{
     id : string,
@@ -110,7 +111,7 @@ export function RegisterNodeByPropDiv(prop : {chainSeq ?: string}){
         if (registerDto != null) {
             NodeApi.registerNode(registerDto).then(
                 (ret) => {
-                    window.location.href = "/chains/metadata"
+                    window.location.href = `/${RouteName.CHAINS}/${RouteName.CHAIN_META_DATA}/${chainSeq}`
                 }
             )
         }

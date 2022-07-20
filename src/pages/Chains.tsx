@@ -1,3 +1,4 @@
+import { RouteName } from "../constants"
 import { Button, Form, Input } from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
@@ -41,7 +42,7 @@ export function ChainListDiv() {
     return (
     <div>
         {chainList.length !== 0 && <TargListView targList={chainList} />}
-        <Button onClick={() => window.location.href = "register"}> REGISTER </Button>
+        <Button onClick={() => window.location.href = `${RouteName.REGISTER_CHAIN}`}> REGISTER </Button>
         
     </div>
     )
@@ -97,7 +98,7 @@ export function ChainDetailDiv() {
         <div>
             {chainSeq && <ChainByPropDiv chainSeq={chainSeq} />}
             {chainSeq && <NodeListDiv chainSeq={chainSeq}/>}
-            <Button onClick={()=>{window.location.href = `/node/register?chainSeq=${chainSeq}`}}> REGISTER NODE </Button>
+            <Button onClick={()=>{window.location.href = `/${RouteName.NODES}/${RouteName.NODE_REGISTER}?chainSeq=${chainSeq}`}}> REGISTER NODE </Button>
         </div>
     )
 }
@@ -117,7 +118,7 @@ export function RegisterChainDiv() {
         if (registerDto != null) {
             ChainApi.postChain(registerDto).then(
                 (ret) => {
-                    window.location.href = "/chains/metadata"
+                    window.location.href = `${RouteName.CHAINS}/${RouteName.CHAIN_META_DATA}`
                 }
             )
         }
