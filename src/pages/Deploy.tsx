@@ -148,17 +148,23 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
                     window.location.href = `/${RouteName.DEPLOY_CONTRACT}`
                 }
             })
-    }, [prop.contractId])
+    }, [prop])
 
     function onChangeHandle(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.name === 'amount') {
-            if (tokenType.includes('20'))
+            if (tokenType.includes('20')){
                 prop.params[parseInt(e.target.id)] = parseInt((e.target.value) + '0'.repeat(18)).toString(16)
-            else (tokenType.includes('1155'))
+                console.log('inner', prop.params[parseInt(e.target.id)])
+            }
+            else if(tokenType.includes('1155')){
                 prop.params[parseInt(e.target.id)] = parseInt(e.target.value).toString(16)
+            }
         }
-        else
+        else{
             prop.params[parseInt(e.target.id)] = e.target.value
+        }
+        console.log('param all',prop.params)
+        console.log('param res', prop.params[parseInt(e.target.id)])
         prop.paramSetter(prop.params)
     }
     return (
@@ -187,10 +193,13 @@ type settersProp = { serviceSetter: Dispatch<SetStateAction<string>>, chainSette
 function SelectTargets(prop: settersProp) {
     return (
         <>
+            <h4>SERVICE</h4>
             <SelectService idSetter={prop.serviceSetter} />
             <hr />
+            <h4>CHAIN</h4>
             <SelectChain idSetter={prop.chainSetter} />
             <hr />
+            <h4>CONTRACT</h4>
             <SelectContract idSetter={prop.contractSetter} />
         </>
     )
