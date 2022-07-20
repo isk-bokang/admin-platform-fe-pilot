@@ -154,7 +154,6 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
         if (e.target.name === 'amount') {
             if (tokenType.includes('20')){
                 prop.params[parseInt(e.target.id)] = parseInt((e.target.value) + '0'.repeat(18)).toString(16)
-                console.log('inner', prop.params[parseInt(e.target.id)])
             }
             else if(tokenType.includes('1155')){
                 prop.params[parseInt(e.target.id)] = parseInt(e.target.value).toString(16)
@@ -163,8 +162,6 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
         else{
             prop.params[parseInt(e.target.id)] = e.target.value
         }
-        console.log('param all',prop.params)
-        console.log('param res', prop.params[parseInt(e.target.id)])
         prop.paramSetter(prop.params)
     }
     return (
