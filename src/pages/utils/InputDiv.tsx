@@ -95,29 +95,31 @@ export function RadioTargListDiv(prop: radioProp) {
 }
 
 
+export function readJsonFileByUrl(fileData: RcFile) : Promise<any> {
+
+    const fileReader = new FileReader();
+
+    return new Promise( (resolve, reject) => {
+        fileReader.onloadend = () => {
+            resolve(JSON.parse(fileReader.result as string));
+        }
+
+        return new Promise((resolve, reject) => {
+            fileReader.onerror = () => {
+                fileReader.abort();
+                reject(null);
+            };
+
+
+            fileReader.readAsText(fileData);
+        })
+    })
+}
+
 export function JsonChooseDiv(props : any){
     let isRemoved : boolean = false;
 
-    function readJsonFileByUrl(fileData: RcFile) {
 
-        const fileReader = new FileReader();
-    
-        return new Promise( (resolve, reject) => {
-            fileReader.onloadend = () => {
-                resolve(JSON.parse(fileReader.result as string));
-            }
-    
-            return new Promise((resolve, reject) => {
-                fileReader.onerror = () => {
-                    fileReader.abort();
-                    reject(null);
-                };
-    
-    
-                fileReader.readAsText(fileData);
-            })
-        })
-    }
 
     async function onChangeHandleURL(targFile : UploadFile){
         if (!isRemoved)

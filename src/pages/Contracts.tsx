@@ -1,5 +1,5 @@
 import { RouteName } from "../constants"
-import { Button, Form, Input, Select } from "antd"
+import { Button, Form, Input, Select, Upload, UploadFile } from "antd"
 import { RuleObject } from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
 import { Option } from "antd/lib/mentions"
@@ -9,8 +9,10 @@ import { GetChainDto } from "./apis/ChainApi"
 import { ContractApi, GetContractDto, PostContractDto } from "./apis/ContractApi"
 import { ContractDeployApi } from "./apis/ContractDeployApi"
 import { GetServiceDto } from "./apis/ServiceApi"
-import { InputTargDiv, InputType, inputTypes } from "./utils/InputDiv"
+import { InputTargDiv, InputType, inputTypes, JsonChooseDiv, readJsonFileByUrl } from "./utils/InputDiv"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
+import { UploadOutlined } from "@ant-design/icons"
+import { json } from "stream/consumers"
 
 function Contracts() {
     return (
@@ -89,8 +91,10 @@ export function ContractListDiv() {
 export function RegisterContractDiv() {
     const [registerDto, setRegisterDto] = useState<PostContractDto>(new PostContractDto())
     const [form] = Form.useForm()
-
+    let isRemoved : boolean = false;
+    
     function onChangeHandle() {
+        console.log(form.getFieldValue("bytecode"))
         setRegisterDto({
             name: form.getFieldValue("name"),
             bytecode: form.getFieldValue("bytecode"),
@@ -107,6 +111,39 @@ export function RegisterContractDiv() {
         )
     }
 
+    function onChangeHandleURL(targFile : UploadFile){
+        if (!isRemoved && targFile.originFileObj){
+            try{
+                readJsonFileByUrl(targFile.originFileObj)
+                .then(res =>{
+                    if(res['abi'] ){
+                        form.setFieldsValue({abi : JSON.stringify(res['abi'])})
+                    }
+                    else{
+                        form.setFieldsValue({abi : ''})
+                    }
+                    if(res['bytecode']){
+                        form.setFieldsValue({bytecode : res['bytecode']})
+                    }
+                    else{
+                        form.setFieldsValue({bytecode : ''})
+                    }
+                    onChangeHandle()
+                })
+
+
+            }catch{
+
+            }
+        }
+        isRemoved = false
+        targFile.status = "success"
+    }
+
+    async function onRemoveHandle() {
+        isRemoved = true
+    }
+
 
     async function validAbi(rule: RuleObject, value: any) {
         try {
@@ -117,6 +154,8 @@ export function RegisterContractDiv() {
         }
         return true
     }
+
+    
 
     return (
         <div>
@@ -141,8 +180,17 @@ export function RegisterContractDiv() {
                     <Input></Input>
                 </Form.Item>
 
-                <Button htmlType="submit" > REGISTER </Button>
+                <Upload
+                    accept=".json"
+                    action={''}
+                    maxCount={1}
+                    onChange={(info) => onChangeHandleURL(info.file)}
+                    onRemove={() => { onRemoveHandle() }}
+                >
+                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                </Upload>
 
+                <Button htmlType="submit" > REGISTER </Button>
             </Form>
         </div>
     )
@@ -234,13 +282,11 @@ export function DeployedDetailDiv() {
 }
 
 export function DownloadContract(prop: { abi: string, bytecode: string }) {
-    const [inputDataStr, setInputDataStr] = useState<string>('')
     const [url, setUrl] = useState<string>('')
     useEffect(() => {
         var jsonData = JSON.parse(`{ "abi" : ${prop.abi} } `)
         jsonData['bytecode'] = prop.bytecode
         const strJsonData = JSON.stringify(jsonData, null, 2)
-        setInputDataStr(strJsonData)
         const bytes = new TextEncoder().encode(strJsonData);
         let blob = new Blob([bytes.buffer], { type: "application/json;charset=utf-8" });
         setUrl(URL.createObjectURL(blob))
@@ -248,14 +294,12 @@ export function DownloadContract(prop: { abi: string, bytecode: string }) {
 
     return (
         <>
-            {inputDataStr &&
+            {url !== '' &&
                 <a href={url} download> <Button onClick={() => console.log(url)}> Click to Download ABI </Button> </a>
             }
         </>
     )
 
 }
-
-
 
 export default Contracts
