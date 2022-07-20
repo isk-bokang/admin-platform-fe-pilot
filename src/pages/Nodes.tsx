@@ -36,7 +36,7 @@ export function NodeListDiv(prop : {chainSeq ?: string}){
     return (
         <div>
             <h4>NODES</h4>
-            {nodeList.length !== 0 && <TargListView targList={nodeList} connectPath="node"/>}
+            {nodeList.length !== 0 && <TargListView targList={nodeList} connectPath={RouteName.NODES}/>}
             
         </div>
     )

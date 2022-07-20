@@ -99,7 +99,7 @@ export function DetailView(prop: targProps){
                         {(entry[0] && entry[1]) && 
                         <Descriptions.Item label={entry[0]} span={3} > 
                         <Paragraph ellipsis={ellipsis ? { rows: 3, expandable: true, symbol: 'more' } : false}>
-                            {entry[1]}
+                            {entry[1] as string}
                         </Paragraph>
                         
                          </Descriptions.Item>}

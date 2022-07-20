@@ -149,7 +149,7 @@ export function RegisterContractDiv() {
 }
 
 
-export function ContractByPropDiv(prop: { contractId: string }) {
+export function ContractByPropDiv(prop: { contractId: string, needDownload ?: boolean }) {
 
     const [contract, setContract] = useState<any>()
 
@@ -172,6 +172,7 @@ export function ContractByPropDiv(prop: { contractId: string }) {
     return (
         <div id="contract">
             {contract && <DetailView targ={contract} title="CONTRACT" />}
+            {(contract && prop.needDownload) && <DownloadContract abi={contract.abi} bytecode={contract.bytecode} />}
         </div>)
 }
 
@@ -179,7 +180,7 @@ export function ContractDetailDiv() {
     const { contractId } = useParams()
     return (
         <>
-            {contractId && <ContractByPropDiv contractId={contractId} />}
+            {contractId && <ContractByPropDiv contractId={contractId} needDownload = {true} />}
         </>
     )
 }
@@ -231,6 +232,30 @@ export function DeployedDetailDiv() {
         </div>
     )
 }
+
+export function DownloadContract(prop: { abi: string, bytecode: string }) {
+    const [inputDataStr, setInputDataStr] = useState<string>('')
+    const [url, setUrl] = useState<string>('')
+    useEffect(() => {
+        var jsonData = JSON.parse(`{ "abi" : ${prop.abi} } `)
+        jsonData['bytecode'] = prop.bytecode
+        const strJsonData = JSON.stringify(jsonData, null, 2)
+        setInputDataStr(strJsonData)
+        const bytes = new TextEncoder().encode(strJsonData);
+        let blob = new Blob([bytes.buffer], { type: "application/json;charset=utf-8" });
+        setUrl(URL.createObjectURL(blob))
+    }, [prop])
+
+    return (
+        <>
+            {inputDataStr &&
+                <a href={url} download> <Button onClick={() => console.log(url)}> Click to Download ABI </Button> </a>
+            }
+        </>
+    )
+
+}
+
 
 
 export default Contracts
