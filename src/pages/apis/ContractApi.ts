@@ -50,14 +50,20 @@ export class PostContractDto {
 }
 
 export class ContractApi {
-    static getContractList() {
-        return axios.get<GetContractDto[]>(`${targURL}`)
+    static getContractList(param ?:{contractType ?: string, contractName ?: string}) {
+        return axios.get<GetContractDto[]>(`${targURL}`, {params : param})
     }
     static getContract(contractId: string) {
         return axios.get<GetContractDto>(`${targURL}/${contractId}`)
     }
     static postContract(data : PostContractDto){
         return axios.post<GetContractDto>(`${targURL}`, data)
+    }
+    static getContractMethods(contractId: string, param ?: {methodName ?: string}) {
+        return axios.get<GetContractDto>(`${targURL}/${contractId}/methods`, {params:param})
+    }
+    static getContractTypes(){
+        return axios.get<string[]>(`${targURL}/types`)
     }
 }
 

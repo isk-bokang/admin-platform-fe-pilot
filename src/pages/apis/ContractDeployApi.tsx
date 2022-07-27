@@ -4,6 +4,7 @@ import { GetContractDto } from "./ContractApi";
 import { GetServiceDto } from "./ServiceApi";
 
 const targURL = "http://localhost:8090/deployed/contracts"
+const deployURL = "http://localhost:8090/deploy"
 
 export class DeployedContractsDto {
     readonly id: string
@@ -59,7 +60,7 @@ export class ContractDeployApi {
 
     static deployContract(req : DeployRequestDto){
         console.log(req)
-        return axios.post<DeployedContractsDto>(`${targURL}`, req)
+        return axios.post<DeployedContractsDto>(`${deployURL}`, req)
     }
     
     static getDeployedCotract(deployedId : string){

@@ -118,7 +118,7 @@ export function RegisterChainDiv() {
         if (registerDto != null) {
             ChainApi.postChain(registerDto).then(
                 (ret) => {
-                    window.location.href = `${RouteName.CHAINS}/${RouteName.CHAIN_META_DATA}`
+                    window.location.href = `/${RouteName.CHAINS}/${RouteName.CHAIN_META_DATA}`
                 }
             )
         }
