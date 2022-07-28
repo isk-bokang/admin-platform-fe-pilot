@@ -27,19 +27,20 @@ export class GetContractDto {
         this.contractType = contractType
         this.abi = abi
         this.bytecode = bytecode
+
     }
 }
 
 export class PostContractDto {
     name: string = '';
     contractType: string = '';
-    abi: string = '';
+    abi: Map<string, any>[] = [] ;
     bytecode: string = '';
 
     constructor(
         name: string = "",
         contractType: string = "",
-        abi: string = "",
+        abi: Map<string, any>[] = [] ,
         bytecode: string = ""
     ) {
         this.name = name

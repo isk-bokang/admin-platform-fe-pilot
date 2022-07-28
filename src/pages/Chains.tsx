@@ -73,7 +73,7 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                             return {
                                 id: item.id,
                                 contractName: item.contract.name,
-                                serviceName: item.service.name,
+                                serviceName: item.gameApp.name,
                                 chainId: item.chain.chainId,
                                 address: item.address
                             }

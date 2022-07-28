@@ -39,7 +39,7 @@ export function DeployedContractListDiv() {
                         return {
                             id: item.id,
                             contractName: item.contract.name,
-                            serviceName: item.service.name,
+                            serviceName: item.gameApp.name,
                             chainId: item.chain.chainId,
                             address: item.address
                         }
@@ -99,11 +99,12 @@ export function RegisterContractDiv() {
             name: form.getFieldValue("name"),
             bytecode: form.getFieldValue("bytecode"),
             contractType: form.getFieldValue("contractType"),
-            abi: form.getFieldValue('abi')
+            abi:  JSON.parse( form.getFieldValue('abi'))
         })
     }
 
     function onClickHandle() {
+        console.log(registerDto)
         ContractApi.postContract(registerDto).then(
             (ret) => {
                 window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
@@ -128,6 +129,10 @@ export function RegisterContractDiv() {
                     else{
                         form.setFieldsValue({bytecode : ''})
                     }
+                    if(res['abi'] == null && res['bytecode'] == null){
+                        alert("INVALID FORMAT \n NEED CHCECK")
+                    }
+                
                     onChangeHandle()
                 })
 
@@ -199,20 +204,21 @@ export function RegisterContractDiv() {
 
 export function ContractByPropDiv(prop: { contractId: string, needDownload ?: boolean }) {
 
-    const [contract, setContract] = useState<any>()
+    const [contract, setContract] = useState<GetContractDto>()
 
     useEffect(() => {
         if (prop.contractId != null) {
             ContractApi.getContract(prop.contractId)
                 .then(res => {
-                    setContract({
-                        id: res.data.id,
-                        name: res.data.name,
-                        contractType: res.data.contractType,
-                        bytecode: res.data.bytecode,
-                        abi: res.data.abi
+                    console.log(res.data.abi)
+                    setContract(new GetContractDto(
+                        res.data.id,
+                        res.data.name,
+                        res.data.contractType,
+                        JSON.stringify(res.data.abi),
+                        res.data.bytecode,
+                        ))
                     })
-                })
         }
     }, [prop.contractId])
 
@@ -249,7 +255,7 @@ export function DeployedContractByPropDiv(prop: { deployedId: string }) {
             DeployedContractApi.getDeployedCotract(prop.deployedId)
                 .then(res => {
                     setChainInfo(res.data.chain)
-                    setServiceInfo(res.data.service)
+                    setServiceInfo(res.data.gameApp)
                     setContractInfo(res.data.contract)
                     setDeployedContract(
                         {

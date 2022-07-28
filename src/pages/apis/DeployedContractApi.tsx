@@ -1,7 +1,7 @@
 import axios from "axios";
 import { GetChainDto } from "./ChainApi";
 import { GetContractDto } from "./ContractApi";
-import { GetServiceDto } from "./ServiceApi";
+import { GetServiceDto as GetGameAppDto } from "./ServiceApi";
 
 const targURL = "http://localhost:8090/deployed/contracts"
 const deployURL = "http://localhost:8090/deploy"
@@ -11,7 +11,7 @@ export class DeployedContractsDto {
     readonly address: string
 
     readonly contract: GetContractDto
-    readonly service: GetServiceDto
+    readonly gameApp: GetGameAppDto
     readonly chain: GetChainDto
 
     constructor(
@@ -24,7 +24,7 @@ export class DeployedContractsDto {
         this.id = id
         this.address = address
         this.contract = contract
-        this.service = service
+        this.gameApp = service
         this.chain = chain
     }
 }
