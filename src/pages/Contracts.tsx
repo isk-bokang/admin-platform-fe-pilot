@@ -7,7 +7,7 @@ import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { GetChainDto } from "./apis/ChainApi"
 import { ContractApi, GetContractDto, PostContractDto } from "./apis/ContractApi"
-import { ContractDeployApi } from "./apis/ContractDeployApi"
+import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { GetServiceDto } from "./apis/ServiceApi"
 import { InputTargDiv, InputType, inputTypes, JsonChooseDiv, readJsonFileByUrl } from "./utils/InputDiv"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
@@ -32,7 +32,7 @@ export function DeployedContractListDiv() {
     const [deployedContractList, setDeployedContractList] = useState<DeployedContracts[]>([])
 
     useEffect(() => {
-        ContractDeployApi.getDeployedContracts()
+        DeployedContractApi.getDeployedContracts()
             .then(res => {
                 setDeployedContractList(
                     res.data.map(item => {
@@ -246,7 +246,7 @@ export function DeployedContractByPropDiv(prop: { deployedId: string }) {
     const [contractInfo, setContractInfo] = useState<GetContractDto>()
     useEffect(() => {
         if (prop.deployedId != null) {
-            ContractDeployApi.getDeployedCotract(prop.deployedId)
+            DeployedContractApi.getDeployedCotract(prop.deployedId)
                 .then(res => {
                     setChainInfo(res.data.chain)
                     setServiceInfo(res.data.service)

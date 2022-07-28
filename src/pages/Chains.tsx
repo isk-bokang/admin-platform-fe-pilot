@@ -3,7 +3,7 @@ import { Button, Form, Input } from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ChainApi, PostChainDto } from "./apis/ChainApi"
-import { ContractDeployApi } from "./apis/ContractDeployApi"
+import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { DeployedContracts } from "./Contracts"
 import { NodeListDiv } from "./Nodes"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
@@ -65,7 +65,7 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                     })
                 })
 
-                ContractDeployApi.getDeployedContracts({chainId : prop.chainSeq})
+                DeployedContractApi.getDeployedContracts({chainSeq : prop.chainSeq})
                 .then(res => {
                     console.log(res.data)
                     setDeployedContractList(

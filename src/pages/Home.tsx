@@ -2,6 +2,7 @@ import { Button } from 'antd';
 import React from 'react';
 import { ChainApi } from './apis/ChainApi';
 import { ContractApi } from './apis/ContractApi';
+import { DeployedContractApi, DeployedContractsDto } from './apis/DeployedContractApi';
 
 function Home() {
   return (
@@ -19,12 +20,19 @@ function Home() {
       </div>
       <br></br>
       <div>
-      <h2> GET CHAIN API TEST </h2>
-      <Button onClick={() => ChainApi.getChainList().then(res => console.log(res.data))}> GET CHAINS </Button>
-      <Button onClick={() => ChainApi.getChain('1').then(res => console.log(res.data))}> GET CHAIN </Button>
-      <Button onClick={() => ChainApi.getSearchChains({chainName : 'bao'}).then(res => console.log(res.data))}> GET SEARCH CHAIN by ChainName - 'bao' </Button>
-      <Button onClick={() => ChainApi.getSearchChains({chainId : '1'}).then(res => console.log(res.data))}> GET SEARCH CHAIN by ChainId - '1' </Button>
-      <Button onClick={() => ChainApi.getChainTypes().then(res => console.log(res.data))}> GET CHAIN TYPES </Button>
+        <h2> GET CHAIN API TEST </h2>
+        <Button onClick={() => ChainApi.getChainList().then(res => console.log(res.data))}> GET CHAINS </Button>
+        <Button onClick={() => ChainApi.getChain('1').then(res => console.log(res.data))}> GET CHAIN </Button>
+        <Button onClick={() => ChainApi.getSearchChains({ chainName: 'bao' }).then(res => console.log(res.data))}> GET SEARCH CHAIN by ChainName - 'bao' </Button>
+        <Button onClick={() => ChainApi.getSearchChains({ chainId: '1' }).then(res => console.log(res.data))}> GET SEARCH CHAIN by ChainId - '1' </Button>
+        <Button onClick={() => ChainApi.getChainTypes().then(res => console.log(res.data))}> GET CHAIN TYPES </Button>
+      </div>
+      <br></br>
+      <div>
+        <h2> GET DEPLOYED CONTRACT API TEST</h2>
+        <Button onClick={()=>DeployedContractApi.getDeployedContracts().then(res=>console.log(res.data))}> GET DEPLOYED CONTRACTS </Button>
+        <Button onClick={()=>DeployedContractApi.getDeployedContracts({chainSeq : '1'}).then(res=>console.log(res.data))}> GET DEPLOYED CONTRACTS by Chain SEQ - '1' </Button>
+        <Button onClick={()=>DeployedContractApi.getDeployedCotract('2').then(res=>console.log(res.data))}> GET DEPLOYED CONTRACT by ID - '2' </Button>
       </div>
     </div>
   )

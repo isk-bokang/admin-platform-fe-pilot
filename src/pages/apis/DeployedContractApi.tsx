@@ -12,7 +12,7 @@ export class DeployedContractsDto {
 
     readonly contract: GetContractDto
     readonly service: GetServiceDto
-    readonly chain : GetChainDto
+    readonly chain: GetChainDto
 
     constructor(
         id: string,
@@ -24,49 +24,67 @@ export class DeployedContractsDto {
         this.id = id
         this.address = address
         this.contract = contract
-        this.service = service 
+        this.service = service
         this.chain = chain
     }
 }
 
 
-class DeployRequestDto{
-    readonly serviceId : string
-    readonly contractId : string
-    readonly chainSeq : string
-    readonly deployParams : string[]
+class DeployRequestDto {
+    readonly appId: string
+    readonly contractId: string
+    readonly chainSeq: string
+    readonly deployParams: string[]
 
-    constructor(serviceId : string,
-        contractId : string,
-        chainSeq : string,
-        deployParam : string[]){
-            this.serviceId = serviceId
-            this.contractId = contractId
-            this.chainSeq = chainSeq
-            this.deployParams = deployParam
-        }
+    constructor(serviceId: string,
+        contractId: string,
+        chainSeq: string,
+        deployParam: string[]) {
+        this.appId = serviceId
+        this.contractId = contractId
+        this.chainSeq = chainSeq
+        this.deployParams = deployParam
+    }
+}
+
+class RegisterRequestDto {
+    readonly appId: string
+    readonly contractId: string
+    readonly chainSeq: string
+    readonly contractAddress: string
+
+    constructor(
+        appId: string,
+        contractId: string,
+        chainSeq: string,
+        contractAddress: string
+    ) {
+        this.appId = appId;
+        this.contractId = contractId
+        this.chainSeq = chainSeq
+        this.contractAddress = contractAddress
+    }
 }
 
 
-export class ContractDeployApi {
-    
-    static getDeployedContracts(param ?: {chainId ?: string , serviceId ?: string}){
-        if(param){
-            return axios.get<DeployedContractsDto[]>(`${targURL}`, {params : param})
-        }
-        else 
-            return axios.get<DeployedContractsDto[]>(`${targURL}`)
+export class DeployedContractApi {
+
+    static getDeployedContracts(param?: { chainSeq?: string, appId?: string }) {
+        return axios.get<DeployedContractsDto[]>(`${targURL}`, { params: param })
     }
 
-    static deployContract(req : DeployRequestDto){
-        console.log(req)
-        return axios.post<DeployedContractsDto>(`${deployURL}`, req)
-    }
-    
-    static getDeployedCotract(deployedId : string){
+
+    static getDeployedCotract(deployedId: string) {
         return axios.get<DeployedContractsDto>(`${targURL}/${deployedId}`)
     }
 
 
+    static postDeployContract(req: DeployRequestDto) {
+        return axios.post<DeployedContractsDto>(`${deployURL}`, req)
+    }
+
+    static postRegisterDeployedContract(req: RegisterRequestDto){
+        return axios.post<DeployedContractsDto>(`${targURL}`, req)
+    }
 }
 
