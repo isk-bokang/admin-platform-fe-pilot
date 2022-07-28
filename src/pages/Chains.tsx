@@ -29,8 +29,8 @@ export function ChainListDiv() {
                 setChainList(
                     res.data.map((item) => {
                         return {
-                            id: item.chainSeq,
-                            name: item.chainName,
+                            id: item.seq,
+                            name: item.name,
                             chainId: item.chainId,
                             rpcUrl: item.rpcUrl
                         }
@@ -58,9 +58,9 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
             ChainApi.getChain(prop.chainSeq)
                 .then(res => {
                     setChain({
-                        id: res.data.chainSeq,
+                        id: res.data.seq,
                         chainId: res.data.chainId,
-                        name: res.data.chainName,
+                        name: res.data.name,
                         rpcUrl: res.data.rpcUrl,
                     })
                 })

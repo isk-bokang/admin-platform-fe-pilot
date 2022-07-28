@@ -237,8 +237,8 @@ export function SelectChain(prop: selectProp) {
                 setChainList(
                     res.data.map((item) => {
                         return {
-                            id: item.chainSeq,
-                            name: item.chainName,
+                            id: item.seq,
+                            name: item.name,
                             chainId: item.chainId,
                             rpcUrl: item.rpcUrl
                         }
