@@ -91,21 +91,37 @@ export function ContractListDiv() {
 
 export function RegisterContractDiv() {
     const [registerDto, setRegisterDto] = useState<PostContractDto>(new PostContractDto())
+    const [contractTypes, setContractTypes] = useState<string[]>([])
     const [form] = Form.useForm()
     let isRemoved : boolean = false;
+    useEffect(()=>{
+        ContractApi.getContractTypes().then(res=>{
+            setContractTypes(res.data)
+        })
+    } )
     
     function onChangeHandle() {
-        console.log(form.getFieldValue("bytecode"))
-        setRegisterDto({
-            name: form.getFieldValue("name"),
-            bytecode: form.getFieldValue("bytecode"),
-            contractType: form.getFieldValue("contractType"),
-            abi:  JSON.parse( form.getFieldValue('abi'))
-        })
+        var retAbi
+        try{
+            retAbi = JSON.parse( form.getFieldValue('abi'))
+            setRegisterDto({
+                name: form.getFieldValue("name"),
+                bytecode: form.getFieldValue("bytecode"),
+                contractType: form.getFieldValue("contractType"),
+                abi:  retAbi
+            })
+        }catch{
+            setRegisterDto({
+                name: form.getFieldValue("name"),
+                bytecode: form.getFieldValue("bytecode"),
+                contractType: form.getFieldValue("contractType"),
+                abi:  []
+            })
+        }
+        
     }
 
     function onClickHandle() {
-        console.log(registerDto)
         ContractApi.postContract(registerDto).then(
             (ret) => {
                 window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
@@ -160,12 +176,9 @@ export function RegisterContractDiv() {
         }
         return true
     }
-
-    
-
     return (
         <div>
-            <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
+            {contractTypes.length > 0 && <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
                 <Form.Item label="Name" name='name'
                     rules={[{ required: true, message: 'Require Name' }]}>
                     <Input></Input>
@@ -173,8 +186,13 @@ export function RegisterContractDiv() {
                 <Form.Item label="Contract Type" name='contractType'
                     rules={[{ required: true, message: 'Require Contract Type' }]} >
                     <Select>
-                        <Select.Option value='ERC20'> ERC 20 </Select.Option>
-                        <Select.Option value='ERC1155'> ERC 1155 </Select.Option>
+                        {
+                            contractTypes.map((item, idx) =>{
+                                return(
+                                    <Select.Option value = {item} key={idx}> {item} </Select.Option>
+                                )
+                            })
+                        }
                     </Select>
                 </Form.Item>
                 <Form.Item label="ABI" name='abi'
@@ -197,7 +215,7 @@ export function RegisterContractDiv() {
                 </Upload>
 
                 <Button htmlType="submit" > REGISTER </Button>
-            </Form>
+            </Form>}
         </div>
     )
 }
@@ -245,7 +263,7 @@ function MethodListDiv(prop: { contractId: string }) {
                 {
                     methodList.map((item, idx) =>{
                         return ( 
-                        <Collapse.Panel header = {item.name} key= {idx}> 
+                        <Collapse.Panel header = {item.type.toLowerCase() == 'constructor' ? item.type.toUpperCase() : item.name} key= {idx}> 
                                 {JSON.stringify(item, null, 2)}
                         </Collapse.Panel> 
                         )
