@@ -91,7 +91,7 @@ export function DetailView(prop: targProps){
 
     const [ellipsis, setEllipsis] = useState(true);
     return(
-        <Descriptions bordered title={prop.title}>
+        <Descriptions bordered title={prop.title} >
             {
                 Object.entries(prop.targ).map((entry) =>{
                     return(

@@ -4,6 +4,7 @@ import axios from "axios";
 const targURL = "http://localhost:8090/contracts"
 
 export interface Abi{
+    name ?: string,
     inputs : {name : string, type : string, internalType : string}[],
     type : string
 }
@@ -61,7 +62,7 @@ export class ContractApi {
         return axios.post<GetContractDto>(`${targURL}`, data)
     }
     static getContractMethods(contractId: string, param ?: {methodName ?: string}) {
-        return axios.get<GetContractDto>(`${targURL}/${contractId}/methods`, {params:param})
+        return axios.get<Abi[]>(`${targURL}/${contractId}/methods`, {params:param})
     }
     static getContractTypes(){
         return axios.get<string[]>(`${targURL}/types`)

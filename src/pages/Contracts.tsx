@@ -1,18 +1,19 @@
 import { RouteName } from "../constants"
-import { Button, Form, Input, Select, Upload, UploadFile } from "antd"
+import { Button, Form, Input, Select, Upload, UploadFile, Typography, Collapse } from "antd"
 import { RuleObject } from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
 import { Option } from "antd/lib/mentions"
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { GetChainDto } from "./apis/ChainApi"
-import { ContractApi, GetContractDto, PostContractDto } from "./apis/ContractApi"
+import { Abi, ContractApi, GetContractDto, PostContractDto } from "./apis/ContractApi"
 import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { GetServiceDto } from "./apis/ServiceApi"
 import { InputTargDiv, InputType, inputTypes, JsonChooseDiv, readJsonFileByUrl } from "./utils/InputDiv"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
 import { UploadOutlined } from "@ant-design/icons"
 import { json } from "stream/consumers"
+const { Paragraph, Text } = Typography;
 
 function Contracts() {
     return (
@@ -210,7 +211,6 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload ?: bo
         if (prop.contractId != null) {
             ContractApi.getContract(prop.contractId)
                 .then(res => {
-                    console.log(res.data.abi)
                     setContract(new GetContractDto(
                         res.data.id,
                         res.data.name,
@@ -230,11 +230,43 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload ?: bo
         </div>)
 }
 
+function MethodListDiv(prop: { contractId: string }) {
+    const [methodList, setMethodList] = useState<Abi[]>([])
+    useEffect(() => {
+        ContractApi.getContractMethods(prop.contractId).then((res) => setMethodList(res.data))
+    }, [prop])
+
+
+    return (
+        <>
+        {
+            methodList.length > 0 &&
+                <Collapse style={{whiteSpace : 'pre'}}>
+                {
+                    methodList.map((item, idx) =>{
+                        return ( 
+                        <Collapse.Panel header = {item.name} key= {idx}> 
+                                {JSON.stringify(item, null, 2)}
+                        </Collapse.Panel> 
+                        )
+                    })
+                }
+                </Collapse>
+        }
+        </>
+    )
+
+}
+
 export function ContractDetailDiv() {
     const { contractId } = useParams()
     return (
         <>
+            
             {contractId && <ContractByPropDiv contractId={contractId} needDownload = {true} />}
+            <hr/>
+            <h4>METHODS</h4>
+            {contractId && <MethodListDiv contractId={contractId}/>}
         </>
     )
 }
