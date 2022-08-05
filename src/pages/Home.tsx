@@ -2,10 +2,16 @@ import { Button } from 'antd';
 import React from 'react';
 import { ChainApi } from './apis/ChainApi';
 import { ContractApi } from './apis/ContractApi';
+import { ChangeChainNetwork, ConnectMetamask } from './MetamaskContract';
 
 function Home() {
   return (
     <div>
+      <ConnectMetamask/>
+      <ChangeChainNetwork/>
+
+      <hr></hr>
+
       <p>home</p>
       <div>
         <h2> GET CONTRACT API TEST </h2>
