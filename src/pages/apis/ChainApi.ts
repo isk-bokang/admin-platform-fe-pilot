@@ -4,8 +4,8 @@ import axios from "axios";
 const targURL = "http://localhost:8090/chains"
 
 export class GetChainDto {
-    readonly chainSeq: string;
-    readonly chainName: string;
+    readonly seq: string;
+    readonly name: string;
     readonly chainId: string;
     readonly rpcUrl: string;
 
@@ -15,8 +15,8 @@ export class GetChainDto {
         chainId: string,
         rpcUrl: string
     ) {
-        this.chainSeq = chainSeq
-        this.chainName = chainName
+        this.seq = chainSeq
+        this.name = chainName
         this.chainId = chainId
         this.rpcUrl = rpcUrl
     }

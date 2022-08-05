@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 import { ChainApi } from "./apis/ChainApi"
 import { Abi, ContractApi } from "./apis/ContractApi"
-import { ContractDeployApi } from "./apis/ContractDeployApi"
+import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { GetServiceDto, ServiceApi } from "./apis/ServiceApi"
 import { ChainByPropDiv, ListViewChain } from "./Chains"
 import { ContractByPropDiv, ListViewContract } from "./Contracts"
@@ -51,8 +51,8 @@ export function ContractDeployDiv() {
     }
 
     function onClickDeployHandle() {
-        ContractDeployApi.deployContract({
-            serviceId: serviceId,
+        DeployedContractApi.postDeployContract({
+            appId: serviceId,
             contractId: contractId,
             chainSeq: chainId,
             deployParams: paramList
@@ -237,8 +237,8 @@ export function SelectChain(prop: selectProp) {
                 setChainList(
                     res.data.map((item) => {
                         return {
-                            id: item.chainSeq,
-                            name: item.chainName,
+                            id: item.seq,
+                            name: item.name,
                             chainId: item.chainId,
                             rpcUrl: item.rpcUrl
                         }

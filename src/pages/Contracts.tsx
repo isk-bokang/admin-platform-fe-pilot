@@ -1,18 +1,19 @@
 import { RouteName } from "../constants"
-import { Button, Form, Input, Select, Upload, UploadFile } from "antd"
+import { Button, Form, Input, Select, Upload, UploadFile, Typography, Collapse } from "antd"
 import { RuleObject } from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
 import { Option } from "antd/lib/mentions"
 import React, { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { GetChainDto } from "./apis/ChainApi"
-import { ContractApi, GetContractDto, PostContractDto } from "./apis/ContractApi"
-import { ContractDeployApi } from "./apis/ContractDeployApi"
+import { Abi, ContractApi, GetContractDto, PostContractDto } from "./apis/ContractApi"
+import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { GetServiceDto } from "./apis/ServiceApi"
 import { InputTargDiv, InputType, inputTypes, JsonChooseDiv, readJsonFileByUrl } from "./utils/InputDiv"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
 import { UploadOutlined } from "@ant-design/icons"
 import { json } from "stream/consumers"
+const { Paragraph, Text } = Typography;
 
 function Contracts() {
     return (
@@ -32,14 +33,14 @@ export function DeployedContractListDiv() {
     const [deployedContractList, setDeployedContractList] = useState<DeployedContracts[]>([])
 
     useEffect(() => {
-        ContractDeployApi.getDeployedContracts()
+        DeployedContractApi.getDeployedContracts()
             .then(res => {
                 setDeployedContractList(
                     res.data.map(item => {
                         return {
                             id: item.id,
                             contractName: item.contract.name,
-                            serviceName: item.service.name,
+                            serviceName: item.gameApp.name,
                             chainId: item.chain.chainId,
                             address: item.address
                         }
@@ -90,17 +91,34 @@ export function ContractListDiv() {
 
 export function RegisterContractDiv() {
     const [registerDto, setRegisterDto] = useState<PostContractDto>(new PostContractDto())
+    const [contractTypes, setContractTypes] = useState<string[]>([])
     const [form] = Form.useForm()
     let isRemoved : boolean = false;
+    useEffect(()=>{
+        ContractApi.getContractTypes().then(res=>{
+            setContractTypes(res.data)
+        })
+    } )
     
     function onChangeHandle() {
-        console.log(form.getFieldValue("bytecode"))
-        setRegisterDto({
-            name: form.getFieldValue("name"),
-            bytecode: form.getFieldValue("bytecode"),
-            contractType: form.getFieldValue("contractType"),
-            abi: form.getFieldValue('abi')
-        })
+        var retAbi
+        try{
+            retAbi = JSON.parse( form.getFieldValue('abi'))
+            setRegisterDto({
+                name: form.getFieldValue("name"),
+                bytecode: form.getFieldValue("bytecode"),
+                contractType: form.getFieldValue("contractType"),
+                abi:  retAbi
+            })
+        }catch{
+            setRegisterDto({
+                name: form.getFieldValue("name"),
+                bytecode: form.getFieldValue("bytecode"),
+                contractType: form.getFieldValue("contractType"),
+                abi:  []
+            })
+        }
+        
     }
 
     function onClickHandle() {
@@ -128,6 +146,10 @@ export function RegisterContractDiv() {
                     else{
                         form.setFieldsValue({bytecode : ''})
                     }
+                    if(res['abi'] == null && res['bytecode'] == null){
+                        alert("INVALID FORMAT \n NEED CHCECK")
+                    }
+                
                     onChangeHandle()
                 })
 
@@ -154,12 +176,9 @@ export function RegisterContractDiv() {
         }
         return true
     }
-
-    
-
     return (
         <div>
-            <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
+            {contractTypes.length > 0 && <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
                 <Form.Item label="Name" name='name'
                     rules={[{ required: true, message: 'Require Name' }]}>
                     <Input></Input>
@@ -167,8 +186,13 @@ export function RegisterContractDiv() {
                 <Form.Item label="Contract Type" name='contractType'
                     rules={[{ required: true, message: 'Require Contract Type' }]} >
                     <Select>
-                        <Select.Option value='ERC20'> ERC 20 </Select.Option>
-                        <Select.Option value='ERC1155'> ERC 1155 </Select.Option>
+                        {
+                            contractTypes.map((item, idx) =>{
+                                return(
+                                    <Select.Option value = {item} key={idx}> {item} </Select.Option>
+                                )
+                            })
+                        }
                     </Select>
                 </Form.Item>
                 <Form.Item label="ABI" name='abi'
@@ -191,7 +215,7 @@ export function RegisterContractDiv() {
                 </Upload>
 
                 <Button htmlType="submit" > REGISTER </Button>
-            </Form>
+            </Form>}
         </div>
     )
 }
@@ -199,20 +223,20 @@ export function RegisterContractDiv() {
 
 export function ContractByPropDiv(prop: { contractId: string, needDownload ?: boolean }) {
 
-    const [contract, setContract] = useState<any>()
+    const [contract, setContract] = useState<GetContractDto>()
 
     useEffect(() => {
         if (prop.contractId != null) {
             ContractApi.getContract(prop.contractId)
                 .then(res => {
-                    setContract({
-                        id: res.data.id,
-                        name: res.data.name,
-                        contractType: res.data.contractType,
-                        bytecode: res.data.bytecode,
-                        abi: res.data.abi
+                    setContract(new GetContractDto(
+                        res.data.id,
+                        res.data.name,
+                        res.data.contractType,
+                        JSON.stringify(res.data.abi),
+                        res.data.bytecode,
+                        ))
                     })
-                })
         }
     }, [prop.contractId])
 
@@ -224,11 +248,43 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload ?: bo
         </div>)
 }
 
+function MethodListDiv(prop: { contractId: string }) {
+    const [methodList, setMethodList] = useState<Abi[]>([])
+    useEffect(() => {
+        ContractApi.getContractMethods(prop.contractId).then((res) => setMethodList(res.data))
+    }, [prop])
+
+
+    return (
+        <>
+        {
+            methodList.length > 0 &&
+                <Collapse style={{whiteSpace : 'pre'}}>
+                {
+                    methodList.map((item, idx) =>{
+                        return ( 
+                        <Collapse.Panel header = {item.type.toLowerCase() == 'constructor' ? item.type.toUpperCase() : item.name} key= {idx}> 
+                                {JSON.stringify(item, null, 2)}
+                        </Collapse.Panel> 
+                        )
+                    })
+                }
+                </Collapse>
+        }
+        </>
+    )
+
+}
+
 export function ContractDetailDiv() {
     const { contractId } = useParams()
     return (
         <>
+            
             {contractId && <ContractByPropDiv contractId={contractId} needDownload = {true} />}
+            <hr/>
+            <h4>METHODS</h4>
+            {contractId && <MethodListDiv contractId={contractId}/>}
         </>
     )
 }
@@ -246,10 +302,10 @@ export function DeployedContractByPropDiv(prop: { deployedId: string }) {
     const [contractInfo, setContractInfo] = useState<GetContractDto>()
     useEffect(() => {
         if (prop.deployedId != null) {
-            ContractDeployApi.getDeployedCotract(prop.deployedId)
+            DeployedContractApi.getDeployedCotract(prop.deployedId)
                 .then(res => {
                     setChainInfo(res.data.chain)
-                    setServiceInfo(res.data.service)
+                    setServiceInfo(res.data.gameApp)
                     setContractInfo(res.data.contract)
                     setDeployedContract(
                         {

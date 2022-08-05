@@ -3,7 +3,7 @@ import { Button, Form, Input } from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ChainApi, PostChainDto } from "./apis/ChainApi"
-import { ContractDeployApi } from "./apis/ContractDeployApi"
+import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { DeployedContracts } from "./Contracts"
 import { NodeListDiv } from "./Nodes"
 import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
@@ -29,8 +29,8 @@ export function ChainListDiv() {
                 setChainList(
                     res.data.map((item) => {
                         return {
-                            id: item.chainSeq,
-                            name: item.chainName,
+                            id: item.seq,
+                            name: item.name,
                             chainId: item.chainId,
                             rpcUrl: item.rpcUrl
                         }
@@ -58,14 +58,14 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
             ChainApi.getChain(prop.chainSeq)
                 .then(res => {
                     setChain({
-                        id: res.data.chainSeq,
+                        id: res.data.seq,
                         chainId: res.data.chainId,
-                        name: res.data.chainName,
+                        name: res.data.name,
                         rpcUrl: res.data.rpcUrl,
                     })
                 })
 
-                ContractDeployApi.getDeployedContracts({chainId : prop.chainSeq})
+                DeployedContractApi.getDeployedContracts({chainSeq : prop.chainSeq})
                 .then(res => {
                     console.log(res.data)
                     setDeployedContractList(
@@ -73,7 +73,7 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                             return {
                                 id: item.id,
                                 contractName: item.contract.name,
-                                serviceName: item.service.name,
+                                serviceName: item.gameApp.name,
                                 chainId: item.chain.chainId,
                                 address: item.address
                             }
