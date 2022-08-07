@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './styles/App.css';
 import { Layout } from 'antd';
 import Sidebar from './layouts/Sidebar';
@@ -33,6 +33,11 @@ function getRoutePage(routePage: RoutePage, path: string = '/') {
 routePages.forEach(routePage => getRoutePage(routePage));
 
 function App() {
+  useEffect(()=>{
+    window.process = {
+      ...window.process,
+    };
+  }, [])
   return (
     <Layout
       hasSider={true}

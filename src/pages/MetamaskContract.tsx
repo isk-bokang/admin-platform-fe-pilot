@@ -27,7 +27,7 @@ export function ChangeChainNetwork() {
     function onChangeHandle(chainIdx: number) {
         setChainParam({
             chainId: toHex(chainList[chainIdx].chainId),
-            chainName: chainList[chainIdx].chainName,
+            chainName: chainList[chainIdx].name,
             rpcUrls: [chainList[chainIdx].rpcUrl],
         }
         )
@@ -49,7 +49,7 @@ export function ChangeChainNetwork() {
             <Select onChange={onChangeHandle}>
                 {chainList.length > 0 &&
                     chainList.map((item, idx) => {
-                        return (<Select.Option value={idx} key={idx}>{item.chainName}</Select.Option>)
+                        return (<Select.Option value={idx} key={idx}>{item.name}</Select.Option>)
                     })
                 }
             </Select>

@@ -5,6 +5,8 @@ import {BrowserRouter} from "react-router-dom";
 import 'antd/dist/antd.css';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+
+
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
