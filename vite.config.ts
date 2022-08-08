@@ -4,7 +4,7 @@ import lessToJS from 'less-vars-to-js';
 import * as fs from 'fs';
 import * as path from 'path';
 import { MetaMaskInpageProvider } from '@metamask/providers';
-
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill'
 const themeVariables = lessToJS(
   fs.readFileSync(path.resolve(__dirname, './src/config/variables.less'), 'utf8')
 );
@@ -25,6 +25,20 @@ export default defineConfig({
   },
   define: {
     'process.env': {}
-  }
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+        // Node.js global to browser globalThis
+        define: {
+            global: 'globalThis'
+        },
+        // Enable esbuild polyfill plugins
+        plugins: [
+            NodeGlobalsPolyfillPlugin({
+                buffer: true
+            })
+        ]
+    }
+}
   
 })

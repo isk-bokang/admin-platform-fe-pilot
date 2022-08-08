@@ -5,13 +5,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "preinstall": "npx npm-force-resolutions"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@ant-design/colors": "^6.0.0",
     "@ant-design/icons": "^4.7.0",
     "@emotion/styled": "^11.9.3",
+    "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
     "@metamask/providers": "^9.1.0",
     "@mui/icons-material": "^5.8.3",
     "@types/axios": "^0.14.0",

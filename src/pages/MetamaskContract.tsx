@@ -6,11 +6,12 @@ import { AddEthereumChainParameter, addNetwork, connectMetamask, switchNetwork }
 import { toHex } from "web3-utils"
 
 
-
 export function ConnectMetamask() {
 
     return (
+        <div>
         <Button type='primary' onClick={() => connectMetamask()}> CONNECT METAMASK </Button>
+        </div>
     )
 }
 
@@ -29,15 +30,15 @@ export function ChangeChainNetwork() {
             chainId: toHex(chainList[chainIdx].chainId),
             chainName: chainList[chainIdx].name,
             rpcUrls: [chainList[chainIdx].rpcUrl],
-        }
-        )
+        })
         setIsDisable(false)
     }
 
     function onClickHandle() {
         if (chainParam) {
             addNetwork(chainParam)
-            switchNetwork(chainParam.chainId)
+            .then(()=>switchNetwork(chainParam.chainId))
+            
         }
         else{
             alert("Select Chain First")
@@ -46,7 +47,7 @@ export function ChangeChainNetwork() {
 
     return (
         <>
-            <Select onChange={onChangeHandle}>
+            <Select onChange={onChangeHandle} style={{width : 150}}>
                 {chainList.length > 0 &&
                     chainList.map((item, idx) => {
                         return (<Select.Option value={idx} key={idx}>{item.name}</Select.Option>)
@@ -54,6 +55,8 @@ export function ChangeChainNetwork() {
                 }
             </Select>
             <Button disabled={isDisable} onClick={onClickHandle}> SWITCH Network </Button>
+            <p>ADDRESS : {window.ethereum?.selectedAddress ? window.ethereum?.selectedAddress : '-'}</p>
+            {chainList.length > 0 &&<p>NETWORK : {chainList.filter((val)=> val.chainId == window.ethereum?.chainId)[0] ? chainList.filter((val)=> val.chainId == window.ethereum?.chainId)[0].name : '-'}</p>}
         </>
     )
 

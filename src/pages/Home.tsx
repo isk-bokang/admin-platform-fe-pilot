@@ -2,7 +2,9 @@ import { Button } from 'antd';
 import React from 'react';
 import { ChainApi } from './apis/ChainApi';
 import { ContractApi } from './apis/ContractApi';
+import { DeployedContractApi } from './apis/DeployedContractApi';
 import { ChangeChainNetwork, ConnectMetamask } from './MetamaskContract';
+
 
 function Home() {
   return (

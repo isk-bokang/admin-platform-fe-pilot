@@ -1,4 +1,5 @@
 import { MetaMaskInpageProvider } from "@metamask/providers"
+import { resolve } from "path";
 
 (window as any).global = window;
 declare global {
@@ -27,29 +28,35 @@ export function connectMetamask() {
     }
 }
 
-export function addNetwork(networkInfo: AddEthereumChainParameter) {
-    console.log(networkInfo)
+export async function  addNetwork(networkInfo: AddEthereumChainParameter) {
+    return new Promise<void>((resolve, reject)=>{
     window.ethereum?.request({
       method: "wallet_addEthereumChain",
       params: [networkInfo]
     }).then(() => {
-        alert("Successfully Added")
-    }).catch(() => {
-        alert(" ERROR OCCURED ")
+        resolve()
+    }).catch((e) => {
+        alert(" wallet_addEthereumChain ERROR OCCURED ")
+        reject(e)
         window.location.reload()
+    })
     })
   }
   
-  export function switchNetwork(chainId: string) {
+  export async function switchNetwork(chainId: string) {
+    return new Promise<void>((resolve, reject)=>{
     window.ethereum?.request({
       method: "wallet_switchEthereumChain",
       params: [{ 'chainId': chainId }]
     }).then(() => {
         alert("Successfully Switched")
-    }).catch(() => {
+        resolve()
+    }).catch((e) => {
         alert(" ERROR OCCURED ")
         window.location.reload()
+        reject(e)
     })
+})
   }
   
 
