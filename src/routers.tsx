@@ -6,8 +6,9 @@ import { RouteName } from './constants';
 import Home from './pages/Home';
 import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/Contracts';
 import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/Chains';
-import Deploy from './pages/Deploy';
+import DeployByBackEnd from './pages/DeployByBackEnd';
 import Nodes, { NodeDetailDiv, RegisterNodeDiv } from './pages/Nodes';
+import { DeployByFrontEnd } from './pages/DeployByMetamaks';
 
 export const routePages: RoutePage[] = [
   {
@@ -82,7 +83,11 @@ export const routePages: RoutePage[] = [
 
   {
     key: RouteName.DEPLOY_CONTRACT,
-    page: <Deploy />,
+    page: <DeployByBackEnd />,
+  },
+  {
+    key: RouteName.DEPLOY_BY_FRONTEND,
+    page: <DeployByFrontEnd />,
   },
 ];
 
@@ -116,6 +121,10 @@ export const sidebarRouters: SidebarRoute[] = [
   {
     key: RouteName.DEPLOY_CONTRACT,
     label: "DEPLOY"
-  }
+  },
+  {
+    key: RouteName.DEPLOY_BY_FRONTEND,
+    label: "DEPLOY-BY-FRONTEND"
+  },
 
 ];

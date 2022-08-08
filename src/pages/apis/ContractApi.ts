@@ -13,14 +13,14 @@ export class GetContractDto {
     readonly id: string;
     readonly name: string;
     readonly contractType: string;
-    readonly abi: string;
+    readonly abi: Map<string, any>[] = [];
     readonly bytecode: string;
 
     constructor(
         id: string,
         name: string,
         contractType: string,
-        abi: string,
+        abi: Map<string, any>[] = [],
         bytecode: string,
     ) {
         this.id = id

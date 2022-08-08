@@ -8,6 +8,10 @@ declare global {
     }
 }
 
+export function signTransaction(){
+    
+}
+
 export function connectMetamask() {
     if (window.ethereum) {
         if (window.ethereum.selectedAddress) {

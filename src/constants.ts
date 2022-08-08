@@ -24,4 +24,5 @@ export enum RouteName {
   NODE_REGISTER = 'register',
 
   DEPLOY_CONTRACT = 'deploy',
+  DEPLOY_BY_FRONTEND = 'feDeploy',
 };

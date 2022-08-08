@@ -11,13 +11,13 @@ import { ContractByPropDiv, ListViewContract } from "./Contracts"
 import { RadioTargListDiv } from "./utils/InputDiv"
 import { DetailView, TargView } from "./utils/OutputDiv"
 
-function Deploy() {
+function DeployByBackEnd() {
     return (
         <div> <ContractDeployDiv /> </div>
     )
 }
 
-enum STEPS {
+export enum STEPS {
     SELECT_TARGETS,
     SET_CONSTRUCTOR_PARAMS,
     DEPLOY
@@ -90,13 +90,13 @@ export function ContractDeployDiv() {
 
 
 type GetConstructorParamsProp = { contractId: string, params: string[] }
-function GetConstructorParams(prop: GetConstructorParamsProp) {
+export function GetConstructorParams(prop: GetConstructorParamsProp) {
     const [constructorAbi, setConstructorAbi] = useState<Abi>()
     useEffect(() => {
         ContractApi.getContract(prop.contractId)
             .then(res => {
                 try {
-                    const abi = JSON.parse(res.data.abi)
+                    const abi = JSON.parse(JSON.stringify(res.data.abi))
                     setConstructorAbi(abi.filter((item: Abi) => {
                         return item.type === "constructor"
                     })[0])
@@ -136,7 +136,7 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
             .then(res => {
                 setTokenType(res.data.contractType)
                 try {
-                    const abi = JSON.parse(res.data.abi)
+                    const abi = JSON.parse(JSON.stringify(res.data.abi))
                     setConstructorAbi(abi.filter((item: Abi) => {
                         return item.type === "constructor"
                     })[0])
@@ -164,6 +164,7 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
         }
         prop.paramSetter(prop.params)
     }
+    
     return (
         <>
 
@@ -220,7 +221,7 @@ export function SelectContract(prop: selectProp) {
                     })
                 )
             })
-    }, [])
+    }, [prop.idSetter])
 
     return (
         <div>
@@ -245,7 +246,7 @@ export function SelectChain(prop: selectProp) {
                     })
                 )
             })
-    }, [prop])
+    }, [prop.idSetter])
     return (
         <div>
             {chainList.length !== 0 && <RadioTargListDiv targList={chainList} setTarg={prop.idSetter} defaultId={prop.defaultId ? prop.defaultId : undefined}/>}
@@ -267,7 +268,7 @@ export function SelectService(prop: selectProp) {
                     })
                 )
             })
-    }, [])
+    }, [prop.idSetter])
 
     return (
         <div>
@@ -298,7 +299,7 @@ export function ServiceByPropDiv(prop: { serviceId: string }) {
 }
 
 
-export default Deploy
+export default DeployByBackEnd
 
 
 
