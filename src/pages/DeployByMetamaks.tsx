@@ -12,8 +12,7 @@ import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { AbiItem } from "web3-utils"
 import { toBN } from "web3-utils"
 
-export let web3: Web3
-
+export let web3: Web3 = new Web3(Web3.givenProvider)
 export function DeployByFrontEnd() {
     const [contractId, setContractId] = useState<string>('')
     const [serviceId, setServiceId] = useState<string>('')
@@ -41,29 +40,27 @@ export function DeployByFrontEnd() {
     }
 
     function onClickDeployHandle() {
-        const web3 = new Web3(Web3.givenProvider)
+        
         ContractApi.getContract(contractId)
             .then(res => {
                 const abi = JSON.parse(JSON.stringify(res.data.abi))
                 const contract = new web3.eth.Contract(abi as AbiItem);
                 contract.deploy({ data: res.data.bytecode, arguments: paramList }).send({
                     from: window.ethereum?.selectedAddress!!,
-                    gasPrice: "750000000000",
-                    gas: 32000
+                    gasPrice: "250000000000"
                 }).on("receipt", (receipt) => {
                     console.log(receipt)
                     DeployedContractApi.postRegisterDeployedContract({
                         appId: serviceId,
                         chainSeq: chainSeq,
                         contractAddress: receipt.contractAddress!!,
-                        contractId: contractId
+                        contractId: contractId,
+                        deployerAddress : window.ethereum?.selectedAddress!!,
+                        contractName : "METAMASK"
                     })
                 }).on("error", err => {
                     console.error(err)
                 })
-
-
-
             })
 
 

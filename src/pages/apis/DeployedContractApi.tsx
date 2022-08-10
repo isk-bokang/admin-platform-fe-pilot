@@ -52,17 +52,22 @@ class RegisterRequestDto {
     readonly contractId: string
     readonly chainSeq: string
     readonly contractAddress: string
-
+    readonly deployerAddress: string
+    readonly contractName: string
     constructor(
         appId: string,
         contractId: string,
         chainSeq: string,
-        contractAddress: string
+        contractAddress: string,
+        deployerAddress: string,
+        contractName : string
     ) {
         this.appId = appId;
         this.contractId = contractId
         this.chainSeq = chainSeq
         this.contractAddress = contractAddress
+        this.deployerAddress = deployerAddress
+        this.contractName = contractName
     }
 }
 

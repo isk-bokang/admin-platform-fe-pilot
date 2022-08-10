@@ -1,15 +1,37 @@
 import { Button } from 'antd';
 import React from 'react';
+import { useEffect } from 'react';
+import { AbiItem } from 'web3-utils';
 import { ChainApi } from './apis/ChainApi';
 import { ContractApi } from './apis/ContractApi';
 import { DeployedContractApi } from './apis/DeployedContractApi';
+import { web3 } from './DeployByMetamaks';
 import { MetamaskView } from './MetamaskContract';
+import { signTransaction } from './utils/metamask';
 
 
 function Home() {
+
+  function onClickHandle(){
+    ContractApi.getContract('1').then(async res =>{
+      const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(res.data.abi)) as AbiItem[], 
+      "0x18152aDed3f8eD8c4827E527fe0fda1a50eA04AF")
+
+      console.log(contract.methods.setApprovalForAll( '0xe32e7D57b63Ce2E0CB2bFB1A4f1A610094EcfE64', 1))
+      await signTransaction("0x18152aDed3f8eD8c4827E527fe0fda1a50eA04AF",
+       contract.methods.setApprovalForAll( '0xe32e7D57b63Ce2E0CB2bFB1A4f1A610094EcfE64', 1))
+      .then(console.log)
+    })
+  }
+
   return (
     <div>
-      <MetamaskView/>
+
+      <Button onClick={onClickHandle}> SIGN TX </Button>
+
+      <hr></hr>
+
+      <MetamaskView />
 
       <hr></hr>
 
@@ -36,9 +58,9 @@ function Home() {
       <br></br>
       <div>
         <h2> GET DEPLOYED CONTRACT API TEST</h2>
-        <Button onClick={()=>DeployedContractApi.getDeployedContracts().then(res=>console.log(res.data))}> GET DEPLOYED CONTRACTS </Button>
-        <Button onClick={()=>DeployedContractApi.getDeployedContracts({chainSeq : '1'}).then(res=>console.log(res.data))}> GET DEPLOYED CONTRACTS by Chain SEQ - '1' </Button>
-        <Button onClick={()=>DeployedContractApi.getDeployedCotract('2').then(res=>console.log(res.data))}> GET DEPLOYED CONTRACT by ID - '2' </Button>
+        <Button onClick={() => DeployedContractApi.getDeployedContracts().then(res => console.log(res.data))}> GET DEPLOYED CONTRACTS </Button>
+        <Button onClick={() => DeployedContractApi.getDeployedContracts({ chainSeq: '1' }).then(res => console.log(res.data))}> GET DEPLOYED CONTRACTS by Chain SEQ - '1' </Button>
+        <Button onClick={() => DeployedContractApi.getDeployedCotract('2').then(res => console.log(res.data))}> GET DEPLOYED CONTRACT by ID - '2' </Button>
       </div>
     </div>
   )

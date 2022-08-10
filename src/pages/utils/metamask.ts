@@ -1,5 +1,9 @@
 import { MetaMaskInpageProvider } from "@metamask/providers"
 import { resolve } from "path";
+import { ContractSendMethod } from "web3-eth-contract"
+import { Contract } from "web3-eth-contract"
+import { web3 } from "../DeployByMetamaks";
+
 
 (window as any).global = window;
 declare global {
@@ -8,8 +12,24 @@ declare global {
     }
 }
 
-export function signTransaction(){
+export async function signTransaction(
+    contractAddress: string, 
+    method: ContractSendMethod) {
     
+    return new Promise((resolve, reject) => {
+        const abi = method.encodeABI()
+        console.log(abi)
+        web3.eth.accounts.signTransaction({
+            from: window.ethereum?.selectedAddress,
+            to : contractAddress,
+            gasPrice : "750000000000",
+            gas : 21560,
+            data : abi
+        }).then(ret=>{
+            console.log('ret : ', ret)
+            resolve(ret.raw as string)
+        })
+    })
 }
 
 export function connectMetamask() {
@@ -32,37 +52,37 @@ export function connectMetamask() {
     }
 }
 
-export async function  addNetwork(networkInfo: AddEthereumChainParameter) {
-    return new Promise<void>((resolve, reject)=>{
-    window.ethereum?.request({
-      method: "wallet_addEthereumChain",
-      params: [networkInfo]
-    }).then(() => {
-        resolve()
-    }).catch((e) => {
-        alert(" wallet_addEthereumChain ERROR OCCURED ")
-        reject(e)
-        window.location.reload()
+export async function addNetwork(networkInfo: AddEthereumChainParameter) {
+    return new Promise<void>((resolve, reject) => {
+        window.ethereum?.request({
+            method: "wallet_addEthereumChain",
+            params: [networkInfo]
+        }).then(() => {
+            resolve()
+        }).catch((e) => {
+            alert(" wallet_addEthereumChain ERROR OCCURED ")
+            reject(e)
+            window.location.reload()
+        })
     })
+}
+
+export async function switchNetwork(chainId: string) {
+    return new Promise<void>((resolve, reject) => {
+        window.ethereum?.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ 'chainId': chainId }]
+        }).then(() => {
+            alert("Successfully Switched")
+            resolve()
+        }).catch((e) => {
+            alert(" ERROR OCCURED ")
+            window.location.reload()
+            reject(e)
+        })
     })
-  }
-  
-  export async function switchNetwork(chainId: string) {
-    return new Promise<void>((resolve, reject)=>{
-    window.ethereum?.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ 'chainId': chainId }]
-    }).then(() => {
-        alert("Successfully Switched")
-        resolve()
-    }).catch((e) => {
-        alert(" ERROR OCCURED ")
-        window.location.reload()
-        reject(e)
-    })
-})
-  }
-  
+}
+
 
 export interface AddEthereumChainParameter {
     chainId: string,
