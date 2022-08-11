@@ -1,5 +1,6 @@
 import { MetaMaskInpageProvider } from "@metamask/providers"
 import { resolve } from "path";
+import { TransactionReceipt } from "web3-eth";
 import { ContractSendMethod } from "web3-eth-contract"
 import { Contract } from "web3-eth-contract"
 import { web3 } from "../DeployByMetamaks";
@@ -31,6 +32,19 @@ export async function signTransaction(
         })
     })
 }
+
+export async function sendTransaction(method: ContractSendMethod, fromAddress: string ) : Promise<TransactionReceipt> {
+    return new Promise( (resolve, reject) =>{
+        method.send({ from: fromAddress, gasPrice : "250000000000" })
+        .on("receipt", (receipt: TransactionReceipt) => {
+            resolve(receipt);
+        })
+        .on("error", (error: Error) => {
+            reject(error)
+        })
+    } )
+}
+
 
 export function connectMetamask() {
     if (window.ethereum) {

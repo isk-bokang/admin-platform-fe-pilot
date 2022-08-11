@@ -1,5 +1,5 @@
-import { Button } from 'antd';
-import React from 'react';
+import { Button, Spin } from 'antd';
+import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { AbiItem } from 'web3-utils';
 import { ChainApi } from './apis/ChainApi';
@@ -7,27 +7,32 @@ import { ContractApi } from './apis/ContractApi';
 import { DeployedContractApi } from './apis/DeployedContractApi';
 import { web3 } from './DeployByMetamaks';
 import { MetamaskView } from './MetamaskContract';
-import { signTransaction } from './utils/metamask';
+import { sendTransaction, signTransaction } from './utils/metamask';
 
 
 function Home() {
-
-  function onClickHandle(){
-    ContractApi.getContract('1').then(async res =>{
-      const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(res.data.abi)) as AbiItem[], 
-      "0x18152aDed3f8eD8c4827E527fe0fda1a50eA04AF")
-
-      console.log(contract.methods.setApprovalForAll( '0xe32e7D57b63Ce2E0CB2bFB1A4f1A610094EcfE64', 1))
-      await signTransaction("0x18152aDed3f8eD8c4827E527fe0fda1a50eA04AF",
-       contract.methods.setApprovalForAll( '0xe32e7D57b63Ce2E0CB2bFB1A4f1A610094EcfE64', 1))
-      .then(console.log)
+  
+  const [loading, setLoading] = useState<boolean>(false)
+  function onClickHandle() {
+    setLoading(true)
+    ContractApi.getContract('1').then(async res => {
+      if (window.ethereum?.selectedAddress) {
+        const contract = new web3.eth.Contract(JSON.parse(JSON.stringify(res.data.abi)) as AbiItem[], "0x18152aDed3f8eD8c4827E527fe0fda1a50eA04AF")
+        const method = contract.methods.setApprovalForAll('0xe32e7D57b63Ce2E0CB2bFB1A4f1A610094EcfE64', 1)
+        sendTransaction(method, window.ethereum?.selectedAddress)
+        .then((ret)=>{
+          console.log(ret)
+          setLoading(false)
+        })
+      }
     })
   }
 
   return (
     <div>
-
-      <Button onClick={onClickHandle}> SIGN TX </Button>
+      <Spin spinning = {loading}>
+        <Button onClick={onClickHandle}> SIGN TX </Button>
+      </Spin>
 
       <hr></hr>
 
