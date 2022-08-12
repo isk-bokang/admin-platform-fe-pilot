@@ -33,14 +33,30 @@ export async function signTransaction(
     })
 }
 
-export async function sendTransaction(method: ContractSendMethod, fromAddress: string ) : Promise<TransactionReceipt> {
+export async function sendTransaction(method: ContractSendMethod, fromAddress : string = window.ethereum?.selectedAddress!! ) : Promise<TransactionReceipt> {
     return new Promise( (resolve, reject) =>{
-        method.send({ from: fromAddress, gasPrice : "250000000000" })
+
+        method.send({ from: fromAddress , gasPrice : "250000000000" })
         .on("receipt", (receipt: TransactionReceipt) => {
             resolve(receipt);
         })
         .on("error", (error: Error) => {
+            console.error(error)
             reject(error)
+        })
+    } )
+}
+
+export async function callMethod(method: ContractSendMethod, fromAddress ?: string ) : Promise<any> {
+    return new Promise( (resolve, reject) =>{
+        method.call({ from: fromAddress })
+        .then( result=>{
+            console.log(result)
+            resolve(result)
+        })
+        .catch( err=>{
+            console.error(err)
+            reject(err)
         })
     } )
 }

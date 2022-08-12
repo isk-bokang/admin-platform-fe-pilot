@@ -11,7 +11,7 @@ export class DeployedContractsDto {
     readonly address: string
 
     readonly contract: GetContractDto
-    readonly gameApp: GetGameAppDto
+    readonly gameApp ?: GetGameAppDto
     readonly chain: GetChainDto
 
     constructor(
@@ -19,7 +19,7 @@ export class DeployedContractsDto {
         address: string,
         chain: GetChainDto,
         contract: GetContractDto,
-        service: any,
+        service : any = null,
     ) {
         this.id = id
         this.address = address

@@ -24,7 +24,7 @@ function Contracts() {
 export interface DeployedContracts {
     id: string
     contractName: string
-    serviceName: string
+    serviceName?: string
     chainId: string
     address: string
 }
@@ -35,12 +35,13 @@ export function DeployedContractListDiv() {
     useEffect(() => {
         DeployedContractApi.getDeployedContracts()
             .then(res => {
+                console.log(res.data)
                 setDeployedContractList(
                     res.data.map(item => {
                         return {
                             id: item.id,
                             contractName: item.contract.name,
-                            serviceName: item.gameApp.name,
+                            serviceName: item.gameApp ? item.gameApp.name : '',
                             chainId: item.chain.chainId,
                             address: item.address
                         }
@@ -93,32 +94,32 @@ export function RegisterContractDiv() {
     const [registerDto, setRegisterDto] = useState<PostContractDto>(new PostContractDto())
     const [contractTypes, setContractTypes] = useState<string[]>([])
     const [form] = Form.useForm()
-    let isRemoved : boolean = false;
-    useEffect(()=>{
-        ContractApi.getContractTypes().then(res=>{
+    let isRemoved: boolean = false;
+    useEffect(() => {
+        ContractApi.getContractTypes().then(res => {
             setContractTypes(res.data)
         })
-    } )
-    
+    })
+
     function onChangeHandle() {
         var retAbi
-        try{
-            retAbi = JSON.parse( form.getFieldValue('abi'))
+        try {
+            retAbi = JSON.parse(form.getFieldValue('abi'))
             setRegisterDto({
                 name: form.getFieldValue("name"),
                 bytecode: form.getFieldValue("bytecode"),
                 contractType: form.getFieldValue("contractType"),
-                abi:  retAbi
+                abi: retAbi
             })
-        }catch{
+        } catch {
             setRegisterDto({
                 name: form.getFieldValue("name"),
                 bytecode: form.getFieldValue("bytecode"),
                 contractType: form.getFieldValue("contractType"),
-                abi:  []
+                abi: []
             })
         }
-        
+
     }
 
     function onClickHandle() {
@@ -129,32 +130,32 @@ export function RegisterContractDiv() {
         )
     }
 
-    function onChangeHandleURL(targFile : UploadFile){
-        if (!isRemoved && targFile.originFileObj){
-            try{
+    function onChangeHandleURL(targFile: UploadFile) {
+        if (!isRemoved && targFile.originFileObj) {
+            try {
                 readJsonFileByUrl(targFile.originFileObj)
-                .then(res =>{
-                    if(res['abi'] ){
-                        form.setFieldsValue({abi : JSON.stringify(res['abi'])})
-                    }
-                    else{
-                        form.setFieldsValue({abi : ''})
-                    }
-                    if(res['bytecode']){
-                        form.setFieldsValue({bytecode : res['bytecode']})
-                    }
-                    else{
-                        form.setFieldsValue({bytecode : ''})
-                    }
-                    if(res['abi'] == null && res['bytecode'] == null){
-                        alert("INVALID FORMAT \n NEED CHCECK")
-                    }
-                
-                    onChangeHandle()
-                })
+                    .then(res => {
+                        if (res['abi']) {
+                            form.setFieldsValue({ abi: JSON.stringify(res['abi']) })
+                        }
+                        else {
+                            form.setFieldsValue({ abi: '' })
+                        }
+                        if (res['bytecode']) {
+                            form.setFieldsValue({ bytecode: res['bytecode'] })
+                        }
+                        else {
+                            form.setFieldsValue({ bytecode: '' })
+                        }
+                        if (res['abi'] == null && res['bytecode'] == null) {
+                            alert("INVALID FORMAT \n NEED CHCECK")
+                        }
+
+                        onChangeHandle()
+                    })
 
 
-            }catch{
+            } catch {
 
             }
         }
@@ -187,9 +188,9 @@ export function RegisterContractDiv() {
                     rules={[{ required: true, message: 'Require Contract Type' }]} >
                     <Select>
                         {
-                            contractTypes.map((item, idx) =>{
-                                return(
-                                    <Select.Option value = {item} key={idx}> {item} </Select.Option>
+                            contractTypes.map((item, idx) => {
+                                return (
+                                    <Select.Option value={item} key={idx}> {item} </Select.Option>
                                 )
                             })
                         }
@@ -220,23 +221,30 @@ export function RegisterContractDiv() {
     )
 }
 
+interface ContractDetail {
+    contractId: string,
+    name: string,
+    tokenType: string,
+    abi: string,
+    bytecode: string
+}
 
-export function ContractByPropDiv(prop: { contractId: string, needDownload ?: boolean }) {
+export function ContractByPropDiv(prop: { contractId: string, needDownload?: boolean }) {
 
-    const [contract, setContract] = useState<GetContractDto>()
+    const [contract, setContract] = useState<ContractDetail>()
 
     useEffect(() => {
         if (prop.contractId != null) {
             ContractApi.getContract(prop.contractId)
                 .then(res => {
-                    setContract(new GetContractDto(
-                        res.data.id,
-                        res.data.name,
-                        res.data.contractType,
-                        JSON.stringify(res.data.abi),
-                        res.data.bytecode,
-                        ))
+                    setContract({
+                        contractId: res.data.id,
+                        name: res.data.name,
+                        tokenType: res.data.contractType,
+                        abi: JSON.stringify(res.data.abi),
+                        bytecode: res.data.bytecode,
                     })
+                })
         }
     }, [prop.contractId])
 
@@ -244,7 +252,7 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload ?: bo
     return (
         <div id="contract">
             {contract && <DetailView targ={contract} title="CONTRACT" />}
-            {(contract && prop.needDownload) && <DownloadContract abi={contract.abi} bytecode={contract.bytecode} />}
+            {(contract && prop.needDownload) && <DownloadContract abi={JSON.stringify(contract.abi)} bytecode={contract.bytecode} />}
         </div>)
 }
 
@@ -257,20 +265,20 @@ function MethodListDiv(prop: { contractId: string }) {
 
     return (
         <>
-        {
-            methodList.length > 0 &&
-                <Collapse style={{whiteSpace : 'pre'}}>
-                {
-                    methodList.map((item, idx) =>{
-                        return ( 
-                        <Collapse.Panel header = {item.type.toLowerCase() == 'constructor' ? item.type.toUpperCase() : item.name} key= {idx}> 
-                                {JSON.stringify(item, null, 2)}
-                        </Collapse.Panel> 
-                        )
-                    })
-                }
+            {
+                methodList.length > 0 &&
+                <Collapse style={{ whiteSpace: 'pre' }}>
+                    {
+                        methodList.map((item, idx) => {
+                            return (
+                                <Collapse.Panel header={item.type.toLowerCase() == 'constructor' ? item.type.toUpperCase() : item.name} key={idx}>
+                                    {JSON.stringify(item, null, 2)}
+                                </Collapse.Panel>
+                            )
+                        })
+                    }
                 </Collapse>
-        }
+            }
         </>
     )
 
@@ -280,11 +288,11 @@ export function ContractDetailDiv() {
     const { contractId } = useParams()
     return (
         <>
-            
-            {contractId && <ContractByPropDiv contractId={contractId} needDownload = {true} />}
-            <hr/>
+
+            {contractId && <ContractByPropDiv contractId={contractId} needDownload={true} />}
+            <hr />
             <h4>METHODS</h4>
-            {contractId && <MethodListDiv contractId={contractId}/>}
+            {contractId && <MethodListDiv contractId={contractId} />}
         </>
     )
 }
