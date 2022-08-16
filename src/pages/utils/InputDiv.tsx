@@ -51,7 +51,7 @@ export function InputTargDiv(prop: targProps) {
 }
 
 
-type radioProp = { targList: any[], setTarg: Dispatch<SetStateAction<string>>, defaultId ?: string }
+type radioProp = { targList: any[], setTarg?: Dispatch<SetStateAction<string>>, defaultId ?: string, callBack ?: Function }
 
 export function RadioTargListDiv(prop: radioProp) {
     const [columns, setColumns] = useState<ColumnsType<any>>([])
@@ -83,8 +83,10 @@ export function RadioTargListDiv(prop: radioProp) {
         <Table columns={columns} dataSource={data} rowSelection={{
             type : "radio",
             onChange : (key, row)=>{
-                prop.setTarg(key.toString())
-                
+                if(prop.setTarg)
+                    prop.setTarg(key.toString())
+                if(prop.callBack)
+                    prop.callBack()
             },
             defaultSelectedRowKeys : prop.defaultId ? [parseInt(prop.defaultId)] : undefined,
             

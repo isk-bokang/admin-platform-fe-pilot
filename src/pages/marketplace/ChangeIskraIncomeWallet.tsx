@@ -8,7 +8,7 @@ import { web3 } from "../DeployByMetamaks"
 import { callMethod, sendTransaction } from "../utils/metamask"
 import { Contract } from "web3-eth-contract"
 import { TargListView } from "../utils/OutputDiv"
-
+import { RadioTargListDiv } from "../utils/InputDiv"
 
 export function ChangeIskraIncomeWalletDiv() {
     const [loading, setLoading] = useState<boolean>(false)
@@ -28,7 +28,7 @@ export function ChangeIskraIncomeWalletDiv() {
                 .then(res => {
                     setDeployedContracts(res.data)
                     if (res.data.length == 1) {
-                        prepareContract(res.data)
+                        prepareContract()
                     }
                     else {
 
@@ -37,11 +37,11 @@ export function ChangeIskraIncomeWalletDiv() {
         }
     }, [])
 
-    async function prepareContract(contractList: DeployedContractsDto[]) {
+    async function prepareContract() {
         let tmpContract: Contract;
-        let ret = await ContractApi.getContract(contractList[idx].contract.id)
+        let ret = await ContractApi.getContract(deployedContracts[idx].contract.id)
 
-        tmpContract = new web3.eth.Contract(JSON.parse(JSON.stringify(ret.data.abi)) as AbiItem[], contractList[idx].address)
+        tmpContract = new web3.eth.Contract(JSON.parse(JSON.stringify(ret.data.abi)) as AbiItem[], deployedContracts[idx].address)
 
         setContract(tmpContract)
 
@@ -78,7 +78,7 @@ export function ChangeIskraIncomeWalletDiv() {
             <h4> CHANGE MKP FEE RECIVER ACCOUNT  </h4>
 
             <Spin spinning={loading}>
-            {deployedContracts.length > 0 && <TargListView targList={deployedContracts.map(item => {
+            {deployedContracts.length > 0 && <RadioTargListDiv targList={deployedContracts.map(item => {
                 return {
                     id: item.id,
                     contractName: item.contract.name,
@@ -86,7 +86,7 @@ export function ChangeIskraIncomeWalletDiv() {
                     chainName: item.chain.name,
                     address: item.address
                 }
-            })} connectPath={RouteName.CONTRACTS + '/' +RouteName.DEPLOYED_CONTRACTS}/>}
+            })} callBack ={prepareContract}/>}
 
                 <Input type={'text'} placeholder="ADDRESS" onChange={e => { setAddress(e.target.value) }} title='ADDRESS' />
                 {<Button type='primary' onClick={onClickHandle} disabled={contract == null || ((window.ethereum?.selectedAddress) ? (owner.toLocaleUpperCase() !== window.ethereum?.selectedAddress.toLocaleUpperCase()) : true)}> CHANGE FEE RECIVER </Button>}
