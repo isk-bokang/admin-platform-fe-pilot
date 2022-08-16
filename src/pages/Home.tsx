@@ -1,3 +1,4 @@
+import { CONTRACT_TYPES } from '../constants';
 import { Button, Input, Spin } from 'antd';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
@@ -6,70 +7,10 @@ import { ChainApi } from './apis/ChainApi';
 import { ContractApi } from './apis/ContractApi';
 import { DeployedContractApi } from './apis/DeployedContractApi';
 import { web3 } from './DeployByMetamaks';
+import { ChangeIskraIncomeWalletDiv } from './marketplace/ChangeIskraIncomeWallet';
 import { MetamaskView } from './MetamaskContract';
 import { callMethod, sendTransaction, signTransaction } from './utils/metamask';
 
-function ChangeMKPFeeReciver() {
-  const [loading, setLoading] = useState<boolean>(false)
-  const [address, setAddress] = useState<string>('')
-  const [owner, setOwner] = useState<string>('')
-  const [contract, setContract] = useState<any>()
-  const [curReciver, setCurReciver] = useState<string>('')
-  useEffect(()=>{
-    DeployedContractApi.getDeployedCotract('1')
-    .then(deployedContract =>{
-      ContractApi.getContract(deployedContract.data.contract.id)
-      .then(ret=>{
-        const tmpContract = new web3.eth.Contract(JSON.parse(JSON.stringify(ret.data.abi)) as AbiItem, deployedContract.data.address)
-        setContract(tmpContract)
-
-        callMethod(tmpContract.methods.owner()).then(res=>{
-          setOwner(res)
-        })
-        callMethod(tmpContract.methods.iskraIncomeWallet()).then(res=>{
-          setCurReciver(res)
-        })
-
-      })
-    })
-
-
-  }, [])
-
-
-  function onClickHandle(){
-    setLoading(true)
-
-    sendTransaction(contract.methods.changeIskraIncomeWallet(address))
-    .then((res)=>{
-      console.log(res)
-      setLoading(false)
-      callMethod(contract.methods.iskraIncomeWallet()).then(res=>{
-        setCurReciver(res)
-      })
-      alert("DONE")
-    })
-    .catch((err)=>{
-      setLoading(false)
-      alert("ERROR OCCURED")
-    })
-    
-
-    
-  }
-
-  return (
-    <div>
-      <h4> CHANGE MKP FEE RECIVER ACCOUNT  </h4>
-      <Spin spinning={loading}>
-        <Input type={'text'} placeholder="ADDRESS" onChange={e => { setAddress(e.target.value) }} />
-        <Button type='primary' onClick={onClickHandle} disabled={(window.ethereum?.selectedAddress && contract) ? (owner.toLocaleUpperCase() !== window.ethereum?.selectedAddress.toLocaleUpperCase()) : true}> CHANGE FEE RECIVER </Button>
-        <p>owner : {owner && owner }</p>
-        <p>curent receiver : {curReciver && curReciver }</p>
-      </Spin>
-    </div>
-  )
-}
 
 function Home() {
 
@@ -92,7 +33,7 @@ function Home() {
 
   return (
     <div>
-      <ChangeMKPFeeReciver/>
+      <ChangeIskraIncomeWalletDiv/>
       <hr></hr>
 
       <Spin spinning={loading}>
@@ -105,34 +46,7 @@ function Home() {
 
       <hr></hr>
 
-      <p>home</p>
-      <div>
-        <h2> GET CONTRACT API TEST </h2>
-        <Button onClick={() => ContractApi.getContractList().then(res => console.log(res.data))}> GET CONTRACTS </Button>
-        <Button onClick={() => ContractApi.getContractList({ contractName: '1' }).then(res => console.log(res.data))}> GET CONTRACTS By Name - '1'</Button>
-        <Button onClick={() => ContractApi.getContractList({ contractType: 'ERC20' }).then(res => console.log(res.data))}> GET CONTRACTS By Type - 'ERC20'</Button>
-        <Button onClick={() => ContractApi.getContract('1').then(res => console.log(res.data))}> GET CONTRACT </Button>
-        <Button onClick={() => ContractApi.getContractTypes().then(res => console.log(res.data))}> GET CONTRACT TYPES </Button>
-        <Button onClick={() => ContractApi.getContractMethods('1').then(res => console.log(res.data))}> GET METHODS </Button>
-        <Button onClick={() => ContractApi.getContractMethods('1', { methodName: "constructor" }).then(res => console.log(res.data))}> GET METHODS - By Name 'Constructor' </Button>
       </div>
-      <br></br>
-      <div>
-        <h2> GET CHAIN API TEST </h2>
-        <Button onClick={() => ChainApi.getChainList().then(res => console.log(res.data))}> GET CHAINS </Button>
-        <Button onClick={() => ChainApi.getChain('1').then(res => console.log(res.data))}> GET CHAIN </Button>
-        <Button onClick={() => ChainApi.getSearchChains({ chainName: 'bao' }).then(res => console.log(res.data))}> GET SEARCH CHAIN by ChainName - 'bao' </Button>
-        <Button onClick={() => ChainApi.getSearchChains({ chainId: '1' }).then(res => console.log(res.data))}> GET SEARCH CHAIN by ChainId - '1' </Button>
-        <Button onClick={() => ChainApi.getChainTypes().then(res => console.log(res.data))}> GET CHAIN TYPES </Button>
-      </div>
-      <br></br>
-      <div>
-        <h2> GET DEPLOYED CONTRACT API TEST</h2>
-        <Button onClick={() => DeployedContractApi.getDeployedContracts().then(res => console.log(res.data))}> GET DEPLOYED CONTRACTS </Button>
-        <Button onClick={() => DeployedContractApi.getDeployedContracts({ chainSeq: '1' }).then(res => console.log(res.data))}> GET DEPLOYED CONTRACTS by Chain SEQ - '1' </Button>
-        <Button onClick={() => DeployedContractApi.getDeployedCotract('2').then(res => console.log(res.data))}> GET DEPLOYED CONTRACT by ID - '2' </Button>
-      </div>
-    </div>
   )
 }
 

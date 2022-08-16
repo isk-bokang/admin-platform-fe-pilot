@@ -110,7 +110,7 @@ function SelectChain(prop: { setChainSeq: Dispatch<SetStateAction<string>> }) {
 
     return (
         <div>
-            {chainList && <ChangeChainNetwork chainList={chainList} setChainSeq={prop.setChainSeq} />}
+            {chainList && <ChangeChainNetwork setChainSeq={prop.setChainSeq} />}
         </div>
     )
 }

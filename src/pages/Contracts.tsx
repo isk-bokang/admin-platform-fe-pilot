@@ -1,4 +1,4 @@
-import { RouteName } from "../constants"
+import { CONTRACT_TYPES, RouteName } from "../constants"
 import { Button, Form, Input, Select, Upload, UploadFile, Typography, Collapse } from "antd"
 import { RuleObject } from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
@@ -92,14 +92,8 @@ export function ContractListDiv() {
 
 export function RegisterContractDiv() {
     const [registerDto, setRegisterDto] = useState<PostContractDto>(new PostContractDto())
-    const [contractTypes, setContractTypes] = useState<string[]>([])
     const [form] = Form.useForm()
     let isRemoved: boolean = false;
-    useEffect(() => {
-        ContractApi.getContractTypes().then(res => {
-            setContractTypes(res.data)
-        })
-    })
 
     function onChangeHandle() {
         var retAbi
@@ -179,7 +173,7 @@ export function RegisterContractDiv() {
     }
     return (
         <div>
-            {contractTypes.length > 0 && <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
+            {CONTRACT_TYPES.length > 0 && <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
                 <Form.Item label="Name" name='name'
                     rules={[{ required: true, message: 'Require Name' }]}>
                     <Input></Input>
@@ -188,7 +182,7 @@ export function RegisterContractDiv() {
                     rules={[{ required: true, message: 'Require Contract Type' }]} >
                     <Select>
                         {
-                            contractTypes.map((item, idx) => {
+                            CONTRACT_TYPES.map((item, idx) => {
                                 return (
                                     <Select.Option value={item} key={idx}> {item} </Select.Option>
                                 )

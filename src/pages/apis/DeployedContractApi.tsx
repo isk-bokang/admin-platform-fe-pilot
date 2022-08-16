@@ -71,10 +71,16 @@ class RegisterRequestDto {
     }
 }
 
+type GetDeployedContractReq = {
+    chainSeq? : string,
+    chainId? : string,
+    appId? : string,
+    contractType? : string
+}
 
 export class DeployedContractApi {
 
-    static getDeployedContracts(param?: { chainSeq?: string, appId?: string }) {
+    static getDeployedContracts(param?: GetDeployedContractReq) {
         return axios.get<DeployedContractsDto[]>(`${targURL}`, { params: param })
     }
 

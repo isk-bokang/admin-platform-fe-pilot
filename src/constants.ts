@@ -1,3 +1,6 @@
+import { ChainApi, GetChainDto } from "./pages/apis/ChainApi";
+import { ContractApi } from "./pages/apis/ContractApi";
+
 export enum Color {
   MAIN_BACKGROUND = '#16172B',
   MAIN_BLACK = '#000000',
@@ -26,3 +29,9 @@ export enum RouteName {
   DEPLOY_CONTRACT = 'deploy',
   DEPLOY_BY_FRONTEND = 'feDeploy',
 };
+
+export let CHAINS : GetChainDto[];
+await ChainApi.getChainList().then(ret => CHAINS = ret.data)
+
+export let CONTRACT_TYPES : string[];
+await ContractApi.getContractTypes().then(ret=>CONTRACT_TYPES = ret.data)
