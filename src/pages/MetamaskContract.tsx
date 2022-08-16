@@ -13,6 +13,8 @@ export function MetamaskView() {
             setCurChainName(CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0] ?
                 CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0].name : '-')
         })
+        setCurChainName(CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0] ?
+                CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0].name : '-')
     },[window.ethereum?.chainId] )
 
     return (

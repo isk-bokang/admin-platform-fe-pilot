@@ -24,8 +24,9 @@ function Contracts() {
 export interface DeployedContracts {
     id: string
     contractName: string
+    contractType : string
     serviceName?: string
-    chainId: string
+    chainName: string
     address: string
 }
 
@@ -41,8 +42,9 @@ export function DeployedContractListDiv() {
                         return {
                             id: item.id,
                             contractName: item.contract.name,
-                            serviceName: item.gameApp ? item.gameApp.name : '',
-                            chainId: item.chain.chainId,
+                            contractType : item.contract.contractType,
+                            serviceName: item.gameApp ? item.gameApp.name : 'ISKRA',
+                            chainName: item.chain.name,
                             address: item.address
                         }
                     })

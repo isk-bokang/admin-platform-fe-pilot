@@ -1,6 +1,10 @@
 import { ChainApi, GetChainDto } from "./pages/apis/ChainApi";
 import { ContractApi } from "./pages/apis/ContractApi";
 
+export enum PlatformContractType{
+  ISKRA_MKP = 'ISKRA_MKP'
+}
+
 export enum Color {
   MAIN_BACKGROUND = '#16172B',
   MAIN_BLACK = '#000000',
