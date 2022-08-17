@@ -4,29 +4,29 @@ import React, {useRef, useState} from "react";
 import {Contract} from "web3-eth-contract";
 import {sendTransaction} from "../utils/metamask";
 
-export function ChangeGameOwnerDiv() {
+export function ChangeGameRsRateDiv() {
     const [contract, setContract] = useState<Contract>()
     const [gameAddress, setGameAddress] = useState<string>('')
-    const [newGameOwner, setNewGameOwner] = useState<string>('')
+    const [rsRate, setRsRate] = useState<string>('')
     const [isModalVisible, setIsModalVisible] = useState(false);
     const gameContractRef = useRef<InputRef>(null);
-    const newGameOwnerRef = useRef<InputRef>(null);
+    const rsRateRef = useRef<InputRef>(null);
 
     function InputDiv() {
         return (
             <>
                 <Input type={'text'} placeholder="GAME CONTRACT" title='GAME CONTRACT' ref={gameContractRef} defaultValue = {gameAddress}/>
-                <Input type={'text'} placeholder="NEW GAME OWNER" title='GAME CONTRACT' ref={newGameOwnerRef} defaultValue = {newGameOwner}/>
+                <Input type={'number'} placeholder="RS RATE" title='GAME CONTRACT' ref={rsRateRef} defaultValue = {rsRate}/>
             </>
         )
     }
 
     function sendTx(): Promise<any> {
         return new Promise((resolve, reject) => {
-            if (contract && newGameOwnerRef.current?.input?.value && gameContractRef.current?.input?.value) {
-                setNewGameOwner(newGameOwnerRef.current.input.value)
+            if (contract && rsRateRef.current?.input?.value && gameContractRef.current?.input?.value) {
+                setRsRate(rsRateRef.current.input.value)
                 setGameAddress(gameContractRef.current.input.value)
-                sendTransaction(contract.methods.changeGameOwner(gameContractRef.current.input.value, newGameOwnerRef.current.input.value) )
+                sendTransaction(contract.methods.changeGameRsRate(gameContractRef.current.input.value, rsRateRef.current.input.value) )
                     .then(() => {
                         resolve(null)
                     })
@@ -41,9 +41,9 @@ export function ChangeGameOwnerDiv() {
 
     return (
         <div>
-            <h2> CHANGE GAME OWNER </h2>
+            <h2> CHANGE GAME RS RATE </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={MKP_FUNCTION.CHANGE_GAME_OWNER} gameAddress={gameContractRef.current?.input?.value}/>
+                              functionType={MKP_FUNCTION.CHANGE_GAME_RS_RATE} gameAddress={gameContractRef.current?.input?.value}/>
             { <Button onClick={() => {
                 if(gameContractRef.current?.input?.value) {
                     setGameAddress(gameContractRef.current?.input?.value)
