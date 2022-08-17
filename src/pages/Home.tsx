@@ -1,20 +1,28 @@
 import React from 'react';
-import { MetamaskView } from './MetamaskContract';
+import {MetamaskView} from './MetamaskContract';
 import {ChangeIskraIncomeWalletDiv} from "./marketplace/ChangeIskraIncomeWalletDiv";
+import {ChangePurchaserFeePermilleDiv} from "./marketplace/ChangePurchaserFeePermilleDiv";
 
 
 function Home() {
-  return (
-    <div>
-      <ChangeIskraIncomeWalletDiv/>
-      <hr></hr>
+    return (
+        <div>
+            <ChangePurchaserFeePermilleDiv/>
 
-      <MetamaskView />
+            <hr></hr>
+            <hr></hr>
+            <hr></hr>
 
-      <hr></hr>
+            <ChangeIskraIncomeWalletDiv/>
 
-      </div>
-  )
+            <hr></hr>
+
+            <MetamaskView/>
+
+            <hr></hr>
+
+        </div>
+    )
 }
 
 export default Home;

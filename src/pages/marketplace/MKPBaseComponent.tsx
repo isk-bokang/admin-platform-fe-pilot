@@ -1,5 +1,5 @@
 import {PlatformContractType} from "../../constants"
-import {Button, Spin} from "antd"
+import {Button, Spin, Descriptions} from "antd"
 import React, {Dispatch, SetStateAction, useEffect, useState} from "react"
 import {AbiItem, toBN} from "web3-utils"
 import {ContractApi} from "../apis/ContractApi"
@@ -13,7 +13,7 @@ type SendTx = () => Promise<any>
 
 export enum MKP_FUNCTION {
     CHANGE_MKP_ISKRA_FEE_RECEIVER,
-    CHANGE_MKP_FEE_RATE,
+    CHANGE_PURCHASE_FEE,
     CLAIM
 }
 
@@ -25,10 +25,12 @@ export function MKPBaseComponent(prop: {
                           }
 ) {
     const [loading, setLoading] = useState<boolean>(false)
-    const [owner, setOwner] = useState<string>('')
     const [deployedContracts, setDeployedContracts] = useState<DeployedContractsDto[]>([])
-    const [curReceiver, setCurReceiver] = useState<string>('')
     const [idx, setIdx] = useState<number>(0)
+
+    const [owner, setOwner] = useState<string>('')
+    const [curReceiver, setCurReceiver] = useState<string>('')
+    const [feeRate, setFeeRate] = useState<number>()
 
     useEffect(() => {
         window.ethereum?.on('chainChanged', () => window.location.reload())
@@ -56,6 +58,9 @@ export function MKPBaseComponent(prop: {
                     callMethod(tmpContract.methods.iskraIncomeWallet()).then(res => {
                         setCurReceiver(res)
                     })
+                    callMethod(tmpContract.methods.purchaserFeePermille()).then(res => {
+                        setFeeRate(res)
+                    })
                 }
             })
     }
@@ -64,8 +69,12 @@ export function MKPBaseComponent(prop: {
         setLoading(true)
         prop.onClickSendTx()
             .then(ret => {
-                if(prop.functionType ==MKP_FUNCTION.CHANGE_MKP_ISKRA_FEE_RECEIVER)
+                console.log(ret)
+                if(prop.functionType == MKP_FUNCTION.CHANGE_MKP_ISKRA_FEE_RECEIVER)
                     setCurReceiver(ret)
+                else if(prop.functionType == MKP_FUNCTION.CHANGE_PURCHASE_FEE)
+                    setFeeRate(ret)
+
                 setLoading(false)
             })
             .catch(err => {
@@ -73,6 +82,16 @@ export function MKPBaseComponent(prop: {
                 alert('ERROR OCCURRED')
                 setLoading(false)
             })
+    }
+
+    function MKPContractInfo(){
+        return(
+            <Descriptions bordered title={'MKP CONTRACT INFO'}>
+                <Descriptions.Item label={'OWNER'} span={3}> { owner && owner } </Descriptions.Item>
+                <Descriptions.Item label={'FEE RECEIVER'} span={3}> { curReceiver && curReceiver } </Descriptions.Item>
+                <Descriptions.Item label={'FEE RATE'} span={3}> { feeRate && feeRate } </Descriptions.Item>
+            </Descriptions>
+        )
     }
 
     return (
@@ -91,9 +110,8 @@ export function MKPBaseComponent(prop: {
                 {<Button type='primary' onClick={onClickHandle}
                          disabled={((window.ethereum?.selectedAddress) ? (owner.toLocaleUpperCase() !== window.ethereum?.selectedAddress.toLocaleUpperCase()) : true)}>
                 SEND TX </Button>}
-                <p>owner : {owner && owner}</p>
-                <p>current receiver : {curReceiver && curReceiver}</p>
-
+                <hr/>
+                <MKPContractInfo/>
             </Spin>
         </div>
     )

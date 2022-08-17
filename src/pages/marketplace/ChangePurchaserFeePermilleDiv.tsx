@@ -4,20 +4,19 @@ import React, {useRef, useState} from "react";
 import {Contract} from "web3-eth-contract";
 import {callMethod, sendTransaction} from "../utils/metamask";
 
-export function ChangeIskraIncomeWalletDiv() {
+export function ChangePurchaserFeePermilleDiv() {
     const [contract, setContract] = useState<Contract>()
     const inputRef = useRef<InputRef>(null);
-
     function InputDiv() {
-        return (<Input type={'text'} placeholder="ADDRESS" ref = {inputRef} title='ADDRESS'/>)
+        return (<Input type={'number'} placeholder="FEE RATE" title='FEE RATE' ref={inputRef}/>)
     }
 
     function sendTx(): Promise<any> {
         return new Promise((resolve, reject) => {
             if (contract) {
-                sendTransaction(contract.methods.changeIskraIncomeWallet(inputRef.current?.input?.value))
+                sendTransaction(contract.methods.changePurchaserFeePermille(inputRef.current?.input?.value))
                     .then(() => {
-                        callMethod(contract.methods.iskraIncomeWallet()).then(res => {
+                        callMethod(contract.methods.purchaserFeePermille()).then(res => {
                             resolve(res)
                         })
                     })
@@ -32,9 +31,9 @@ export function ChangeIskraIncomeWalletDiv() {
 
     return (
         <div>
-            <h4> CHANGE MKP ISKRA INCOME WALLET  </h4>
+            <h4> CHANGE MKP PURCHASE FEE </h4>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={MKP_FUNCTION.CHANGE_MKP_ISKRA_FEE_RECEIVER}/>
+                              functionType={MKP_FUNCTION.CHANGE_PURCHASE_FEE}/>
         </div>
     )
 }
