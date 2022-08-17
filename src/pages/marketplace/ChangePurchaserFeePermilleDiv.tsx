@@ -31,9 +31,9 @@ export function ChangePurchaserFeePermilleDiv() {
 
     return (
         <div>
-            <h4> CHANGE MKP PURCHASE FEE </h4>
+            <h2> CHANGE MKP PURCHASE FEE </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={MKP_FUNCTION.CHANGE_PURCHASE_FEE}/>
+                              functionType={MKP_FUNCTION.CHANGE_PURCHASER_FEE_PERMILLE}/>
         </div>
     )
 }
