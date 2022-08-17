@@ -6,7 +6,7 @@ import { ChainApi, PostChainDto } from "./apis/ChainApi"
 import { DeployedContractApi } from "./apis/DeployedContractApi"
 import { DeployedContracts } from "./Contracts"
 import { NodeListDiv } from "./Nodes"
-import { DetailView, TargListView, TargView } from "./utils/OutputDiv"
+import { DetailView, TargListView } from "./utils/OutputDiv"
 
 function Chains() {
     return (
@@ -73,9 +73,12 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                             return {
                                 id: item.id,
                                 contractName: item.contract.name,
-                                serviceName: item.gameApp.name,
+                                contractType : item.contract.contractType,
+                                serviceName: item.gameApp ? item.gameApp.name: 'ISKRA',
                                 chainId: item.chain.chainId,
-                                address: item.address
+                                chainName : item.chain.name,
+                                address: item.address,
+
                             }
                         })
                     )
@@ -117,7 +120,7 @@ export function RegisterChainDiv() {
     function onClickHandle() {
         if (registerDto != null) {
             ChainApi.postChain(registerDto).then(
-                (ret) => {
+                () => {
                     window.location.href = `/${RouteName.CHAINS}/${RouteName.CHAIN_META_DATA}`
                 }
             )
