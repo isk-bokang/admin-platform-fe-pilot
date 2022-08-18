@@ -3,6 +3,9 @@ import {Button, Input, InputRef} from "antd";
 import React, {useRef, useState} from "react";
 import {Contract} from "web3-eth-contract";
 import {sendTransaction} from "../utils/metamask";
+import {AdminLogApi} from "../apis/AdminLogApi";
+
+const functionType =  MKP_FUNCTION.CHANGE_GAME_OWNER
 
 export function ChangeGameOwnerDiv() {
     const [contract, setContract] = useState<Contract>()
@@ -27,8 +30,8 @@ export function ChangeGameOwnerDiv() {
                 setNewGameOwner(newGameOwnerRef.current.input.value)
                 setGameAddress(gameContractRef.current.input.value)
                 sendTransaction(contract.methods.changeGameOwner(gameContractRef.current.input.value, newGameOwnerRef.current.input.value) )
-                    .then(() => {
-                        resolve(null)
+                    .then((ret) => {
+                        resolve(ret)
                     })
                     .catch((err) => {
                         reject(err)
@@ -43,7 +46,7 @@ export function ChangeGameOwnerDiv() {
         <div>
             <h2> CHANGE GAME OWNER </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={MKP_FUNCTION.CHANGE_GAME_OWNER} gameAddress={gameContractRef.current?.input?.value}/>
+                              functionType={functionType} gameAddress={gameContractRef.current?.input?.value}/>
             { <Button onClick={() => {
                 if(gameContractRef.current?.input?.value) {
                     setGameAddress(gameContractRef.current?.input?.value)

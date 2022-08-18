@@ -32,6 +32,13 @@ export enum RouteName {
 
   DEPLOY_CONTRACT = 'deploy',
   DEPLOY_BY_FRONTEND = 'feDeploy',
+
+  MKP = 'mkp',
+  MKP_CHANGE_ISKRA_INCOME_WALLET = 'changeIncomeWallet',
+  MKP_CHANGE_PURCHASER_FEE_PERMILLE = 'changePurchaserFee',
+  MKP_CHANGE_GAME_OWNER = 'changeGameOwner',
+  MKP_CHANGE_GAME_RS_RATE = 'changeGameRsRate',
+  MKP_CLAIM_REVENUE = 'claimRevenue',
 };
 
 export let CHAINS : GetChainDto[];
@@ -39,3 +46,5 @@ await ChainApi.getChainList().then(ret => CHAINS = ret.data)
 
 export let CONTRACT_TYPES : string[];
 await ContractApi.getContractTypes().then(ret=>CONTRACT_TYPES = ret.data)
+
+

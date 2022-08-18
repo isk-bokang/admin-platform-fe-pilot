@@ -4,6 +4,8 @@ import React, {useRef, useState} from "react";
 import {Contract} from "web3-eth-contract";
 import {callMethod, sendTransaction} from "../utils/metamask";
 
+const functionType = MKP_FUNCTION.CHANGE_ISKRA_INCOME_WALLET
+
 export function ChangeIskraIncomeWalletDiv() {
     const [contract, setContract] = useState<Contract>()
     const inputRef = useRef<InputRef>(null);
@@ -16,10 +18,8 @@ export function ChangeIskraIncomeWalletDiv() {
         return new Promise((resolve, reject) => {
             if (contract) {
                 sendTransaction(contract.methods.changeIskraIncomeWallet(inputRef.current?.input?.value))
-                    .then(() => {
-                        callMethod(contract.methods.iskraIncomeWallet()).then(res => {
-                            resolve(res)
-                        })
+                    .then((ret) => {
+                        resolve(ret)
                     })
                     .catch((err) => {
                         reject(err)
@@ -34,7 +34,7 @@ export function ChangeIskraIncomeWalletDiv() {
         <div>
             <h2> CHANGE MKP ISKRA INCOME WALLET  </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={MKP_FUNCTION.CHANGE_ISKRA_INCOME_WALLET}/>
+                              functionType={functionType}/>
         </div>
     )
 }

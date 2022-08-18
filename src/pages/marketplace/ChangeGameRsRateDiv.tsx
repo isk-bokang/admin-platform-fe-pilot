@@ -4,6 +4,8 @@ import React, {useRef, useState} from "react";
 import {Contract} from "web3-eth-contract";
 import {sendTransaction} from "../utils/metamask";
 
+const functionType =  MKP_FUNCTION.CHANGE_GAME_RS_RATE
+
 export function ChangeGameRsRateDiv() {
     const [contract, setContract] = useState<Contract>()
     const [gameAddress, setGameAddress] = useState<string>('')
@@ -15,7 +17,11 @@ export function ChangeGameRsRateDiv() {
     function InputDiv() {
         return (
             <>
-                <Input type={'text'} placeholder="GAME CONTRACT" title='GAME CONTRACT' ref={gameContractRef} defaultValue = {gameAddress}/>
+                <Input type={'text'} placeholder="GAME CONTRACT" title='GAME CONTRACT' onChange={(e)=>{
+                    if(e.target.value.length >= 42)
+                        setGameAddress(e.target.value)
+                }}
+                       ref={gameContractRef} defaultValue = {gameAddress}/>
                 <Input type={'number'} placeholder="RS RATE" title='GAME CONTRACT' ref={rsRateRef} defaultValue = {rsRate}/>
             </>
         )
@@ -27,8 +33,8 @@ export function ChangeGameRsRateDiv() {
                 setRsRate(rsRateRef.current.input.value)
                 setGameAddress(gameContractRef.current.input.value)
                 sendTransaction(contract.methods.changeGameRsRate(gameContractRef.current.input.value, rsRateRef.current.input.value) )
-                    .then(() => {
-                        resolve(null)
+                    .then((ret) => {
+                        resolve(ret)
                     })
                     .catch((err) => {
                         reject(err)
@@ -43,7 +49,7 @@ export function ChangeGameRsRateDiv() {
         <div>
             <h2> CHANGE GAME RS RATE </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={MKP_FUNCTION.CHANGE_GAME_RS_RATE} gameAddress={gameContractRef.current?.input?.value}/>
+                              functionType={functionType} gameAddress={gameContractRef.current?.input?.value}/>
             { <Button onClick={() => {
                 if(gameContractRef.current?.input?.value) {
                     setGameAddress(gameContractRef.current?.input?.value)

@@ -4,6 +4,8 @@ import React, {useRef, useState} from "react";
 import {Contract} from "web3-eth-contract";
 import {callMethod, sendTransaction} from "../utils/metamask";
 
+const functionType = MKP_FUNCTION.CHANGE_PURCHASER_FEE_PERMILLE
+
 export function ChangePurchaserFeePermilleDiv() {
     const [contract, setContract] = useState<Contract>()
     const inputRef = useRef<InputRef>(null);
@@ -15,10 +17,8 @@ export function ChangePurchaserFeePermilleDiv() {
         return new Promise((resolve, reject) => {
             if (contract) {
                 sendTransaction(contract.methods.changePurchaserFeePermille(inputRef.current?.input?.value))
-                    .then(() => {
-                        callMethod(contract.methods.purchaserFeePermille()).then(res => {
-                            resolve(res)
-                        })
+                    .then((ret) => {
+                        resolve(ret)
                     })
                     .catch((err) => {
                         reject(err)
@@ -33,7 +33,7 @@ export function ChangePurchaserFeePermilleDiv() {
         <div>
             <h2> CHANGE MKP PURCHASE FEE </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={MKP_FUNCTION.CHANGE_PURCHASER_FEE_PERMILLE}/>
+                              functionType={functionType}/>
         </div>
     )
 }

@@ -9,6 +9,10 @@ import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/
 import DeployByBackEnd from './pages/DeployByBackEnd';
 import Nodes, { NodeDetailDiv, RegisterNodeDiv } from './pages/Nodes';
 import { DeployByFrontEnd } from './pages/DeployByMetamaks';
+import {ChangePurchaserFeePermilleDiv} from "./pages/marketplace/ChangePurchaserFeePermilleDiv";
+import {ChangeIskraIncomeWalletDiv} from "./pages/marketplace/ChangeIskraIncomeWalletDiv";
+import {ChangeGameOwnerDiv} from "./pages/marketplace/ChangeGameOwnerDiv";
+import {ChangeGameRsRateDiv} from "./pages/marketplace/ChangeGameRsRateDiv";
 
 export const routePages: RoutePage[] = [
   {
@@ -89,6 +93,29 @@ export const routePages: RoutePage[] = [
     key: RouteName.DEPLOY_BY_FRONTEND,
     page: <DeployByFrontEnd />,
   },
+  {
+    key: RouteName.MKP,
+    page: <Home />,
+    children : [
+      {
+        key : RouteName.MKP_CHANGE_PURCHASER_FEE_PERMILLE,
+        page : <ChangePurchaserFeePermilleDiv/>
+      },
+      {
+        key : RouteName.MKP_CHANGE_ISKRA_INCOME_WALLET,
+        page : <ChangeIskraIncomeWalletDiv/>
+      },
+      {
+        key : RouteName.MKP_CHANGE_GAME_OWNER,
+        page : <ChangeGameOwnerDiv/>
+      },
+      {
+        key : RouteName.MKP_CHANGE_GAME_RS_RATE,
+        page : <ChangeGameRsRateDiv/>
+      }
+    ]
+  },
+
 ];
 
 export const sidebarRouters: SidebarRoute[] = [
@@ -125,6 +152,28 @@ export const sidebarRouters: SidebarRoute[] = [
   {
     key: RouteName.DEPLOY_BY_FRONTEND,
     label: "DEPLOY-BY-FRONTEND"
+  },
+  {
+    key: RouteName.MKP,
+    label: 'MarketPlace',
+    children : [
+      {
+        key : RouteName.MKP_CHANGE_PURCHASER_FEE_PERMILLE,
+        label : 'Change Purchaser Fee'
+      },
+      {
+        key : RouteName.MKP_CHANGE_ISKRA_INCOME_WALLET,
+        label : 'Change Iskra Income Wallet'
+      },
+      {
+        key : RouteName.MKP_CHANGE_GAME_OWNER,
+        label : 'Change Game Owner'
+      },
+      {
+        key : RouteName.MKP_CHANGE_GAME_RS_RATE,
+        label : 'Change Game Rs Rate'
+      }
+    ]
   },
 
 ];
