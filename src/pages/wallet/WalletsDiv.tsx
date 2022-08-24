@@ -1,7 +1,7 @@
-import {Descriptions, Form,  Modal,  Select, Table, Typography} from 'antd';
+import {Button, Descriptions, Form, Modal, Select, Table, Typography} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {PlatformWalletInfo, WalletContractInfo} from "../apis/WalletApi";
-import { WALLET_ROLE_TYPES} from "../../constants";
+import {WALLET_ROLE_TYPES} from "../../constants";
 import {DeployedContractApi, DeployedContractsDto} from "../apis/DeployedContractApi";
 
 const NONE = -1
@@ -92,6 +92,7 @@ export function WalletListDiv() {
         setDetailViewId(record.id)
         setIsEditModalVisible(true)
     }
+
     function onClickViewAddModal(record: AttributeType) {
         setDetailViewId(record.id)
         setIsAddModalVisible(true)
@@ -211,52 +212,68 @@ export function WalletListDiv() {
             )
         })
 
-        function onChangeHandle(roleIdx : number){
+        function onChangeWalletRole(roleIdx: number) {
             setWalletRole(WALLET_ROLE_TYPES[roleIdx])
         }
 
         function onOk() {
             //@TODO SEND CHANGE WALLET ROLE API / SEND TRANSACTION
             console.log({
-                walletId : walletItem?.id,
-                deployedContractId : contractInfo?.contractId,
-                walletRole : walletRole
-        })
+                walletId: walletItem?.id,
+                deployedContractId: contractInfo?.contractId,
+                walletRole: walletRole
+            })
             setIsEditModalVisible(!isEditModalVisible)
         }
 
 
         return (
-            <Modal title=" Wallet Info " visible={isEditModalVisible} onCancel={() => setIsEditModalVisible(!isEditModalVisible)}
-                   onOk={onOk}>
+            <Modal title=" Wallet Info " visible={isEditModalVisible}
+                   onCancel={() => setIsEditModalVisible(!isEditModalVisible)}
+                   onOk={onOk}
+                   footer={[]}>
                 <Descriptions bordered>
                     {walletItem &&
                         <>
                             <Descriptions.Item label={"ID"} span={3}> {walletItem.id} </Descriptions.Item>
                             <Descriptions.Item label={"NAME"} span={3}> {walletItem.name} </Descriptions.Item>
-                            <Descriptions.Item label={"WALLET ADDRESS"} span={3}> {walletItem.walletAddress} </Descriptions.Item>
+                            <Descriptions.Item label={"WALLET ADDRESS"}
+                                               span={3}> {walletItem.walletAddress} </Descriptions.Item>
                         </>}
                     {contractInfo &&
                         <>
-                            <Descriptions.Item label={"CONTRACT ADDRESS"} span={3}> {contractInfo.contractAddress} </Descriptions.Item>
-                            <Descriptions.Item label={"CONTRACT NAME"} span={3}> {contractInfo.contractName} </Descriptions.Item>
-                            <Descriptions.Item label={"CONTRACT TYPE"} span={3}> {contractInfo.contractType} </Descriptions.Item>
+                            <Descriptions.Item label={"CONTRACT ADDRESS"}
+                                               span={3}> {contractInfo.contractAddress} </Descriptions.Item>
+                            <Descriptions.Item label={"CONTRACT NAME"}
+                                               span={3}> {contractInfo.contractName} </Descriptions.Item>
+                            <Descriptions.Item label={"CONTRACT TYPE"}
+                                               span={3}> {contractInfo.contractType} </Descriptions.Item>
                             <Descriptions.Item label={"CHAIN ID"} span={3}> {contractInfo.chainID} </Descriptions.Item>
-                            <Descriptions.Item label={"CHAIN NAME"} span={3}> {contractInfo.chainName} </Descriptions.Item>
-                            <Descriptions.Item label={"ROLE"} span={3}> {<Select onChange={onChangeHandle} style={{ width: 150 }}>
-                                {WALLET_ROLE_TYPES.length > 0 &&
-                                    WALLET_ROLE_TYPES.map((item, idx) => {
-                                        return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
-                                    })
-                                }
-                            </Select>} </Descriptions.Item>
+                            <Descriptions.Item label={"CHAIN NAME"}
+                                               span={3}> {contractInfo.chainName} </Descriptions.Item>
                         </>}
                 </Descriptions>
+                <br/>
+                <Form onFinish={onOk} labelCol={{span: 8}} wrapperCol={{span: 16}}>
+                    <Form.Item label="ROLE" name = 'ROLE'
+                               rules={[{required: true, message: 'Require Role'}]}>
+                        {<Select onChange={onChangeWalletRole} style={{width: '100%'}}>
+                            {WALLET_ROLE_TYPES.length > 0 &&
+                                WALLET_ROLE_TYPES.map((item, idx) => {
+                                    return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
+                                })
+                            }
+                        </Select>}
+                    </Form.Item>
+
+                    <Button type={"primary"} htmlType="submit" style={{position : "absolute", right : '5%'}}> REGISTER </Button>
+                    <Button style={{position : "absolute", right : '25%'}} onClick={() => setIsEditModalVisible(!isEditModalVisible)}> CANCEL </Button>
+                </Form>
             </Modal>
         )
     }
 
-    function AddRoleModal(){
+    function AddRoleModal() {
         const [walletItem, setWalletItem] = useState<PlatformWalletInfo>()
         const [deployedContracts, setDeployedContracts] = useState<DeployedContractsDto[]>([])
         const [deployedContractId, setDeployedContractId] = useState<number>(NONE)
@@ -266,67 +283,81 @@ export function WalletListDiv() {
             setWalletItem(data.find((value) => {
                 return value.id == detailViewId
             }))
-            DeployedContractApi.getDeployedContracts().then(ret =>{
+            DeployedContractApi.getDeployedContracts().then(ret => {
                 setDeployedContracts(ret.data)
             })
         }, [])
 
-        function onChangeWalletRole(roleIdx : number){
+        function onChangeWalletRole(roleIdx: number) {
             setWalletRole(WALLET_ROLE_TYPES[roleIdx])
         }
 
-        function onChangeContract(contractIdx : number){
+        function onChangeContract(contractIdx: number) {
             setDeployedContractId(contractIdx)
         }
 
         function onOk() {
             //@TODO SEND CHANGE WALLET ROLE API / SEND TRANSACTION
             console.log({
-                walletId : walletItem?.id,
-                deployedContractId : deployedContractId,
-                walletRole : walletRole
+                walletId: walletItem?.id,
+                deployedContractId: deployedContractId,
+                walletRole: walletRole
             })
-            setIsAddModalVisible(!isEditModalVisible)
+            setIsAddModalVisible(!isAddModalVisible)
         }
 
-
         return (
-            <Modal title=" Wallet Info " visible={isAddModalVisible} onCancel={() => setIsAddModalVisible(!isAddModalVisible)}
+
+            <Modal title=" Wallet Info " visible={isAddModalVisible}
+                   footer={[
+                   ]}
+                   onCancel={() => setIsAddModalVisible(!isAddModalVisible)}
                    onOk={onOk}>
                 <Descriptions bordered>
                     {walletItem &&
                         <>
                             <Descriptions.Item label={"ID"} span={3}> {walletItem.id} </Descriptions.Item>
                             <Descriptions.Item label={"NAME"} span={3}> {walletItem.name} </Descriptions.Item>
-                            <Descriptions.Item label={"WALLET ADDRESS"} span={3}> {walletItem.walletAddress} </Descriptions.Item>
+                            <Descriptions.Item label={"WALLET ADDRESS"}
+                                               span={3}> {walletItem.walletAddress} </Descriptions.Item>
                         </>}
-                    <Descriptions.Item label={"CONTRACT"} span={3}>
-                        <Select onChange={onChangeContract} style={{ width: 150 }}>
-                    {deployedContracts.length > 0 &&
-                        deployedContracts.map((item, idx) => {
-                            return(
-                                <Select.Option value={idx} key={idx}>
-                                    {item.contract.contractType}
-                                    <br/>
-                                    {item.chain.name}
-                                    <br/>
-                                    {item.address}
-                            </Select.Option> )
-                        })
-                    }
-                        </Select>
-                    </Descriptions.Item>
-                    <Descriptions.Item label={"ROLE"} span={3}> {<Select onChange={onChangeWalletRole} style={{ width: 150 }}>
-                        {WALLET_ROLE_TYPES.length > 0 &&
-                            WALLET_ROLE_TYPES.map((item, idx) => {
-                                return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
-                            })
-                        }
-                    </Select>}
-                    </Descriptions.Item>
-
                 </Descriptions>
+                <br/>
+                <Form onFinish={onOk} labelCol={{span: 8}} wrapperCol={{span: 16}}>
+                    <Form.Item label="CONTRACT" name = 'CONTRACT'
+                               rules={[{required: true, message: 'Require Contract'}]}>
+                        <Select onChange={onChangeContract} style={{width: '100%'}}>
+                            {deployedContracts.length > 0 &&
+                                deployedContracts.map((item, idx) => {
+                                    return (
+                                        <Select.Option value={idx} key={idx}>
+                                            {item.contract.contractType}
+                                            <br/>
+                                            {item.chain.name}
+                                            <br/>
+                                            {item.address}
+                                        </Select.Option>)
+                                })
+                            }
+                        </Select>
+                    </Form.Item>
+                    <Form.Item label="ROLE" name = 'ROLE'
+                               rules={[{required: true, message: 'Require Role'}]}>
+                        {<Select onChange={onChangeWalletRole} style={{width: '100%'}}>
+                            {WALLET_ROLE_TYPES.length > 0 &&
+                                WALLET_ROLE_TYPES.map((item, idx) => {
+                                    return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
+                                })
+                            }
+                        </Select>}
+                    </Form.Item>
+
+                    <Button type={"primary"} htmlType="submit" style={{position : "absolute", right : '5%'}}> REGISTER </Button>
+                    <Button style={{position : "absolute", right : '25%'}} onClick={() => setIsAddModalVisible(!isAddModalVisible)}> CANCEL </Button>
+                </Form>
             </Modal>
+
+
         )
     }
 
