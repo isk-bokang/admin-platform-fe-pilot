@@ -1,7 +1,9 @@
-import {Form, Input, Table} from 'antd';
+import {Descriptions, Form, Input, Modal, Popconfirm, Select, Table, Typography} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
-import React, {useState} from 'react';
-import {PlatformWalletInfo} from "../apis/WalletApi";
+import React, {useEffect, useState} from 'react';
+import {PlatformWalletInfo, WalletContractInfo} from "../apis/WalletApi";
+import DescriptionsItem from "antd/es/descriptions/Item";
+import {CHAINS, WALLET_ROLE_TYPES} from "../../constants";
 
 const NONE = -1
 
@@ -16,7 +18,9 @@ const dummyData: PlatformWalletInfo[] = [{
             contractType: "contract1",
             contractName: "contract1",
             role: "qweqwe",
-            roleId: 1
+            roleId: 1,
+            chainID: "babobab",
+            chainName: "babobab",
         },
         {
             contractId: 2,
@@ -24,7 +28,9 @@ const dummyData: PlatformWalletInfo[] = [{
             contractType: "contract1",
             contractName: "contract1",
             role: "qweqwe",
-            roleId: 2
+            roleId: 2,
+            chainID: "babobab",
+            chainName: "babobab",
         }
     ]
 },
@@ -39,7 +45,9 @@ const dummyData: PlatformWalletInfo[] = [{
                 contractType: "contract1",
                 contractName: "contract1",
                 role: "qweqwe",
-                roleId: 3
+                roleId: 3,
+                chainID: "cypress",
+                chainName: "cypress",
             },
             {
                 contractId: 2,
@@ -47,22 +55,29 @@ const dummyData: PlatformWalletInfo[] = [{
                 contractType: "contract2",
                 contractName: "contract2",
                 role: "qweqwe",
-                roleId: 4
+                roleId: 4,
+                chainID: "babobab",
+                chainName: "babobab",
             }
         ]
-    }]
+    }, {
+        name: 'asd',
+        id: 2,
+        walletAddress: 'wallet address2',
+    }
+]
 
 export function WalletListDiv() {
 
     const [form] = Form.useForm();
     const [data, setData] = useState<PlatformWalletInfo[]>(dummyData);
-    const [editingKey, setEditingKey] = useState<number>(NONE);
-
-    const isEditing = (record: AttributeType) => record.key === editingKey;
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
+    const [detailViewKey, setDetailViewKey] = useState<number>(NONE);
+    const [detailViewId, setDetailViewId] = useState<number>(NONE);
 
     interface AttributeType {
         key?: number;
-        id?: number,
+        id: number,
         name?: string,
         walletAddress?: string,
         contractAddress?: string,
@@ -72,14 +87,11 @@ export function WalletListDiv() {
         spanCnt?: number
     }
 
-    function edit( record: Partial<AttributeType> & { key: React.Key }) {
-        form.setFieldsValue({ walletAddress : '', contractAddress : '', contractName : '', role : '', ...record });
-        setEditingKey(record.key);
+    function onClickViewDetail(record: AttributeType) {
+        setDetailViewKey(record.key!!)
+        setDetailViewId(record.id)
+        setIsModalVisible(true)
     }
-
-    function cancel () {
-        setEditingKey(NONE);
-    };
 
     function generateData() {
         let ret: AttributeType[] = []
@@ -88,17 +100,21 @@ export function WalletListDiv() {
                 id: item.id,
                 name: item.name,
                 walletAddress: item.walletAddress,
-                spanCnt: item.walletContractInfoList.length
             }
-            for (const jtem of item.walletContractInfoList) {
-                let retItem: AttributeType = JSON.parse(JSON.stringify(commonData))
-                retItem.key = jtem.roleId
-                retItem.contractAddress = jtem.contractAddress
-                retItem.contractName = jtem.contractName
-                retItem.contractType = jtem.contractType
-                retItem.role = jtem.role
-                ret.push(retItem)
-                commonData.spanCnt = 0
+            if (item.walletContractInfoList) {
+                commonData.spanCnt = item.walletContractInfoList.length
+                for (const jtem of item.walletContractInfoList) {
+                    let retItem: AttributeType = JSON.parse(JSON.stringify(commonData))
+                    retItem.key = jtem.roleId
+                    retItem.contractAddress = jtem.contractAddress
+                    retItem.contractName = jtem.contractName
+                    retItem.contractType = jtem.contractType
+                    retItem.role = jtem.role
+                    ret.push(retItem)
+                    commonData.spanCnt = 0
+                }
+            } else {
+                ret.push(commonData)
             }
         }
         return ret
@@ -108,94 +124,140 @@ export function WalletListDiv() {
         return {rowSpan: record.spanCnt}
     }
 
-    interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-        editing: boolean;
-        dataIndex: string;
-        title: string;
-        record: AttributeType;
-        index: number;
-        children: React.ReactNode;
-        key: number
-    }
-
-    function EditableCell(prop: EditableCellProps) {
-
-        const inputNode =  <Input />;
-
-        return (
-            <td {...prop}>
-                {prop.editing ? (
-                    <Form.Item
-                        name={prop.dataIndex}
-                        style={{margin: 0}}
-                        rules={[
-                            {
-                                required: true,
-                                message: `Please Input ${prop.title}!`,
-                            },
-                        ]}
-                    >
-                        {inputNode}
-                    </Form.Item>
-                ) : (
-                    prop.children
-                )}
-            </td>
-        );
-    }
 
     const columns = [
         {
             key: 1,
             title: "ID",
             dataIndex: 'id',
-            editable : false,
             onCell: onCellHandle
         },
         {
             key: 2,
             title: "Wallet Name",
             dataIndex: 'name',
-            editable : false,
             onCell: onCellHandle
         },
         {
             key: 3,
             title: "Wallet Address",
             dataIndex: 'walletAddress',
-            editable : false,
             onCell: onCellHandle
         },
         {
             key: 4,
             title: "Contract Address",
             dataIndex: 'contractAddress',
-            editable : true,
         },
         {
             key: 5,
             title: "Contract Name",
             dataIndex: 'contractName',
-            editable : true,
         },
         {
             key: 6,
             title: "Contract Type",
             dataIndex: 'contractType',
-            editable : true,
 
         },
         {
             key: 7,
             title: "Role",
             dataIndex: 'role',
-            editable : true,
         },
+        {
+            key: 8,
+            title: 'operation',
+            dataIndex: 'operation',
+            render: (_: any, record: AttributeType) => {
+                return (
+                    <Typography.Link disabled={!record.key} onClick={() => {
+                        onClickViewDetail(record)
+                    }}>
+                        EDIT ROLE
+                    </Typography.Link>
+                )
+            }
+        }
     ]
+
+    function DetailInfoModal() {
+        const [walletItem, setWalletItem] = useState<PlatformWalletInfo>()
+        const [contractInfo, setContractInfo] = useState<WalletContractInfo>()
+        const [walletRole, setWalletRole] = useState<string>('')
+        useEffect(() => {
+            setWalletItem(data.find((value) => {
+                return value.id == detailViewId
+            }))
+            setContractInfo(
+                data.find((value) => {
+                    return value.id == detailViewId
+                })!!.walletContractInfoList!!.find(value => {
+                    return value.roleId == detailViewKey
+                })
+            )
+        })
+
+        function onChangeHandle(roleIdx : number){
+            console.log(WALLET_ROLE_TYPES[roleIdx])
+            setWalletRole(WALLET_ROLE_TYPES[roleIdx])
+        }
+
+        function onOk() {
+            //@TODO SEND CHANGE WALLET ROLE API
+            console.log({
+                walletId : walletItem?.id,
+                deployedContractId : contractInfo?.contractId,
+                walletRole : walletRole
+        })
+            setIsModalVisible(!isModalVisible)
+        }
+
+
+        return (
+            <Modal title=" Wallet Info " visible={isModalVisible} onCancel={() => setIsModalVisible(!isModalVisible)}
+                   onOk={onOk}>
+                <Descriptions bordered>
+                    {walletItem &&
+                        <>
+                            <Descriptions.Item label={"ID"} span={3}> {walletItem.id} </Descriptions.Item>
+                            <Descriptions.Item label={"NAME"} span={3}> {walletItem.name} </Descriptions.Item>
+                            <Descriptions.Item label={"WALLET ADDRESS"}span={3}> {walletItem.walletAddress} </Descriptions.Item>
+                        </>}
+                    {contractInfo &&
+                        <>
+                            <Descriptions.Item label={"CONTRACT ADDRESS"}span={3}> {contractInfo.contractAddress} </Descriptions.Item>
+                            <Descriptions.Item label={"CONTRACT NAME"}span={3}> {contractInfo.contractName} </Descriptions.Item>
+                            <Descriptions.Item label={"CONTRACT TYPE"}span={3}> {contractInfo.contractType} </Descriptions.Item>
+                            <Descriptions.Item label={"CHAIN ID"}span={3}> {contractInfo.chainID} </Descriptions.Item>
+                            <Descriptions.Item label={"CHAIN NAME"}span={3}> {contractInfo.chainName} </Descriptions.Item>
+                            <Descriptions.Item label={"ROLE"}span={3}> {<Select onChange={onChangeHandle} style={{ width: 150 }}>
+                                {WALLET_ROLE_TYPES.length > 0 &&
+                                    WALLET_ROLE_TYPES.map((item, idx) => {
+                                        return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
+                                    })
+                                }
+                            </Select>} </Descriptions.Item>
+                        </>}
+                </Descriptions>
+            </Modal>
+        )
+    }
+
 
     return (
         <div>
-            <Table columns={columns} bordered dataSource={generateData()}/>
+            <Form form={form} component={false}>
+                <Table
+                    bordered
+                    dataSource={generateData()}
+                    columns={columns}
+                />
+                {(detailViewId != NONE && detailViewKey != NONE) && <DetailInfoModal/>}
+            </Form>
+
         </div>
     )
 }
+
+

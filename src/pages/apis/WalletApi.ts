@@ -3,7 +3,7 @@ export interface PlatformWalletInfo{
     id : number,
     name : string,
     walletAddress: string,
-    walletContractInfoList : WalletContractInfo[]
+    walletContractInfoList ?: WalletContractInfo[]
 }
 
 export interface WalletContractInfo{
@@ -12,6 +12,8 @@ export interface WalletContractInfo{
     contractAddress : string,
     contractName : string,
     role : string,
-    contractType : string
+    contractType : string,
+    chainID : string,
+    chainName : string,
 }
 

@@ -47,4 +47,8 @@ await ChainApi.getChainList().then(ret => CHAINS = ret.data)
 export let CONTRACT_TYPES : string[];
 await ContractApi.getContractTypes().then(ret=>CONTRACT_TYPES = ret.data)
 
+export let WALLET_ROLE_TYPES : string[] = [
+    'ROLE1', 'ROLE2', 'ROLE3'
+]
+
 
