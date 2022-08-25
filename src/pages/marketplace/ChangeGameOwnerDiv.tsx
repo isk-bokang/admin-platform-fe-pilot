@@ -5,6 +5,8 @@ import {Contract} from "web3-eth-contract";
 import {sendTransaction} from "../utils/metamask";
 import {AdminLogApi} from "../apis/AdminLogApi";
 
+//@TODO Need to Check Authorization by Wallet Role
+
 const functionType =  MKP_FUNCTION.CHANGE_GAME_OWNER
 
 export function ChangeGameOwnerDiv() {
