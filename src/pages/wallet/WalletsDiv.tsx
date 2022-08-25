@@ -1,79 +1,36 @@
 import {Button, Descriptions, Form, Modal, Select, Table, Typography} from 'antd';
 import React, {useEffect, useState} from 'react';
-import {PlatformWalletInfo, WalletContractInfo} from "../apis/WalletApi";
+import {
+    PlatformWalletApi,
+    PlatformWalletInfoDto,
+    PlatformContractInfoDto,
+    PlatformWalletDto,
+    WalletGrantRequestDto
+} from "../apis/WalletApi";
 import {WALLET_ROLE_TYPES} from "../../constants";
 import {DeployedContractApi, DeployedContractsDto} from "../apis/DeployedContractApi";
+import {AdminLogApi} from "../../pages/apis/AdminLogApi";
 
 const NONE = -1
-
-const dummyData: PlatformWalletInfo[] = [{
-    name: 'asd',
-    id: 1,
-    walletAddress: 'wallet address1',
-    walletContractInfoList: [
-        {
-            contractId: 1,
-            contractAddress: "contract1",
-            contractType: "contract1",
-            contractName: "contract1",
-            role: "qweqwe",
-            roleId: 1,
-            chainID: "babobab",
-            chainName: "babobab",
-        },
-        {
-            contractId: 2,
-            contractAddress: "contract1",
-            contractType: "contract1",
-            contractName: "contract1",
-            role: "qweqwe",
-            roleId: 2,
-            chainID: "babobab",
-            chainName: "babobab",
-        }
-    ]
-},
-    {
-        name: 'asd',
-        id: 2,
-        walletAddress: 'wallet address2',
-        walletContractInfoList: [
-            {
-                contractId: 1,
-                contractAddress: "contract1",
-                contractType: "contract1",
-                contractName: "contract1",
-                role: "qweqwe",
-                roleId: 3,
-                chainID: "cypress",
-                chainName: "cypress",
-            },
-            {
-                contractId: 2,
-                contractAddress: "contract2",
-                contractType: "contract2",
-                contractName: "contract2",
-                role: "qweqwe",
-                roleId: 4,
-                chainID: "babobab",
-                chainName: "babobab",
-            }
-        ]
-    }, {
-        name: 'asd',
-        id: 2,
-        walletAddress: 'wallet address2',
-    }
-]
 
 export function WalletListDiv() {
 
     const [form] = Form.useForm();
-    const [data, setData] = useState<PlatformWalletInfo[]>(dummyData);
+    const [data, setData] = useState<PlatformWalletInfoDto[]>([]);
     const [isEditModalVisible, setIsEditModalVisible] = useState<boolean>(false)
     const [isAddModalVisible, setIsAddModalVisible] = useState<boolean>(false)
     const [detailViewKey, setDetailViewKey] = useState<number>(NONE);
     const [detailViewId, setDetailViewId] = useState<number>(NONE);
+
+    useEffect(() => {
+        PlatformWalletApi.getPlatformWalletList()
+            .then((ret) => {
+                setData(ret.data)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    }, [])
 
     interface AttributeType {
         key?: number;
@@ -102,18 +59,18 @@ export function WalletListDiv() {
         let ret: AttributeType[] = []
         for (const item of data) {
             let commonData: AttributeType = {
-                id: item.id,
-                name: item.name,
-                walletAddress: item.walletAddress,
+                id: item.platformWalletDto.id,
+                name: item.platformWalletDto.name,
+                walletAddress: item.platformWalletDto.accountAddress,
             }
-            if (item.walletContractInfoList) {
-                commonData.spanCnt = item.walletContractInfoList.length
-                for (const jtem of item.walletContractInfoList) {
+            if (item.platformContractInfoDtos.length > 0) {
+                commonData.spanCnt = item.platformContractInfoDtos.length
+                for (const jtem of item.platformContractInfoDtos) {
                     let retItem: AttributeType = JSON.parse(JSON.stringify(commonData))
                     retItem.key = jtem.roleId
-                    retItem.contractAddress = jtem.contractAddress
-                    retItem.contractName = jtem.contractName
-                    retItem.contractType = jtem.contractType
+                    retItem.contractAddress = jtem.deployedContractDto.address
+                    retItem.contractName = jtem.deployedContractDto.contract.name
+                    retItem.contractType = jtem.deployedContractDto.contract.contractType
                     retItem.role = jtem.role
                     ret.push(retItem)
                     commonData.spanCnt = 0
@@ -196,17 +153,17 @@ export function WalletListDiv() {
     ]
 
     function EditRoleModal() {
-        const [walletItem, setWalletItem] = useState<PlatformWalletInfo>()
-        const [contractInfo, setContractInfo] = useState<WalletContractInfo>()
+        const [walletItem, setWalletItem] = useState<PlatformWalletInfoDto>()
+        const [contractInfo, setContractInfo] = useState<PlatformContractInfoDto>()
         const [walletRole, setWalletRole] = useState<string>('')
         useEffect(() => {
             setWalletItem(data.find((value) => {
-                return value.id == detailViewId
+                return value.platformWalletDto.id == detailViewId
             }))
             setContractInfo(
                 data.find((value) => {
-                    return value.id == detailViewId
-                })!!.walletContractInfoList!!.find(value => {
+                    return value.platformWalletDto.id == detailViewId
+                })!!.platformContractInfoDtos!!.find(value => {
                     return value.roleId == detailViewKey
                 })
             )
@@ -217,11 +174,19 @@ export function WalletListDiv() {
         }
 
         function onOk() {
-            //@TODO SEND CHANGE WALLET ROLE API / SEND TRANSACTION
-            console.log({
-                walletId: walletItem?.id,
-                deployedContractId: contractInfo?.contractId,
-                walletRole: walletRole
+            PlatformWalletApi.grantWalletRole(new WalletGrantRequestDto(
+                    walletItem!!.platformWalletDto.id,
+                    parseInt(contractInfo!!.deployedContractDto.id),
+                    walletRole
+                )
+            ).then(()=>{
+                PlatformWalletApi.getPlatformWalletList()
+                    .then((ret) => {
+                        setData(ret.data)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                    })
             })
             setIsEditModalVisible(!isEditModalVisible)
         }
@@ -235,53 +200,59 @@ export function WalletListDiv() {
                 <Descriptions bordered>
                     {walletItem &&
                         <>
-                            <Descriptions.Item label={"ID"} span={3}> {walletItem.id} </Descriptions.Item>
-                            <Descriptions.Item label={"NAME"} span={3}> {walletItem.name} </Descriptions.Item>
+                            <Descriptions.Item label={"ID"}
+                                               span={3}> {walletItem.platformWalletDto.id} </Descriptions.Item>
+                            <Descriptions.Item label={"NAME"}
+                                               span={3}> {walletItem.platformWalletDto.name} </Descriptions.Item>
                             <Descriptions.Item label={"WALLET ADDRESS"}
-                                               span={3}> {walletItem.walletAddress} </Descriptions.Item>
+                                               span={3}> {walletItem.platformWalletDto.accountAddress} </Descriptions.Item>
                         </>}
                     {contractInfo &&
                         <>
                             <Descriptions.Item label={"CONTRACT ADDRESS"}
-                                               span={3}> {contractInfo.contractAddress} </Descriptions.Item>
+                                               span={3}> {contractInfo.deployedContractDto.address} </Descriptions.Item>
                             <Descriptions.Item label={"CONTRACT NAME"}
-                                               span={3}> {contractInfo.contractName} </Descriptions.Item>
+                                               span={3}> {contractInfo.deployedContractDto.contract.name} </Descriptions.Item>
                             <Descriptions.Item label={"CONTRACT TYPE"}
-                                               span={3}> {contractInfo.contractType} </Descriptions.Item>
-                            <Descriptions.Item label={"CHAIN ID"} span={3}> {contractInfo.chainID} </Descriptions.Item>
+                                               span={3}> {contractInfo.deployedContractDto.contract.contractType} </Descriptions.Item>
+                            <Descriptions.Item label={"CHAIN ID"}
+                                               span={3}> {contractInfo.deployedContractDto.chain.chainId} </Descriptions.Item>
                             <Descriptions.Item label={"CHAIN NAME"}
-                                               span={3}> {contractInfo.chainName} </Descriptions.Item>
+                                               span={3}> {contractInfo.deployedContractDto.chain.name} </Descriptions.Item>
                         </>}
                 </Descriptions>
                 <br/>
                 <Form onFinish={onOk} labelCol={{span: 8}} wrapperCol={{span: 16}}>
-                    <Form.Item label="ROLE" name = 'ROLE'
+                    <Form.Item label="ROLE" name='ROLE'
                                rules={[{required: true, message: 'Require Role'}]}>
                         {<Select onChange={onChangeWalletRole} style={{width: '100%'}}>
                             {WALLET_ROLE_TYPES.length > 0 &&
                                 WALLET_ROLE_TYPES.map((item, idx) => {
-                                    return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
+                                    if(item != "NONE")
+                                        return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
                                 })
                             }
                         </Select>}
                     </Form.Item>
 
-                    <Button type={"primary"} htmlType="submit" style={{position : "absolute", right : '5%'}}> REGISTER </Button>
-                    <Button style={{position : "absolute", right : '25%'}} onClick={() => setIsEditModalVisible(!isEditModalVisible)}> CANCEL </Button>
+                    <Button type={"primary"} htmlType="submit"
+                            style={{position: "absolute", right: '5%'}}> REGISTER </Button>
+                    <Button style={{position: "absolute", right: '25%'}}
+                            onClick={() => setIsEditModalVisible(!isEditModalVisible)}> CANCEL </Button>
                 </Form>
             </Modal>
         )
     }
 
     function AddRoleModal() {
-        const [walletItem, setWalletItem] = useState<PlatformWalletInfo>()
+        const [walletItem, setWalletItem] = useState<PlatformWalletInfoDto>()
         const [deployedContracts, setDeployedContracts] = useState<DeployedContractsDto[]>([])
         const [deployedContractId, setDeployedContractId] = useState<number>(NONE)
         const [walletRole, setWalletRole] = useState<string>('')
 
         useEffect(() => {
             setWalletItem(data.find((value) => {
-                return value.id == detailViewId
+                return value.platformWalletDto.id == detailViewId
             }))
             DeployedContractApi.getDeployedContracts().then(ret => {
                 setDeployedContracts(ret.data)
@@ -297,40 +268,53 @@ export function WalletListDiv() {
         }
 
         function onOk() {
-            //@TODO SEND CHANGE WALLET ROLE API / SEND TRANSACTION
-            console.log({
-                walletId: walletItem?.id,
-                deployedContractId: deployedContractId,
-                walletRole: walletRole
+            console.log([walletItem!!.platformWalletDto.id,
+                deployedContractId,
+                walletRole])
+            PlatformWalletApi.grantWalletRole(new WalletGrantRequestDto(
+                    walletItem!!.platformWalletDto.id,
+                    deployedContractId,
+                    walletRole
+                )
+            ).then(()=>{
+                PlatformWalletApi.getPlatformWalletList()
+                    .then((ret) => {
+                        setData(ret.data)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                    })
             })
+
             setIsAddModalVisible(!isAddModalVisible)
         }
 
         return (
 
             <Modal title=" Wallet Info " visible={isAddModalVisible}
-                   footer={[
-                   ]}
+                   footer={[]}
                    onCancel={() => setIsAddModalVisible(!isAddModalVisible)}
                    onOk={onOk}>
                 <Descriptions bordered>
                     {walletItem &&
                         <>
-                            <Descriptions.Item label={"ID"} span={3}> {walletItem.id} </Descriptions.Item>
-                            <Descriptions.Item label={"NAME"} span={3}> {walletItem.name} </Descriptions.Item>
+                            <Descriptions.Item label={"ID"}
+                                               span={3}> {walletItem.platformWalletDto.id} </Descriptions.Item>
+                            <Descriptions.Item label={"NAME"}
+                                               span={3}> {walletItem.platformWalletDto.name} </Descriptions.Item>
                             <Descriptions.Item label={"WALLET ADDRESS"}
-                                               span={3}> {walletItem.walletAddress} </Descriptions.Item>
+                                               span={3}> {walletItem.platformWalletDto.accountAddress} </Descriptions.Item>
                         </>}
                 </Descriptions>
                 <br/>
                 <Form onFinish={onOk} labelCol={{span: 8}} wrapperCol={{span: 16}}>
-                    <Form.Item label="CONTRACT" name = 'CONTRACT'
+                    <Form.Item label="CONTRACT" name='CONTRACT'
                                rules={[{required: true, message: 'Require Contract'}]}>
                         <Select onChange={onChangeContract} style={{width: '100%'}}>
                             {deployedContracts.length > 0 &&
                                 deployedContracts.map((item, idx) => {
                                     return (
-                                        <Select.Option value={idx} key={idx}>
+                                        <Select.Option value={item.id} key={item.id}>
                                             {item.contract.contractType}
                                             <br/>
                                             {item.chain.name}
@@ -341,19 +325,22 @@ export function WalletListDiv() {
                             }
                         </Select>
                     </Form.Item>
-                    <Form.Item label="ROLE" name = 'ROLE'
+                    <Form.Item label="ROLE" name='ROLE'
                                rules={[{required: true, message: 'Require Role'}]}>
                         {<Select onChange={onChangeWalletRole} style={{width: '100%'}}>
                             {WALLET_ROLE_TYPES.length > 0 &&
                                 WALLET_ROLE_TYPES.map((item, idx) => {
-                                    return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
+                                    if(item != 'NONE')
+                                        return ( <Select.Option value={idx} key={idx}>{item}</Select.Option>)
                                 })
                             }
                         </Select>}
                     </Form.Item>
 
-                    <Button type={"primary"} htmlType="submit" style={{position : "absolute", right : '5%'}}> REGISTER </Button>
-                    <Button style={{position : "absolute", right : '25%'}} onClick={() => setIsAddModalVisible(!isAddModalVisible)}> CANCEL </Button>
+                    <Button type={"primary"} htmlType="submit"
+                            style={{position: "absolute", right: '5%'}}> REGISTER </Button>
+                    <Button style={{position: "absolute", right: '25%'}}
+                            onClick={() => setIsAddModalVisible(!isAddModalVisible)}> CANCEL </Button>
                 </Form>
             </Modal>
 
@@ -367,7 +354,7 @@ export function WalletListDiv() {
             <Form form={form} component={false}>
                 <Table
                     bordered
-                    dataSource={generateData()}
+                    dataSource={data && generateData()}
                     columns={columns}
                 />
                 {(detailViewId != NONE && detailViewKey != NONE && isEditModalVisible) && <EditRoleModal/>}

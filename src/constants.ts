@@ -1,5 +1,6 @@
 import { ChainApi, GetChainDto } from "./pages/apis/ChainApi";
 import { ContractApi } from "./pages/apis/ContractApi";
+import {PlatformWalletApi} from "./pages/apis/WalletApi";
 
 export enum PlatformContractType{
   ISKRA_MKP = 'ISKRA_MKP'
@@ -47,8 +48,7 @@ await ChainApi.getChainList().then(ret => CHAINS = ret.data)
 export let CONTRACT_TYPES : string[];
 await ContractApi.getContractTypes().then(ret=>CONTRACT_TYPES = ret.data)
 
-export let WALLET_ROLE_TYPES : string[] = [
-    'ROLE1', 'ROLE2', 'ROLE3'
-]
+export let WALLET_ROLE_TYPES : string[];
+await PlatformWalletApi.getPlatformWalletTypes().then(ret=>WALLET_ROLE_TYPES = ret.data)
 
 
