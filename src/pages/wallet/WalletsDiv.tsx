@@ -174,6 +174,8 @@ export function WalletListDiv() {
         }
 
         function onOk() {
+            // @TODO Send Transaction
+
             PlatformWalletApi.grantWalletRole(new WalletGrantRequestDto(
                     walletItem!!.platformWalletDto.id,
                     parseInt(contractInfo!!.deployedContractDto.id),
@@ -268,9 +270,9 @@ export function WalletListDiv() {
         }
 
         function onOk() {
-            console.log([walletItem!!.platformWalletDto.id,
-                deployedContractId,
-                walletRole])
+
+            //@TODO Send Transaction
+
             PlatformWalletApi.grantWalletRole(new WalletGrantRequestDto(
                     walletItem!!.platformWalletDto.id,
                     deployedContractId,
