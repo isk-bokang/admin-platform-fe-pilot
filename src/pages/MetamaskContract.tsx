@@ -83,3 +83,19 @@ export function ChangeChainNetwork(prop: { setChainSeq ?: Dispatch<SetStateActio
         </>
     )
 }
+
+export function MetamaskRoleCheckDiv(props : {availRoleAddress ?: string, children : JSX.Element}){
+    const [curAddress, setCurAddress] = useState<string>('')
+    useEffect(()=>{
+        if(window.ethereum)
+            setCurAddress(window.ethereum.selectedAddress ? window.ethereum.selectedAddress : '')
+    },[])
+
+
+    return(
+        <div>
+            {window.ethereum == null && <h3> NEED METAMASK </h3>}
+            {((props.availRoleAddress == curAddress) || (props.availRoleAddress == null)) && props.children}
+        </div>
+    )
+}

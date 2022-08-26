@@ -13,9 +13,12 @@ import { AbiItem } from "web3-utils"
 import { toBN } from "web3-utils"
 
 export let web3: Web3 = new Web3(Web3.givenProvider)
+
+const UNKNOWN = -1
+
 export function DeployByFrontEnd() {
-    const [contractId, setContractId] = useState<string>('')
-    const [serviceId, setServiceId] = useState<string>('')
+    const [contractId, setContractId] = useState<number>(UNKNOWN)
+    const [serviceId, setServiceId] = useState<number>(UNKNOWN)
     const [chainSeq, setChainSeq] = useState<string>('')
     const [curStep, setCurStep] = useState<STEPS>(STEPS.SELECT_TARGETS)
     const [paramList, setParamList] = useState<string[]>([])
@@ -23,7 +26,7 @@ export function DeployByFrontEnd() {
     function onClickNextStepHandle() {
         if (curStep === STEPS.SELECT_TARGETS) {
             console.log(chainSeq)
-            if (contractId === '' || serviceId === '' || chainSeq === '') {
+            if (contractId === UNKNOWN || serviceId === UNKNOWN || chainSeq === '') {
                 alert(" SELECT ITEM FIRST ")
             }
             else {
@@ -41,7 +44,7 @@ export function DeployByFrontEnd() {
 
     function onClickDeployHandle() {
         
-        ContractApi.getContract(contractId)
+        ContractApi.getContract(contractId.toString())
             .then(res => {
                 const abi = JSON.parse(JSON.stringify(res.data.abi))
                 const contract = new web3.eth.Contract(abi as AbiItem);
@@ -51,10 +54,10 @@ export function DeployByFrontEnd() {
                 }).on("receipt", (receipt) => {
                     console.log(receipt)
                     DeployedContractApi.postRegisterDeployedContract({
-                        appId: serviceId,
+                        appId: serviceId.toString(),
                         chainSeq: chainSeq,
                         contractAddress: receipt.contractAddress!!,
-                        contractId: contractId,
+                        contractId: contractId.toString(),
                         deployerAddress : window.ethereum?.selectedAddress!!,
                         contractName : "METAMASK"
                     })
@@ -69,20 +72,20 @@ export function DeployByFrontEnd() {
     return (
         <div>
             {curStep === STEPS.SELECT_TARGETS && <SelectTargets serviceSetter={setServiceId} chainSetter={setChainSeq} contractSetter={setContractId} />}
-            {curStep === STEPS.SET_CONSTRUCTOR_PARAMS && <SetConstructorParams contractId={contractId} params={paramList} paramSetter={setParamList} />}
+            {curStep === STEPS.SET_CONSTRUCTOR_PARAMS && <SetConstructorParams contractId={contractId.toString()} params={paramList} paramSetter={setParamList} />}
             {curStep !== STEPS.DEPLOY && <hr />}
             {curStep !== STEPS.DEPLOY && <Button onClick={onClickNextStepHandle}> NEXT STEP </Button>}
             {curStep !== STEPS.DEPLOY && <hr />}
             {(curStep > STEPS.SELECT_TARGETS) && <ChainByPropDiv chainSeq={chainSeq} />}
-            {(curStep > STEPS.SELECT_TARGETS) && <ServiceByPropDiv serviceId={serviceId} />}
-            {(curStep > STEPS.SELECT_TARGETS) && <ContractByPropDiv contractId={contractId} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ServiceByPropDiv serviceId={serviceId.toString()} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ContractByPropDiv contractId={contractId.toString()} />}
             {(curStep > STEPS.SET_CONSTRUCTOR_PARAMS) && <GetConstructorParams contractId={contractId} params={paramList} />}
             {curStep === STEPS.DEPLOY && <Button type="primary" onClick={onClickDeployHandle}> DEPLOY </Button>}
         </div>
     )
 }
 
-type settersProp = { serviceSetter: Dispatch<SetStateAction<string>>, chainSetter: Dispatch<SetStateAction<string>>, contractSetter: Dispatch<SetStateAction<string>> }
+type settersProp = { serviceSetter: Dispatch<SetStateAction<number>>, chainSetter: Dispatch<SetStateAction<string>>, contractSetter: Dispatch<SetStateAction<number>> }
 
 function SelectTargets(prop: settersProp) {
 

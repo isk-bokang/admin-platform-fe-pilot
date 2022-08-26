@@ -6,7 +6,6 @@ import { RouteName } from './constants';
 import Home from './pages/Home';
 import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/Contracts';
 import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/Chains';
-import DeployByBackEnd from './pages/DeployByBackEnd';
 import Nodes, { NodeDetailDiv, RegisterNodeDiv } from './pages/Nodes';
 import { DeployByFrontEnd } from './pages/DeployByMetamaks';
 import {ChangePurchaserFeePermilleDiv} from "./pages/marketplace/ChangePurchaserFeePermilleDiv";
@@ -83,11 +82,6 @@ export const routePages: RoutePage[] = [
         page : <RegisterNodeDiv/>
       }
     ]
-  },
-
-  {
-    key: RouteName.DEPLOY_CONTRACT,
-    page: <DeployByBackEnd />,
   },
   {
     key: RouteName.DEPLOY_BY_FRONTEND,

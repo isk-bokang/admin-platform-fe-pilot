@@ -93,7 +93,6 @@ export function RadioTargListDiv(prop: radioProp) {
         }} />
         </>
     )
-
 }
 
 

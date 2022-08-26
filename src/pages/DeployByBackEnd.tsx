@@ -27,14 +27,14 @@ const UNKNOWN = -1
 
 export function ContractDeployDiv() {
 
-    const [contractId, setContractId] = useState<string>('')
-    const [serviceId, setServiceId] = useState<string>('')
-    const [chainId, setChainId] = useState<string>('')
+    const [contractId, setContractId] = useState<number>(UNKNOWN)
+    const [serviceId, setServiceId] = useState<number>(UNKNOWN)
+    const [chainId, setChainId] = useState<number>(UNKNOWN)
     const [curStep, setCurStep] = useState<STEPS>(STEPS.SELECT_TARGETS)
     const [paramList, setParamList] = useState<string[]>([])
     function onClickNextStepHandle() {
         if (curStep === STEPS.SELECT_TARGETS) {
-            if (contractId === '' || serviceId === '' || chainId === '') {
+            if (contractId === UNKNOWN || serviceId === UNKNOWN || chainId === UNKNOWN) {
                 alert(" SELECT ITEM FIRST ")
             }
             else {
@@ -52,9 +52,9 @@ export function ContractDeployDiv() {
 
     function onClickDeployHandle() {
         DeployedContractApi.postDeployContract({
-            appId: serviceId,
-            contractId: contractId,
-            chainSeq: chainId,
+            appId: serviceId.toString(),
+            contractId: contractId.toString(),
+            chainSeq: chainId.toString(),
             deployParams: paramList
         })
             .then(() => {
@@ -76,9 +76,9 @@ export function ContractDeployDiv() {
             {curStep !== STEPS.DEPLOY && <hr />}
             {curStep !== STEPS.DEPLOY && <Button onClick={onClickNextStepHandle}> NEXT STEP </Button>}
             {curStep !== STEPS.DEPLOY && <hr />}
-            {(curStep > STEPS.SELECT_TARGETS) && <ChainByPropDiv chainSeq={chainId} />}
-            {(curStep > STEPS.SELECT_TARGETS) && <ServiceByPropDiv serviceId={serviceId} />}
-            {(curStep > STEPS.SELECT_TARGETS) && <ContractByPropDiv contractId={contractId} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ChainByPropDiv chainSeq={chainId.toString()} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ServiceByPropDiv serviceId={serviceId.toString()} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ContractByPropDiv contractId={contractId.toString()} />}
 
             {(curStep > STEPS.SET_CONSTRUCTOR_PARAMS) && <GetConstructorParams contractId={contractId} params={paramList} />}
 
@@ -89,11 +89,11 @@ export function ContractDeployDiv() {
 }
 
 
-type GetConstructorParamsProp = { contractId: string, params: string[] }
+type GetConstructorParamsProp = { contractId: number, params: string[] }
 export function GetConstructorParams(prop: GetConstructorParamsProp) {
     const [constructorAbi, setConstructorAbi] = useState<Abi>()
     useEffect(() => {
-        ContractApi.getContract(prop.contractId)
+        ContractApi.getContract(prop.contractId.toString())
             .then(res => {
                 try {
                     const abi = JSON.parse(JSON.stringify(res.data.abi))
@@ -126,13 +126,13 @@ export function GetConstructorParams(prop: GetConstructorParamsProp) {
 
 
 
-type SetConstructorParamsProp = { contractId: string, params: string[], paramSetter: Dispatch<SetStateAction<string[]>> }
+type SetConstructorParamsProp = { contractId: number, params: string[], paramSetter: Dispatch<SetStateAction<string[]>> }
 
 function SetConstructorParams(prop: SetConstructorParamsProp) {
     const [constructorAbi, setConstructorAbi] = useState<Abi>()
     const [tokenType, setTokenType] = useState<string>('')
     useEffect(() => {
-        ContractApi.getContract(prop.contractId)
+        ContractApi.getContract(prop.contractId.toString())
             .then(res => {
                 setTokenType(res.data.contractType)
                 try {
@@ -186,7 +186,7 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
 
 
 
-type settersProp = { serviceSetter: Dispatch<SetStateAction<string>>, chainSetter: Dispatch<SetStateAction<string>>, contractSetter: Dispatch<SetStateAction<string>> }
+type settersProp = { serviceSetter: Dispatch<SetStateAction<number>>, chainSetter: Dispatch<SetStateAction<number>>, contractSetter: Dispatch<SetStateAction<number>> }
 
 function SelectTargets(prop: settersProp) {
     return (
@@ -204,7 +204,7 @@ function SelectTargets(prop: settersProp) {
 }
 
 
-type selectProp = { idSetter: Dispatch<SetStateAction<string>> , defaultId ?: string}
+type selectProp = { idSetter: Dispatch<SetStateAction<number>> , defaultId ?: string}
 
 export function SelectContract(prop: selectProp) {
     const [contractList, setContractList] = useState<ListViewContract[]>([])

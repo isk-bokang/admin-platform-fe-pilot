@@ -34,7 +34,7 @@ export function ChangeIskraIncomeWalletDiv() {
         <div>
             <h2> CHANGE MKP ISKRA INCOME WALLET  </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={functionType}/>
+                              functionType={functionType} availRole={'owner'}/>
         </div>
     )
 }

@@ -48,7 +48,7 @@ export function ChangeGameOwnerDiv() {
         <div>
             <h2> CHANGE GAME OWNER </h2>
             <MKPBaseComponent onClickSendTx={sendTx} InputDiv={InputDiv} contractSetter={setContract}
-                              functionType={functionType} gameAddress={gameContractRef.current?.input?.value}/>
+                              functionType={functionType} gameAddress={gameContractRef.current?.input?.value} availRole={'owner'}/>
             { <Button onClick={() => {
                 if(gameContractRef.current?.input?.value) {
                     setGameAddress(gameContractRef.current?.input?.value)
