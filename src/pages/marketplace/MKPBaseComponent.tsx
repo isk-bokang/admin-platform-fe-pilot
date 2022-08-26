@@ -22,47 +22,26 @@ export enum MKP_FUNCTION {
     CLAIM_REVENUE
 }
 
-interface ConstructorParams {
-    onClickSendTx: SendTx;
-    contractSetter: React.Dispatch<React.SetStateAction<Contract|undefined>>;
-    InputDiv?: Function;
-    gameAddress?: string;
-    functionType: MKP_FUNCTION;
-    availRole: string;
-}
-
-class MkpProp {
+type MkpProp = {
     onClickSendTx: SendTx;
     contractSetter: Dispatch<SetStateAction<Contract|undefined>>;
     InputDiv?: Function;
     gameAddress?: string;
     functionType: MKP_FUNCTION;
-    availRole: string = 'owner';
 
-    constructor({onClickSendTx, contractSetter, InputDiv, gameAddress, functionType, availRole}: ConstructorParams) {
-        this.onClickSendTx = onClickSendTx
-        this.contractSetter = contractSetter
-        this.InputDiv = InputDiv
-        this.gameAddress = gameAddress
-        this.functionType = functionType;
-        this.availRole = availRole
-    }
 }
 
 
-export function MKPBaseComponent(prop: MkpProp
-) {
+export function MKPBaseComponent(prop: MkpProp) {
     const [loading, setLoading] = useState<boolean>(false)
     const [deployedContracts, setDeployedContracts] = useState<DeployedContractsDto[]>([])
     const [idx, setIdx] = useState<number>(0)
-    const [availRoleAddress, setAvailRoleAddress] = useState<string>('')
     const [owner, setOwner] = useState<string>('')
     const [curReceiver, setCurReceiver] = useState<string>('')
     const [feeRate, setFeeRate] = useState<number>()
     const [contract, setContract] = useState<Contract>()
 
     useEffect(() => {
-        console.log(prop.gameAddress)
         window.ethereum?.on('chainChanged', () => window.location.reload())
         if (window.ethereum?.chainId && window.ethereum.selectedAddress) {
             DeployedContractApi.getDeployedContracts({
@@ -92,13 +71,6 @@ export function MKPBaseComponent(prop: MkpProp
                     callMethod(tmpContract.methods.purchaserFeePermille()).then(res => {
                         setFeeRate(res)
                     })
-                    if(prop.availRole) {
-                        callMethod(tmpContract.methods[prop.availRole]()).then(res => {
-                            setAvailRoleAddress(res)
-                            console.log(res)
-                            console.log(prop.availRole)
-                        })
-                    }
                 }
             })
     }
@@ -157,7 +129,7 @@ export function MKPBaseComponent(prop: MkpProp
 
     return (
         <div>
-            <MetamaskRoleCheckDiv availRoleAddress={availRoleAddress}>
+            <MetamaskRoleCheckDiv availableRole={'OWNER'} deployedContractId={idx}>
             <Spin spinning={loading}>
                 {deployedContracts.length > 0 && <RadioTargListDiv targList={deployedContracts.map(item => {
                     return {

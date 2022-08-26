@@ -46,6 +46,10 @@ export class PlatformWalletApi{
         return axios.post<void>(`${targURL}/grant`, walletGrantRequestDto)
     }
 
+    static getWalletAddressByRole(role : string, param : { deployedContractId: number }){
+        return axios.get<string[]>(`${targURL}/${role}/address`, {params : param})
+
+    }
 }
 
 

@@ -4,7 +4,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ChainApi, GetChainDto } from './apis/ChainApi';
 import { AddEthereumChainParameter, addNetwork, connectMetamask, switchNetwork } from './utils/metamask';
 import { toHex } from "web3-utils"
-import { CHAINS } from '../constants';
+import {CHAINS, UNKNOWN} from '../constants';
+import {PlatformWalletApi} from "../pages/apis/WalletApi";
 
 export function MetamaskView() {
     const [curChainName, setCurChainName] = useState<string>('-')
@@ -84,18 +85,24 @@ export function ChangeChainNetwork(prop: { setChainSeq ?: Dispatch<SetStateActio
     )
 }
 
-export function MetamaskRoleCheckDiv(props : {availRoleAddress ?: string, children : JSX.Element}){
+export function MetamaskRoleCheckDiv(props : {availableRole : string, deployedContractId : number, children : JSX.Element}){
     const [curAddress, setCurAddress] = useState<string>('')
+    const [roleWalletAddresses, setRoleWalletAddresses ] = useState<string[]>([])
     useEffect(()=>{
-        if(window.ethereum)
-            setCurAddress(window.ethereum.selectedAddress ? window.ethereum.selectedAddress : '')
-    },[])
+        if(props.deployedContractId != UNKNOWN)
+        PlatformWalletApi.getWalletAddressByRole(props.availableRole, {deployedContractId : props.deployedContractId})
+            .then(ret=>{
+                setRoleWalletAddresses(ret.data)
+            })
+    },[props])
 
 
     return(
         <div>
+
             {window.ethereum == null && <h3> NEED METAMASK </h3>}
-            {((props.availRoleAddress == curAddress) || (props.availRoleAddress == null)) && props.children}
+            {window.ethereum?.selectedAddress == null && <MetamaskView/> }
+
         </div>
     )
 }

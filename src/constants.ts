@@ -42,6 +42,8 @@ export enum RouteName {
   MKP_CLAIM_REVENUE = 'claimRevenue',
 };
 
+export const UNKNOWN = -1
+
 export let CHAINS : GetChainDto[];
 await ChainApi.getChainList().then(ret => CHAINS = ret.data)
 
