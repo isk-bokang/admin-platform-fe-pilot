@@ -24,13 +24,15 @@ export enum MKP_FUNCTION {
 
 type MkpProp = {
     onClickSendTx: SendTx;
-    contractSetter: Dispatch<SetStateAction<Contract|undefined>>;
+    contractSetter: Dispatch<SetStateAction<Contract | undefined>>;
     InputDiv?: Function;
     gameAddress?: string;
     functionType: MKP_FUNCTION;
 
 }
 
+
+// @TODO Separate Selecting contract list view to other component and add to Metamask connecting component
 
 export function MKPBaseComponent(prop: MkpProp) {
     const [loading, setLoading] = useState<boolean>(false)
@@ -130,23 +132,23 @@ export function MKPBaseComponent(prop: MkpProp) {
     return (
         <div>
             <MetamaskRoleCheckDiv availableRole={'OWNER'} deployedContractId={idx}>
-            <Spin spinning={loading}>
-                {deployedContracts.length > 0 && <RadioTargListDiv targList={deployedContracts.map(item => {
-                    return {
-                        id: item.id,
-                        contractName: item.contract.name,
-                        contractType: item.contract.contractType,
-                        chainName: item.chain.name,
-                        address: item.address
-                    }
-                })} callBack={prepareContract} setTarg={setIdx}/>}
-                {prop.InputDiv && <prop.InputDiv/>}
-                {<Button type='primary' onClick={onClickHandle}
-                         disabled={((window.ethereum?.selectedAddress) ? (owner.toLocaleUpperCase() !== window.ethereum?.selectedAddress.toLocaleUpperCase()) : true)}>
-                    SEND TX </Button>}
-                <hr/>
-                <MKPContractInfo/>
-            </Spin>
+                <Spin spinning={loading}>
+                    {deployedContracts.length > 0 && <RadioTargListDiv targList={deployedContracts.map(item => {
+                        return {
+                            id: item.id,
+                            contractName: item.contract.name,
+                            contractType: item.contract.contractType,
+                            chainName: item.chain.name,
+                            address: item.address
+                        }
+                    })} callBack={prepareContract} setTarg={setIdx}/>}
+                    {prop.InputDiv && <prop.InputDiv/>}
+                    {<Button type='primary' onClick={onClickHandle}
+                             disabled={((window.ethereum?.selectedAddress) ? (owner.toLocaleUpperCase() !== window.ethereum?.selectedAddress.toLocaleUpperCase()) : true)}>
+                        SEND TX </Button>}
+                    <hr/>
+                    <MKPContractInfo/>
+                </Spin>
             </MetamaskRoleCheckDiv>
         </div>
     )

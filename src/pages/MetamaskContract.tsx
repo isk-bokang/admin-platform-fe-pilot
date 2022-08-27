@@ -7,13 +7,24 @@ import { toHex } from "web3-utils"
 import {CHAINS, UNKNOWN} from '../constants';
 import {PlatformWalletApi} from "../pages/apis/WalletApi";
 
-export function MetamaskView() {
+export function MetamaskView(props : { addrSetter ?: Dispatch<SetStateAction<string>> }) {
     const [curChainName, setCurChainName] = useState<string>('-')
     useEffect( ()=>{
         window.ethereum?.on("chainChanged", (chainId)=>{
             setCurChainName(CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0] ?
                 CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0].name : '-')
         })
+        if(window.ethereum?.selectedAddress != null && props.addrSetter != null){
+            props.addrSetter(window.ethereum.selectedAddress)
+        }
+        if(props.addrSetter != null){
+            window.ethereum?.on("accountsChanged", (accounts : any) => {
+                if (accounts.length > 0 && accounts[0] != null)
+                    if (props.addrSetter) {
+                        props.addrSetter(accounts[0])
+                    }
+            })
+        }
         setCurChainName(CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0] ?
                 CHAINS.filter((val) => val.chainId == window.ethereum?.chainId)[0].name : '-')
     },[window.ethereum?.chainId] )
@@ -89,11 +100,16 @@ export function MetamaskRoleCheckDiv(props : {availableRole : string, deployedCo
     const [curAddress, setCurAddress] = useState<string>('')
     const [roleWalletAddresses, setRoleWalletAddresses ] = useState<string[]>([])
     useEffect(()=>{
+        console.log(props.availableRole)
+        console.log(props.deployedContractId)
         if(props.deployedContractId != UNKNOWN)
-        PlatformWalletApi.getWalletAddressByRole(props.availableRole, {deployedContractId : props.deployedContractId})
-            .then(ret=>{
-                setRoleWalletAddresses(ret.data)
-            })
+            PlatformWalletApi.getWalletAddressByRole(props.availableRole, {deployedContractId : props.deployedContractId})
+                .then(ret=>{
+                    setRoleWalletAddresses(ret.data.map((item)=>{
+                        console.log(item.toLocaleLowerCase())
+                        return item.toLocaleLowerCase()
+                    }))
+                })
     },[props])
 
 
@@ -101,7 +117,9 @@ export function MetamaskRoleCheckDiv(props : {availableRole : string, deployedCo
         <div>
 
             {window.ethereum == null && <h3> NEED METAMASK </h3>}
-            {window.ethereum?.selectedAddress == null && <MetamaskView/> }
+            { <MetamaskView addrSetter={setCurAddress}/> }
+            {(roleWalletAddresses.includes(curAddress.toLocaleLowerCase())) && props.children}
+            <h3>{curAddress}</h3>
 
         </div>
     )
