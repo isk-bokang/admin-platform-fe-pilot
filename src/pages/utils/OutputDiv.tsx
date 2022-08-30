@@ -3,7 +3,7 @@
 import { Table, Descriptions, Typography, Button } from "antd"
 
 import { ColumnsType } from "antd/lib/table"
-import { useEffect, useState } from "react"
+import {Dispatch, SetStateAction, useEffect, useState} from "react"
 const { Paragraph, Text } = Typography;
 
 type listProps = { targList: any[] , connectPath ?: string, title ?: string }
@@ -112,4 +112,6 @@ export function DetailView(prop: targProps){
     )
 
 }
+
+
 

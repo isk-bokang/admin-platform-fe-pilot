@@ -366,4 +366,11 @@ export function DownloadContract(prop: { abi: string, bytecode: string }) {
 
 }
 
+export function RegisterDeployedContract(){
+
+}
+
+
+
+
 export default Contracts

@@ -1,10 +1,11 @@
-import { UploadOutlined } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
+import {UploadOutlined} from "@ant-design/icons";
+import {Button, Form, Input, Select} from "antd";
 import TextArea from "antd/lib/input/TextArea";
-import Table, { ColumnsType } from "antd/lib/table";
-import Upload, { RcFile, UploadFile } from "antd/lib/upload";
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
-
+import Table, {ColumnsType} from "antd/lib/table";
+import Upload, {RcFile, UploadFile} from "antd/lib/upload";
+import React, {ChangeEvent, Dispatch, SetStateAction, useEffect, useState} from "react";
+import {ChainApi, GetChainDto} from "@/pages/apis/ChainApi";
+import {ContractApi, GetContractDto} from "@/pages/apis/ContractApi";
 
 
 export enum inputTypes {
@@ -15,8 +16,8 @@ export enum inputTypes {
 }
 
 export interface InputType {
-    key : string,
-    type : inputTypes
+    key: string,
+    type: inputTypes
 }
 
 
@@ -38,29 +39,29 @@ export function InputTargDiv(prop: targProps) {
 
     return (
         <Form layout="vertical">
-            {keys.map( item=>{
-                return(
-                    <Form.Item label = {item} key={item} name={item} >
+            {keys.map(item => {
+                return (
+                    <Form.Item label={item} key={item} name={item}>
                         <Input></Input>
                     </Form.Item>
                 )
-            } )}
+            })}
         </Form>
     )
 
 }
 
 
-type radioProp = { targList: any[], setTarg?: Dispatch<SetStateAction<number>>, defaultId ?: string, callBack ?: Function }
+type radioProp = { targList: any[], setTarg?: Dispatch<SetStateAction<number>>, defaultId?: string, callBack?: Function }
 
 export function RadioTargListDiv(prop: radioProp) {
     const [columns, setColumns] = useState<ColumnsType<any>>([])
     const [data, setData] = useState<any[]>([])
     const [keys, setKeys] = useState<string[]>([])
     const groupNumber = Math.random()
-    
+
     useEffect(() => {
-        
+
         setData(prop.targList.map(item => {
             item.key = item.id
             return item
@@ -72,7 +73,7 @@ export function RadioTargListDiv(prop: radioProp) {
                     dataIndex: item,
                     key: item
                 }
-            }).filter(item =>{
+            }).filter(item => {
                 return item.title !== 'key'
             })
         )
@@ -80,27 +81,27 @@ export function RadioTargListDiv(prop: radioProp) {
 
     return (
         <>
-        <Table columns={columns} dataSource={data} rowSelection={{
-            type : "radio",
-            onChange : (key, row)=>{
-                if(prop.setTarg)
-                    prop.setTarg(parseInt(key.toString()))
-                if(prop.callBack)
-                    prop.callBack()
-            },
-            defaultSelectedRowKeys : prop.defaultId ? [parseInt(prop.defaultId)] : undefined,
-            
-        }} />
+            <Table columns={columns} dataSource={data} rowSelection={{
+                type: "radio",
+                onChange: (key, row) => {
+                    if (prop.setTarg)
+                        prop.setTarg(parseInt(key.toString()))
+                    if (prop.callBack)
+                        prop.callBack()
+                },
+                defaultSelectedRowKeys: prop.defaultId ? [parseInt(prop.defaultId)] : undefined,
+
+            }}/>
         </>
     )
 }
 
 
-export function readJsonFileByUrl(fileData: RcFile) : Promise<any> {
+export function readJsonFileByUrl(fileData: RcFile): Promise<any> {
 
     const fileReader = new FileReader();
 
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         fileReader.onloadend = () => {
             resolve(JSON.parse(fileReader.result as string));
         }
@@ -117,17 +118,17 @@ export function readJsonFileByUrl(fileData: RcFile) : Promise<any> {
     })
 }
 
-export function JsonChooseDiv(props : any){
-    let isRemoved : boolean = false;
+export function JsonChooseDiv(props: any) {
+    let isRemoved: boolean = false;
 
 
-
-    async function onChangeHandleURL(targFile : UploadFile){
+    async function onChangeHandleURL(targFile: UploadFile) {
         if (!isRemoved)
             props.setJsonFile(await readJsonFileByUrl(targFile.originFileObj!!))
         isRemoved = false
         targFile.status = "success"
     }
+
     async function onRemoveHandle() {
         props.setJsonFile([])
         isRemoved = true
@@ -141,10 +142,75 @@ export function JsonChooseDiv(props : any){
                 action={''}
                 maxCount={1}
                 onChange={(info) => onChangeHandleURL(info.file)}
-                onRemove={() => { onRemoveHandle() }}
+                onRemove={() => {
+                    onRemoveHandle()
+                }}
             >
-                <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                <Button icon={<UploadOutlined/>}>Click to Upload</Button>
             </Upload>
         </div>
     )
 }
+
+export function ChainSelector(prop: { chainSeq?: string, setChainSeq: Dispatch<SetStateAction<string>> }) {
+    const [chainList, setChainList] = useState<GetChainDto[]>([])
+    useEffect(() => {
+        ChainApi.getChainList().then(res => {
+            setChainList(res.data)
+        })
+    }, [])
+
+    const onChangeHandle = (selectedId : string)=>{
+        prop.setChainSeq(selectedId)
+    }
+
+    return (
+        <>
+            {chainList.length > 0 &&
+                <Select
+                    onChange={onChangeHandle}
+                    defaultValue={prop.chainSeq ? prop.chainSeq : '' }>
+                    {chainList.map(item => {
+                        return (
+                            <Select.Option value={item.seq} key={item.seq}>
+                                {item.name} <br/> {item.chainId}
+                            </Select.Option>
+                        )
+                    })}
+                </Select>
+            }
+        </>
+    )
+}
+
+export function ContractSelector(prop : {contractId ?: string, setContractId : Dispatch<SetStateAction<string>>}){
+    const [contractList, setContractList] = useState<GetContractDto[]>([])
+    useEffect( ()=>{
+        ContractApi.getContractList().then(res =>{
+            setContractList(res.data)
+        })
+    } )
+
+    const onChangeHandle = (selectedId : string)=>{
+        prop.setContractId(selectedId)
+    }
+
+    return(
+        <>
+            {contractList.length > 0 &&
+                <Select
+                    onChange={onChangeHandle}
+                    defaultValue={prop.contractId ? prop.contractId : '' }>
+                    {contractList.map(item => {
+                        return (
+                            <Select.Option value={item.id} key={item.id}>
+                                {item.name} <br/> {item.contractType}
+                            </Select.Option>
+                        )
+                    })}
+                </Select>
+            }
+        </>
+    )
+}
+
