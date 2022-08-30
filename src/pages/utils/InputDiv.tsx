@@ -190,7 +190,7 @@ export function ContractSelector(prop : {contractId ?: string, setContractId : D
         ContractApi.getContractList().then(res =>{
             setContractList(res.data)
         })
-    } )
+    } , [])
 
     const onChangeHandle = (selectedId : string)=>{
         prop.setContractId(selectedId)
@@ -199,6 +199,7 @@ export function ContractSelector(prop : {contractId ?: string, setContractId : D
     return(
         <>
             {contractList.length > 0 &&
+                <Form.Item rules={[{required : true}]}>
                 <Select
                     style={{width : 150}}
                     onChange={onChangeHandle}>
@@ -209,7 +210,9 @@ export function ContractSelector(prop : {contractId ?: string, setContractId : D
                             </Select.Option>
                         )
                     })}
+
                 </Select>
+                </Form.Item>
             }
         </>
     )

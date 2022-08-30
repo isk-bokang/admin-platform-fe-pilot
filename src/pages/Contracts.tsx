@@ -5,13 +5,14 @@ import TextArea from "antd/lib/input/TextArea"
 import React, {useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
 import {GetChainDto} from "./apis/ChainApi"
-import { ContractApi, GetContractDto, PostContractDto} from "./apis/ContractApi"
+import {ContractApi, GetContractDto, PostContractDto} from "./apis/ContractApi"
 import {DeployedContractApi} from "./apis/DeployedContractApi"
 import {GetServiceDto} from "./apis/ServiceApi"
-import { readJsonFileByUrl} from "./utils/InputDiv"
+import {ChainSelector, ContractSelector, readJsonFileByUrl} from "./utils/InputDiv"
 import {DetailView, TargListView} from "./utils/OutputDiv"
 import {UploadOutlined} from "@ant-design/icons"
 import {AbiItem} from "web3-utils";
+import {useForm} from "antd/es/form/Form";
 
 function Contracts() {
     return (
@@ -255,7 +256,7 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload?: boo
 function MethodListDiv(prop: { contractId: string }) {
     const [methodList, setMethodList] = useState<AbiItem[]>([])
     useEffect(() => {
-        ContractApi.getContract(prop.contractId).then(ret=>{
+        ContractApi.getContract(prop.contractId).then(ret => {
             setMethodList(ret.data.abi)
         })
     }, [prop])
@@ -366,11 +367,33 @@ export function DownloadContract(prop: { abi: string, bytecode: string }) {
 
 }
 
-export function RegisterDeployedContract(){
+export function RegisterDeployedContract() {
+    const form = useForm()
+    const [chainSeq, setChainSeq] = useState('')
+    const [contractId, setContractId] = useState('')
 
+    return (
+        <div>
+            <Form>
+
+                    <ContractSelector setContractId={setContractId}/>
+
+                <Form.Item label={'Chain'} rules={[{required: true}, ({ getFieldValue }) => ({
+                    validator(_, value) {
+                        console.log(value)
+                        if (!value || getFieldValue('password') === value) {
+                            return Promise.resolve();
+                        }
+                        return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                    },
+                }),]}>
+                    <ChainSelector setChainSeq={setChainSeq}/>
+                </Form.Item>
+                <Button htmlType={"submit"}> SUBMIT</Button>
+            </Form>
+        </div>
+    )
 }
-
-
 
 
 export default Contracts
