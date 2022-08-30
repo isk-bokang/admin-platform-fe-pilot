@@ -5,12 +5,13 @@ import TextArea from "antd/lib/input/TextArea"
 import React, {useEffect, useState} from "react"
 import {useParams} from "react-router-dom"
 import {GetChainDto} from "./apis/ChainApi"
-import {Abi, ContractApi, GetContractDto, PostContractDto} from "./apis/ContractApi"
+import { ContractApi, GetContractDto, PostContractDto} from "./apis/ContractApi"
 import {DeployedContractApi} from "./apis/DeployedContractApi"
 import {GetServiceDto} from "./apis/ServiceApi"
 import { readJsonFileByUrl} from "./utils/InputDiv"
 import {DetailView, TargListView} from "./utils/OutputDiv"
 import {UploadOutlined} from "@ant-design/icons"
+import {AbiItem} from "web3-utils";
 
 function Contracts() {
     return (
@@ -252,9 +253,11 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload?: boo
 }
 
 function MethodListDiv(prop: { contractId: string }) {
-    const [methodList, setMethodList] = useState<Abi[]>([])
+    const [methodList, setMethodList] = useState<AbiItem[]>([])
     useEffect(() => {
-        ContractApi.getContractMethods(prop.contractId).then((res) => setMethodList(res.data))
+        ContractApi.getContract(prop.contractId).then(ret=>{
+            setMethodList(ret.data.abi)
+        })
     }, [prop])
 
 

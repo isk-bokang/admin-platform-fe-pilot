@@ -1,4 +1,5 @@
 import axios from "axios";
+import {AbiItem} from "web3-utils";
 
 
 const targURL = "http://localhost:8090/contracts"
@@ -13,14 +14,14 @@ export class GetContractDto {
     readonly id: string;
     readonly name: string;
     readonly contractType: string;
-    readonly abi: Map<string, any>[] = [];
+    readonly abi: AbiItem[] = [];
     readonly bytecode: string;
 
     constructor(
         id: string,
         name: string,
         contractType: string,
-        abi: Map<string, any>[] = [],
+        abi: AbiItem[] = [],
         bytecode: string,
     ) {
         this.id = id
@@ -62,7 +63,7 @@ export class ContractApi {
         return axios.post<GetContractDto>(`${targURL}`, data)
     }
     static getContractMethods(contractId: string, param ?: {methodName ?: string}) {
-        return axios.get<Abi[]>(`${targURL}/${contractId}/methods`, {params:param})
+        return axios.get<AbiItem[]>(`${targURL}/${contractId}/methods`, {params:param})
     }
     static getContractTypes(){
         return axios.get<string[]>(`${targURL}/types`)
