@@ -4,8 +4,8 @@ import TextArea from "antd/lib/input/TextArea";
 import Table, {ColumnsType} from "antd/lib/table";
 import Upload, {RcFile, UploadFile} from "antd/lib/upload";
 import React, {ChangeEvent, Dispatch, SetStateAction, useEffect, useState} from "react";
-import {ChainApi, GetChainDto} from "@/pages/apis/ChainApi";
-import {ContractApi, GetContractDto} from "@/pages/apis/ContractApi";
+import {ChainApi, GetChainDto} from "../apis/ChainApi";
+import {ContractApi, GetContractDto} from "../apis/ContractApi";
 
 
 export enum inputTypes {
@@ -157,6 +157,7 @@ export function ChainSelector(prop: { chainSeq?: string, setChainSeq: Dispatch<S
     useEffect(() => {
         ChainApi.getChainList().then(res => {
             setChainList(res.data)
+            console.log(res.data)
         })
     }, [])
 
@@ -168,11 +169,11 @@ export function ChainSelector(prop: { chainSeq?: string, setChainSeq: Dispatch<S
         <>
             {chainList.length > 0 &&
                 <Select
-                    onChange={onChangeHandle}
-                    defaultValue={prop.chainSeq ? prop.chainSeq : '' }>
+                    style={{width : 150}}
+                    onChange={onChangeHandle}>
                     {chainList.map(item => {
                         return (
-                            <Select.Option value={item.seq} key={item.seq}>
+                            <Select.Option  key={item.seq} value={item.seq} >
                                 {item.name} <br/> {item.chainId}
                             </Select.Option>
                         )
@@ -199,11 +200,11 @@ export function ContractSelector(prop : {contractId ?: string, setContractId : D
         <>
             {contractList.length > 0 &&
                 <Select
-                    onChange={onChangeHandle}
-                    defaultValue={prop.contractId ? prop.contractId : '' }>
+                    style={{width : 150}}
+                    onChange={onChangeHandle}>
                     {contractList.map(item => {
                         return (
-                            <Select.Option value={item.id} key={item.id}>
+                            <Select.Option key={item.id} value={item.id} >
                                 {item.name} <br/> {item.contractType}
                             </Select.Option>
                         )
