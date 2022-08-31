@@ -290,7 +290,6 @@ export function ContractDetailDiv() {
     const {contractId} = useParams()
     return (
         <>
-
             {contractId && <ContractByPropDiv contractId={contractId} needDownload={true}/>}
             <hr/>
             <h4>METHODS</h4>
@@ -373,21 +372,26 @@ export function RegisterDeployedContract() {
     const [chainSeq, setChainSeq] = useState('')
     const [contractId, setContractId] = useState('')
 
-    function onFinishHandle(){
+    function onFinishHandle() {
         DeployedContractApi.postRegisterDeployedContract({
-            appId : '0',
-            contractId : contractId,
-            chainSeq : chainSeq,
-            contractName : form.getFieldValue('name'),
-            contractAddress : form.getFieldValue('contractAddress'),
-            deployerAddress : ''
+            // @TODO Change AppId And DeployerAddress
+            appId: '1',
+            contractId: contractId,
+            chainSeq: chainSeq,
+            contractName: form.getFieldValue('name'),
+            contractAddress: form.getFieldValue('contractAddress'),
+            deployerAddress: '0x00'
         })
-            .catch(err=>{
+            .then(()=>{
+                alert("DONE")
+            })
+            .catch(err => {
                 console.error(err)
                 alert('Error Occurred')
             })
 
     }
+
     return (
         <div>
             <Form
