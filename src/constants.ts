@@ -1,6 +1,7 @@
 import { ChainApi, GetChainDto } from "./pages/apis/ChainApi";
 import { ContractApi } from "./pages/apis/ContractApi";
 import {PlatformWalletApi} from "./pages/apis/WalletApi";
+import {RuleObject, StoreValue} from "rc-field-form/lib/interface";
 
 export enum PlatformContractType{
   ISKRA_MKP = 'ISKRA_MKP'
@@ -53,4 +54,13 @@ await ContractApi.getContractTypes().then(ret=>CONTRACT_TYPES = ret.data)
 export let WALLET_ROLE_TYPES : string[];
 await PlatformWalletApi.getPlatformWalletTypes().then(ret=>WALLET_ROLE_TYPES = ret.data)
 
+export async function validateHexString(rule: RuleObject, value: StoreValue){
+
+    const reg = /^0x([0-9a-f]*)$/i;
+    if(reg.test(value))
+      return Promise.resolve()
+    else
+      return Promise.reject('Need to Insert Hex String')
+
+}
 

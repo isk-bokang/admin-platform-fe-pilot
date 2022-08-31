@@ -1,4 +1,4 @@
-import {CONTRACT_TYPES, RouteName} from "../constants"
+import {CONTRACT_TYPES, RouteName, validateHexString} from "../constants"
 import {Button, Form, Input, Select, Upload, UploadFile, Collapse} from "antd"
 import {RuleObject} from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
@@ -13,6 +13,7 @@ import {DetailView, TargListView} from "./utils/OutputDiv"
 import {UploadOutlined} from "@ant-design/icons"
 import {AbiItem} from "web3-utils";
 import {useForm} from "antd/es/form/Form";
+import {rejects} from "assert";
 
 function Contracts() {
     return (
@@ -368,27 +369,51 @@ export function DownloadContract(prop: { abi: string, bytecode: string }) {
 }
 
 export function RegisterDeployedContract() {
-    const form = useForm()
+    const [form] = Form.useForm()
     const [chainSeq, setChainSeq] = useState('')
     const [contractId, setContractId] = useState('')
 
+    function onFinishHandle(){
+        DeployedContractApi.postRegisterDeployedContract({
+            appId : '0',
+            contractId : contractId,
+            chainSeq : chainSeq,
+            contractName : form.getFieldValue('name'),
+            contractAddress : form.getFieldValue('contractAddress'),
+            deployerAddress : ''
+        })
+            .catch(err=>{
+                console.error(err)
+                alert('Error Occurred')
+            })
+
+    }
     return (
         <div>
-            <Form>
-
+            <Form
+                requiredMark={true}
+                layout={"vertical"}
+                onFinish={onFinishHandle}
+                form={form}
+            >
+                <Form.Item label={'Name'} name={'name'} rules={[{required: true}]}>
+                    <Input/>
+                </Form.Item>
+                <Form.Item label={'Contract'}>
                     <ContractSelector setContractId={setContractId}/>
+                </Form.Item>
 
-                <Form.Item label={'Chain'} rules={[{required: true}, ({ getFieldValue }) => ({
-                    validator(_, value) {
-                        console.log(value)
-                        if (!value || getFieldValue('password') === value) {
-                            return Promise.resolve();
-                        }
-                        return Promise.reject(new Error('The two passwords that you entered do not match!'));
-                    },
-                }),]}>
+                <Form.Item label={'Chain'}>
                     <ChainSelector setChainSeq={setChainSeq}/>
                 </Form.Item>
+
+                <Form.Item label={'Contract Address'} name={'contractAddress'}
+                           rules={[{required: true}, {type: 'string', min: 41, message: 'too short'}, {
+                               validator: validateHexString
+                           }]}>
+                    <Input/>
+                </Form.Item>
+
                 <Button htmlType={"submit"}> SUBMIT</Button>
             </Form>
         </div>

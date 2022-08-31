@@ -1,9 +1,8 @@
 import {UploadOutlined} from "@ant-design/icons";
 import {Button, Form, Input, Select} from "antd";
-import TextArea from "antd/lib/input/TextArea";
 import Table, {ColumnsType} from "antd/lib/table";
 import Upload, {RcFile, UploadFile} from "antd/lib/upload";
-import React, {ChangeEvent, Dispatch, SetStateAction, useEffect, useState} from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState} from "react";
 import {ChainApi, GetChainDto} from "../apis/ChainApi";
 import {ContractApi, GetContractDto} from "../apis/ContractApi";
 
@@ -152,14 +151,14 @@ export function JsonChooseDiv(props: any) {
     )
 }
 
-export function ChainSelector(prop: { chainSeq?: string, setChainSeq: Dispatch<SetStateAction<string>> }) {
+export function ChainSelector(prop: {setChainSeq: Dispatch<SetStateAction<string>> }) {
     const [chainList, setChainList] = useState<GetChainDto[]>([])
     useEffect(() => {
         ChainApi.getChainList().then(res => {
             setChainList(res.data)
-            console.log(res.data)
+            prop.setChainSeq(res.data[0].seq)
         })
-    }, [])
+    }, [prop])
 
     const onChangeHandle = (selectedId : string)=>{
         prop.setChainSeq(selectedId)
@@ -170,7 +169,9 @@ export function ChainSelector(prop: { chainSeq?: string, setChainSeq: Dispatch<S
             {chainList.length > 0 &&
                 <Select
                     style={{width : 150}}
-                    onChange={onChangeHandle}>
+                    onChange={onChangeHandle}
+                    defaultValue={chainList[0].name}
+                >
                     {chainList.map(item => {
                         return (
                             <Select.Option  key={item.seq} value={item.seq} >
@@ -184,13 +185,14 @@ export function ChainSelector(prop: { chainSeq?: string, setChainSeq: Dispatch<S
     )
 }
 
-export function ContractSelector(prop : {contractId ?: string, setContractId : Dispatch<SetStateAction<string>>}){
+export function ContractSelector(prop : { setContractId : Dispatch<SetStateAction<string>>}){
     const [contractList, setContractList] = useState<GetContractDto[]>([])
     useEffect( ()=>{
         ContractApi.getContractList().then(res =>{
             setContractList(res.data)
+            prop.setContractId(res.data[0].id)
         })
-    } , [])
+    } , [prop])
 
     const onChangeHandle = (selectedId : string)=>{
         prop.setContractId(selectedId)
@@ -199,20 +201,21 @@ export function ContractSelector(prop : {contractId ?: string, setContractId : D
     return(
         <>
             {contractList.length > 0 &&
-                <Form.Item rules={[{required : true}]}>
                 <Select
-                    style={{width : 150}}
-                    onChange={onChangeHandle}>
+                    style={{width: 150}}
+                    onChange={onChangeHandle}
+                    defaultValue={contractList[0].name}
+                >
+
                     {contractList.map(item => {
                         return (
-                            <Select.Option key={item.id} value={item.id} >
+                            <Select.Option key={item.id} value={item.id}>
                                 {item.name} <br/> {item.contractType}
                             </Select.Option>
                         )
                     })}
 
                 </Select>
-                </Form.Item>
             }
         </>
     )
