@@ -383,10 +383,28 @@ export function RegisterDeployedContract() {
             deployerAddress: '0x00'
         })
             .then(()=>{
+                console.log({
+                    // @TODO Change AppId And DeployerAddress
+                    appId: '1',
+                    contractId: contractId,
+                    chainSeq: chainSeq,
+                    contractName: form.getFieldValue('name'),
+                    contractAddress: form.getFieldValue('contractAddress'),
+                    deployerAddress: '0x00'
+                })
                 alert("DONE")
             })
             .catch(err => {
                 console.error(err)
+                console.log({
+                    // @TODO Change AppId And DeployerAddress
+                    appId: '1',
+                    contractId: contractId,
+                    chainSeq: chainSeq,
+                    contractName: form.getFieldValue('name'),
+                    contractAddress: form.getFieldValue('contractAddress'),
+                    deployerAddress: '0x00'
+                })
                 alert('Error Occurred')
             })
 
@@ -399,16 +417,18 @@ export function RegisterDeployedContract() {
                 layout={"vertical"}
                 onFinish={onFinishHandle}
                 form={form}
-            >
+                onChange={()=>{
+                    console.log(contractId)
+                }}>
                 <Form.Item label={'Name'} name={'name'} rules={[{required: true}]}>
                     <Input/>
                 </Form.Item>
                 <Form.Item label={'Contract'}>
-                    <ContractSelector setContractId={setContractId}/>
+                    <ContractSelector contractId={contractId} setContractId={setContractId}/>
                 </Form.Item>
 
                 <Form.Item label={'Chain'}>
-                    <ChainSelector setChainSeq={setChainSeq}/>
+                    <ChainSelector chainSeq={chainSeq} setChainSeq={setChainSeq}/>
                 </Form.Item>
 
                 <Form.Item label={'Contract Address'} name={'contractAddress'}

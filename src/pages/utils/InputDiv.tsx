@@ -151,13 +151,15 @@ export function JsonChooseDiv(props: any) {
     )
 }
 
-export function ChainSelector(prop: {setChainSeq: Dispatch<SetStateAction<string>> }) {
+export function ChainSelector(prop: {chainSeq ?: string, setChainSeq: Dispatch<SetStateAction<string>> }) {
     const [chainList, setChainList] = useState<GetChainDto[]>([])
     useEffect(() => {
         ChainApi.getChainList().then(res => {
             setChainList(res.data)
-            prop.setChainSeq(res.data[0].seq)
+            if(prop.chainSeq == null || prop.chainSeq == '')
+                prop.setChainSeq(res.data[0].seq)
         })
+
     }, [prop])
 
     const onChangeHandle = (selectedId : string)=>{
@@ -185,16 +187,18 @@ export function ChainSelector(prop: {setChainSeq: Dispatch<SetStateAction<string
     )
 }
 
-export function ContractSelector(prop : { setContractId : Dispatch<SetStateAction<string>>}){
+export function ContractSelector(prop : {contractId ?: string , setContractId : Dispatch<SetStateAction<string>>}){
     const [contractList, setContractList] = useState<GetContractDto[]>([])
     useEffect( ()=>{
         ContractApi.getContractList().then(res =>{
             setContractList(res.data)
-            prop.setContractId(res.data[0].id)
+            if(prop.contractId == null || prop.contractId == '')
+                prop.setContractId(res.data[0].id)
         })
     } , [prop])
 
     const onChangeHandle = (selectedId : string)=>{
+        console.log(selectedId)
         prop.setContractId(selectedId)
     }
 
