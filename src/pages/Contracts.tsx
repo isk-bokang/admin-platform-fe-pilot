@@ -24,7 +24,7 @@ function Contracts() {
 export interface DeployedContracts {
     id: string
     contractName: string
-    contractType: string
+    contractType?: string
     serviceName?: string
     chainName: string
     address: string
@@ -42,7 +42,7 @@ export function DeployedContractListDiv() {
                         return {
                             id: item.id,
                             contractName: item.contract.name,
-                            contractType: item.contract.contractType,
+                            contractType: item.contract.contractType.name,
                             serviceName: item.gameApp ? item.gameApp.name : 'ISKRA',
                             chainName: item.chain.name,
                             address: item.address
@@ -62,7 +62,7 @@ export function DeployedContractListDiv() {
 export interface ListViewContract {
     id: string
     name: string
-    contractType: string
+    contractType?: string
 }
 
 export function ContractListDiv() {
@@ -76,7 +76,7 @@ export function ContractListDiv() {
                         return {
                             id: item.id,
                             name: item.name,
-                            contractType: item.contractType
+                            contractType: item.contractType.name
                         }
                     })
                 )
@@ -221,7 +221,7 @@ export function RegisterContractDiv() {
 interface ContractDetail {
     contractId: string,
     name: string,
-    tokenType: string,
+    contractType?: string,
     abi: string,
     bytecode: string
 }
@@ -237,7 +237,7 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload?: boo
                     setContract({
                         contractId: res.data.id,
                         name: res.data.name,
-                        tokenType: res.data.contractType,
+                        contractType: res.data.contractType.name,
                         abi: JSON.stringify(res.data.abi),
                         bytecode: res.data.bytecode,
                     })

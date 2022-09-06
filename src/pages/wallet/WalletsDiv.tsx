@@ -38,6 +38,7 @@ export function WalletListDiv() {
         name?: string,
         walletAddress?: string,
         contractAddress?: string,
+        chainName?: string,
         contractName?: string,
         role?: string,
         contractType?: string,
@@ -68,9 +69,10 @@ export function WalletListDiv() {
                 for (const jtem of item.platformContractInfoDtos) {
                     let retItem: AttributeType = JSON.parse(JSON.stringify(commonData))
                     retItem.key = jtem.roleId
+                    retItem.chainName = jtem.deployedContractDto.chain.name
                     retItem.contractAddress = jtem.deployedContractDto.address
                     retItem.contractName = jtem.deployedContractDto.contract.name
-                    retItem.contractType = jtem.deployedContractDto.contract.contractType
+                    retItem.contractType = jtem.deployedContractDto.contract.contractType.name
                     retItem.role = jtem.role
                     ret.push(retItem)
                     commonData.spanCnt = 0
@@ -108,22 +110,27 @@ export function WalletListDiv() {
         },
         {
             key: 4,
+            title: "Chain Name",
+            dataIndex: 'chainName',
+        },
+        {
+            key: 5,
             title: "Contract Name",
             dataIndex: 'contractName',
         },
         {
-            key: 5,
+            key: 6,
             title: "Contract Type",
             dataIndex: 'contractType',
 
         },
         {
-            key: 6,
+            key: 7,
             title: "Role",
             dataIndex: 'role',
         },
         {
-            key: 7,
+            key: 8,
             title: 'EDIT',
             render: (_: any, record: AttributeType) => {
                 return (
@@ -136,7 +143,7 @@ export function WalletListDiv() {
             }
         },
         {
-            key: 8,
+            key: 9,
             title: "ADD",
             dataIndex: 'walletAddress',
             render: (_: any, record: AttributeType) => {
@@ -216,7 +223,7 @@ export function WalletListDiv() {
                             <Descriptions.Item label={"CONTRACT NAME"}
                                                span={3}> {contractInfo.deployedContractDto.contract.name} </Descriptions.Item>
                             <Descriptions.Item label={"CONTRACT TYPE"}
-                                               span={3}> {contractInfo.deployedContractDto.contract.contractType} </Descriptions.Item>
+                                               span={3}> {contractInfo.deployedContractDto.contract.contractType.name} </Descriptions.Item>
                             <Descriptions.Item label={"CHAIN ID"}
                                                span={3}> {contractInfo.deployedContractDto.chain.chainId} </Descriptions.Item>
                             <Descriptions.Item label={"CHAIN NAME"}
@@ -317,7 +324,7 @@ export function WalletListDiv() {
                                 deployedContracts.map((item, idx) => {
                                     return (
                                         <Select.Option value={item.id} key={item.id}>
-                                            {item.contract.contractType}
+                                            {item.contract.contractType.name}
                                             <br/>
                                             {item.chain.name}
                                             <br/>

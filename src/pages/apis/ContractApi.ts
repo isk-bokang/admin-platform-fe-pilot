@@ -10,17 +10,24 @@ export interface Abi{
     type : string
 }
 
+export interface ContractTypeDto{
+    id : string,
+    name : string,
+    platformName : string
+
+}
+
 export class GetContractDto {
     readonly id: string;
     readonly name: string;
-    readonly contractType: string;
+    readonly contractType: ContractTypeDto;
     readonly abi: AbiItem[] = [];
     readonly bytecode: string;
 
     constructor(
         id: string,
         name: string,
-        contractType: string,
+        contractType: ContractTypeDto,
         abi: AbiItem[] = [],
         bytecode: string,
     ) {
