@@ -214,7 +214,7 @@ export function ContractSelector(prop : {contractId ?: string , setContractId : 
                     {contractList.map(item => {
                         return (
                             <Select.Option key={item.id} value={item.id}>
-                                {item.name} <br/> {item.contractType}
+                                {item.name} <br/> {item.contractType.name}
                             </Select.Option>
                         )
                     })}

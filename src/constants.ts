@@ -64,3 +64,4 @@ export async function validateHexString(rule: RuleObject, value: StoreValue){
 
 }
 
+export const ELLIPSIS_COUNT : number = 5

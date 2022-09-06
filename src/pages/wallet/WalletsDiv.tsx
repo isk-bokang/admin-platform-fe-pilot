@@ -10,6 +10,7 @@ import {
 import {WALLET_ROLE_TYPES} from "../../constants";
 import {DeployedContractApi, DeployedContractsDto} from "../apis/DeployedContractApi";
 import {AdminLogApi} from "../../pages/apis/AdminLogApi";
+import {AccountDisplay} from "../../pages/utils/OutputDiv";
 
 const NONE = -1
 
@@ -100,13 +101,19 @@ export function WalletListDiv() {
             key: 2,
             title: "Wallet Name",
             dataIndex: 'name',
-            onCell: onCellHandle
+            onCell: onCellHandle,
+
         },
         {
             key: 3,
             title: "Wallet Address",
             dataIndex: 'walletAddress',
-            onCell: onCellHandle
+            onCell: onCellHandle,
+            render : (_, record : AttributeType)=>{
+                return (
+                <AccountDisplay account={record.walletAddress}/>
+                )
+            }
         },
         {
             key: 4,
