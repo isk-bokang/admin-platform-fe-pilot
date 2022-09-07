@@ -9,8 +9,8 @@ import {
 } from "../apis/WalletApi";
 import {WALLET_ROLE_TYPES} from "../../constants";
 import {DeployedContractApi, DeployedContractsDto} from "../apis/DeployedContractApi";
-import {AdminLogApi} from "../../pages/apis/AdminLogApi";
 import {AccountDisplay} from "../../pages/utils/OutputDiv";
+import {ContractRoleDto} from "@/pages/apis/ContractApi";
 
 const NONE = -1
 
@@ -26,6 +26,7 @@ export function WalletListDiv() {
     useEffect(() => {
         PlatformWalletApi.getPlatformWalletList()
             .then((ret) => {
+                console.log(ret.data)
                 setData(ret.data)
             })
             .catch((err) => {
@@ -74,7 +75,7 @@ export function WalletListDiv() {
                     retItem.contractAddress = jtem.deployedContractDto.address
                     retItem.contractName = jtem.deployedContractDto.contract.name
                     retItem.contractType = jtem.deployedContractDto.contract.contractType.name
-                    retItem.role = jtem.role
+                    retItem.role = jtem.contractRoleDto.name
                     ret.push(retItem)
                     commonData.spanCnt = 0
                 }
@@ -109,9 +110,9 @@ export function WalletListDiv() {
             title: "Wallet Address",
             dataIndex: 'walletAddress',
             onCell: onCellHandle,
-            render : (_, record : AttributeType)=>{
+            render: (_, record: AttributeType) => {
                 return (
-                <AccountDisplay account={record.walletAddress}/>
+                    <AccountDisplay account={record.walletAddress}/>
                 )
             }
         },
@@ -169,22 +170,25 @@ export function WalletListDiv() {
     function EditRoleModal() {
         const [walletItem, setWalletItem] = useState<PlatformWalletInfoDto>()
         const [contractInfo, setContractInfo] = useState<PlatformContractInfoDto>()
-        const [walletRole, setWalletRole] = useState<string>('')
+        const [contractRoleList, setContractRoleList] = useState<ContractRoleDto[]>([])
+        const [contractRole, setContractRole] = useState<number>(NONE)
         useEffect(() => {
             setWalletItem(data.find((value) => {
                 return value.platformWalletDto.id == detailViewId
             }))
-            setContractInfo(
-                data.find((value) => {
-                    return value.platformWalletDto.id == detailViewId
-                })!!.platformContractInfoDtos!!.find(value => {
-                    return value.roleId == detailViewKey
-                })
-            )
+            const tmpContractInfo = data.find((value) => {
+                return value.platformWalletDto.id == detailViewId
+            })!!.platformContractInfoDtos!!.find(value => {
+                return value.roleId == detailViewKey
+            })
+            setContractInfo(tmpContractInfo)
+            DeployedContractApi.getContractRoles(tmpContractInfo!!.deployedContractDto.id).then(ret => {
+                setContractRoleList(ret.data)
+            })
         })
 
-        function onChangeWalletRole(roleIdx: number) {
-            setWalletRole(WALLET_ROLE_TYPES[roleIdx])
+        function onChangeWalletRole(roleId: number) {
+            setContractRole(roleId)
         }
 
         function onOk() {
@@ -193,9 +197,9 @@ export function WalletListDiv() {
             PlatformWalletApi.grantWalletRole(new WalletGrantRequestDto(
                     walletItem!!.platformWalletDto.id,
                     parseInt(contractInfo!!.deployedContractDto.id),
-                    walletRole
+                    contractRole
                 )
-            ).then(()=>{
+            ).then(() => {
                 PlatformWalletApi.getPlatformWalletList()
                     .then((ret) => {
                         setData(ret.data)
@@ -242,10 +246,9 @@ export function WalletListDiv() {
                     <Form.Item label="ROLE" name='ROLE'
                                rules={[{required: true, message: 'Require Role'}]}>
                         {<Select onChange={onChangeWalletRole} style={{width: '100%'}}>
-                            {WALLET_ROLE_TYPES.length > 0 &&
-                                WALLET_ROLE_TYPES.map((item, idx) => {
-                                    if(item != "NONE")
-                                        return (<Select.Option value={idx} key={idx}>{item}</Select.Option>)
+                            {contractRoleList.length > 0 &&
+                                contractRoleList.map((item, idx) => {
+                                    return (<Select.Option value={item.id} key={idx}>{item.name}</Select.Option>)
                                 })
                             }
                         </Select>}
@@ -264,7 +267,8 @@ export function WalletListDiv() {
         const [walletItem, setWalletItem] = useState<PlatformWalletInfoDto>()
         const [deployedContracts, setDeployedContracts] = useState<DeployedContractsDto[]>([])
         const [deployedContractId, setDeployedContractId] = useState<number>(NONE)
-        const [walletRole, setWalletRole] = useState<string>('')
+        const [contractRoleList, setContractRoleList] = useState<ContractRoleDto[]>([])
+        const [contractRole, setContractRole] = useState<number>(NONE)
 
         useEffect(() => {
             setWalletItem(data.find((value) => {
@@ -275,12 +279,16 @@ export function WalletListDiv() {
             })
         }, [])
 
-        function onChangeWalletRole(roleIdx: number) {
-            setWalletRole(WALLET_ROLE_TYPES[roleIdx])
+        function onChangeWalletRole(roleId: number) {
+            setContractRole(roleId)
+
         }
 
-        function onChangeContract(contractIdx: number) {
-            setDeployedContractId(contractIdx)
+        function onChangeContract(deployedContractId: number) {
+            setDeployedContractId(deployedContractId)
+            DeployedContractApi.getContractRoles(deployedContractId.toString()).then(ret => {
+                setContractRoleList(ret.data)
+            })
         }
 
         function onOk() {
@@ -290,9 +298,9 @@ export function WalletListDiv() {
             PlatformWalletApi.grantWalletRole(new WalletGrantRequestDto(
                     walletItem!!.platformWalletDto.id,
                     deployedContractId,
-                    walletRole
+                    contractRole
                 )
-            ).then(()=>{
+            ).then(() => {
                 PlatformWalletApi.getPlatformWalletList()
                     .then((ret) => {
                         setData(ret.data)
@@ -344,10 +352,9 @@ export function WalletListDiv() {
                     <Form.Item label="ROLE" name='ROLE'
                                rules={[{required: true, message: 'Require Role'}]}>
                         {<Select onChange={onChangeWalletRole} style={{width: '100%'}}>
-                            {WALLET_ROLE_TYPES.length > 0 &&
-                                WALLET_ROLE_TYPES.map((item, idx) => {
-                                    if(item != 'NONE')
-                                        return ( <Select.Option value={idx} key={idx}>{item}</Select.Option>)
+                            {contractRoleList.length > 0 &&
+                                contractRoleList.map((item, idx) => {
+                                    return (<Select.Option value={item.id} key={idx}>{item.name}</Select.Option>)
                                 })
                             }
                         </Select>}

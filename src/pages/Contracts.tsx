@@ -350,6 +350,7 @@ function MethodListDiv(prop: { contractId: string }) {
 
     return (
         <>
+            <h4>METHODS</h4>
             {
                 methodList.length > 0 &&
                 <Collapse style={{whiteSpace: 'pre'}}>
@@ -409,6 +410,7 @@ function RolesDiv(prop : {contractId: string}){
 
     return(
         <div>
+            <h4>ROLES</h4>
             <Table columns={columns} dataSource={roleList}/>
         </div>
     )
@@ -420,10 +422,10 @@ export function ContractDetailDiv() {
         <>
             {contractId && <ContractByPropDiv contractId={contractId} needDownload={true}/>}
             <hr/>
-            <h4>ROLES</h4>
+
             {contractId && <RolesDiv contractId={contractId}/>}
             <hr/>
-            <h4>METHODS</h4>
+
             {contractId && <MethodListDiv contractId={contractId}/>}
         </>
     )
@@ -460,7 +462,8 @@ export function DeployedContractByPropDiv(prop: { deployedId: string }) {
     return (
         <>
             {deployedContract && <DetailView targ={deployedContract} title="DEPLOYED CONTRACT"/>}
-            {contractInfo && <DetailView targ={contractInfo} title="CONTRACT"/>}
+            {contractInfo &&  <ContractByPropDiv contractId={contractInfo.id} needDownload={false}/>}
+            {contractInfo && <RolesDiv contractId={contractInfo.id}/>}
             {chainInfo && <DetailView targ={chainInfo} title="CHAIN"/>}
             {serviceInfo && <DetailView targ={serviceInfo} title="SERVICE"/>}
 

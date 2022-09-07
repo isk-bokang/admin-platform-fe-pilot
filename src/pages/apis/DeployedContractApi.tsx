@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetChainDto } from "./ChainApi";
-import { GetContractDto } from "./ContractApi";
+import {ContractRoleDto, GetContractDto} from "./ContractApi";
 import { GetServiceDto as GetGameAppDto } from "./ServiceApi";
 
 const targURL = "http://localhost:8090/deployed/contracts"
@@ -96,6 +96,10 @@ export class DeployedContractApi {
 
     static postRegisterDeployedContract(req: RegisterRequestDto){
         return axios.post<DeployedContractsDto>(`${targURL}`, req)
+    }
+
+    static getContractRoles(deployedId : string){
+        return axios.get<ContractRoleDto[]>(`${targURL}/${deployedId}/roles`)
     }
 }
 
