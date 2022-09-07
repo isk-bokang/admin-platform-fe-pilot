@@ -5,7 +5,7 @@ import TextArea from "antd/lib/input/TextArea"
 import React, {useEffect,  useState} from "react"
 import {useParams} from "react-router-dom"
 import {GetChainDto} from "./apis/ChainApi"
-import {ContractApi, GetContractDto, PostContractDto} from "./apis/ContractApi"
+import {ContractApi, ContractRoleDto, GetContractDto, PostContractDto} from "./apis/ContractApi"
 import {DeployedContractApi} from "./apis/DeployedContractApi"
 import {GetServiceDto} from "./apis/ServiceApi"
 import {ChainSelector, ContractSelector, readJsonFileByUrl} from "./utils/InputDiv"
@@ -371,11 +371,57 @@ function MethodListDiv(prop: { contractId: string }) {
 
 }
 
+function RolesDiv(prop : {contractId: string}){
+    const [roleList, setRoleList] = useState<RoleAttributeType[]>([])
+    useEffect(()=>{
+        ContractApi.getContractRoles(prop.contractId).then(ret =>{
+            setRoleList(ret.data.map(item=>{
+                return{
+                    key : item.id!!,
+                    name : item.name!!,
+                    onChainName : item.onChainName!!
+                }
+            }))
+        })
+    }, [])
+
+
+    const columns = [
+        {
+            key: 1,
+            title: "ID",
+            dataIndex: 'key',
+
+        },
+        {
+            key: 2,
+            title: "NAME",
+            dataIndex: 'name',
+
+        },
+        {
+            key: 3,
+            title: "ON CHAIN NAME",
+            dataIndex: 'onChainName',
+        }
+    ]
+
+
+    return(
+        <div>
+            <Table columns={columns} dataSource={roleList}/>
+        </div>
+    )
+}
+
 export function ContractDetailDiv() {
     const {contractId} = useParams()
     return (
         <>
             {contractId && <ContractByPropDiv contractId={contractId} needDownload={true}/>}
+            <hr/>
+            <h4>ROLES</h4>
+            {contractId && <RolesDiv contractId={contractId}/>}
             <hr/>
             <h4>METHODS</h4>
             {contractId && <MethodListDiv contractId={contractId}/>}

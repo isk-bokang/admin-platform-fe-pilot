@@ -61,6 +61,7 @@ export class PostContractDto {
 }
 
 export class ContractRoleDto{
+    id ?: number
     onChainName : string
     name : string = ''
 
@@ -96,6 +97,9 @@ export class ContractApi {
     }
     static postContractRoles(contractId : string, data : ContractRoleDto){
         return axios.post<ContractRoleDto>(`${targURL}/${contractId}/roles`, data)
+    }
+    static getContractRoles(contractId : string){
+        return axios.get<ContractRoleDto[]>(`${targURL}/${contractId}/roles`)
     }
 }
 
