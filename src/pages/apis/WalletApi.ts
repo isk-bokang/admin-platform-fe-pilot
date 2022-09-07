@@ -41,10 +41,6 @@ export class PlatformWalletApi{
         return axios.get<PlatformWalletInfoDto[]>(`${targURL}`)
     }
 
-    static getPlatformWalletTypes(){
-        return axios.get<string[]>(`${targURL}/types`)
-    }
-
     static grantWalletRole(walletGrantRequestDto : WalletGrantRequestDto){
         return axios.post<void>(`${targURL}/grant`, walletGrantRequestDto)
     }
