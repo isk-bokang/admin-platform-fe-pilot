@@ -1,5 +1,6 @@
 import axios from "axios";
 import {AbiItem} from "web3-utils";
+import {toUpperCase_Custom} from "../../constants";
 
 
 const targURL = "http://localhost:8090/contracts"
@@ -42,20 +43,38 @@ export class GetContractDto {
 
 export class PostContractDto {
     name: string = '';
-    contractType: string = '';
-    abi: Map<string, any>[] = [] ;
+    contractType ?: ContractTypeDto;
+    abi: AbiItem[] = [] ;
     bytecode: string = '';
 
     constructor(
         name: string = "",
-        contractType: string = "",
-        abi: Map<string, any>[] = [] ,
+        contractType : ContractTypeDto ,
+        abi: AbiItem[] = [] ,
         bytecode: string = ""
     ) {
         this.name = name
         this.contractType = contractType
         this.abi = abi
         this.bytecode = bytecode
+    }
+}
+
+export class ContractRoleDto{
+    onChainName : string
+    name : string = ''
+
+    constructor(
+        onChainName : string,
+        name : string = ''
+    ) {
+        this.onChainName = onChainName
+        if(name === ''){
+            this.name = toUpperCase_Custom('_', onChainName)
+        }
+        else{
+            this.name = name
+        }
     }
 }
 
@@ -73,7 +92,10 @@ export class ContractApi {
         return axios.get<AbiItem[]>(`${targURL}/${contractId}/methods`, {params:param})
     }
     static getContractTypes(){
-        return axios.get<string[]>(`${targURL}/types`)
+        return axios.get<ContractTypeDto[]>(`${targURL}/types`)
+    }
+    static postContractRoles(contractId : string, data : ContractRoleDto){
+        return axios.post<ContractRoleDto>(`${targURL}/${contractId}/roles`, data)
     }
 }
 
