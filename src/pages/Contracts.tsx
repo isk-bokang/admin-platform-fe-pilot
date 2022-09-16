@@ -1,19 +1,18 @@
-import {CONTRACT_TYPES, RouteName, validateHexString} from "../constants"
-import {Button, Form, Input, Select, Upload, UploadFile, Collapse} from "antd"
+import {CONTRACT_TYPES, RouteName, toUpperCase_Custom, validateHexString} from "../constants"
+import {Button, Form, Input, Select, Upload, UploadFile, Collapse, Popconfirm} from "antd"
 import {RuleObject} from "antd/lib/form"
 import TextArea from "antd/lib/input/TextArea"
-import React, {useEffect, useState} from "react"
+import React, {useEffect,  useState} from "react"
 import {useParams} from "react-router-dom"
 import {GetChainDto} from "./apis/ChainApi"
-import {ContractApi, GetContractDto, PostContractDto} from "./apis/ContractApi"
+import {ContractApi, ContractRoleDto, GetContractDto, PostContractDto} from "./apis/ContractApi"
 import {DeployedContractApi} from "./apis/DeployedContractApi"
 import {GetServiceDto} from "./apis/ServiceApi"
 import {ChainSelector, ContractSelector, readJsonFileByUrl} from "./utils/InputDiv"
 import {DetailView, TargListView} from "./utils/OutputDiv"
 import {UploadOutlined} from "@ant-design/icons"
 import {AbiItem} from "web3-utils";
-import {useForm} from "antd/es/form/Form";
-import {rejects} from "assert";
+import Table from "antd/lib/table";
 
 function Contracts() {
     return (
@@ -24,7 +23,7 @@ function Contracts() {
 export interface DeployedContracts {
     id: string
     contractName: string
-    contractType: string
+    contractType?: string
     serviceName?: string
     chainName: string
     address: string
@@ -42,7 +41,7 @@ export function DeployedContractListDiv() {
                         return {
                             id: item.id,
                             contractName: item.contract.name,
-                            contractType: item.contract.contractType,
+                            contractType: item.contract.contractType.name,
                             serviceName: item.gameApp ? item.gameApp.name : 'ISKRA',
                             chainName: item.chain.name,
                             address: item.address
@@ -62,7 +61,7 @@ export function DeployedContractListDiv() {
 export interface ListViewContract {
     id: string
     name: string
-    contractType: string
+    contractType?: string
 }
 
 export function ContractListDiv() {
@@ -76,7 +75,7 @@ export function ContractListDiv() {
                         return {
                             id: item.id,
                             name: item.name,
-                            contractType: item.contractType
+                            contractType: item.contractType.name
                         }
                     })
                 )
@@ -92,19 +91,87 @@ export function ContractListDiv() {
 
 }
 
+
+interface RoleAttributeType{
+    key : number;
+    onChainName : string
+    name : string
+}
 export function RegisterContractDiv() {
-    const [registerDto, setRegisterDto] = useState<PostContractDto>(new PostContractDto())
+    const [registerDto, setRegisterDto] = useState<PostContractDto>()
+    const [roleOfContracts, setRoleOfContracts] = useState<RoleAttributeType[]>([])
     const [form] = Form.useForm()
     let isRemoved: boolean = false;
 
+
+    function extractRoles(abi: AbiItem[]) {
+        setRoleOfContracts(
+            abi.filter(item => {
+                if (item.name && item.type == "function" && item.inputs?.length == 0 && item.outputs?.length == 1 && item.outputs[0].type == "address") {
+                    return true
+                }
+            }).map((item, idx)=>{
+                return {
+                    key : idx,
+                    name : toUpperCase_Custom('_', item.name!!),
+                    onChainName : item.name!!
+                }
+            }))
+    }
+
+    const handleDelete = (key: React.Key) => {
+        const newData = roleOfContracts.filter((item) => item.key !== key);
+        setRoleOfContracts(newData);
+    };
+    const handleSave = (newName : string, key : number) => {
+        let newData = [...roleOfContracts]
+        newData.forEach(item=>{
+            if(item.key == key)
+                item.name = newName
+        })
+        console.log(newData)
+        console.log(roleOfContracts)
+        setRoleOfContracts(newData);
+    };
+
+    const columns = [
+        {
+            key: 1,
+            title: "NAME",
+            dataIndex: 'name',
+            editable: true,
+            render : (_, record : RoleAttributeType) =>(
+                <Input defaultValue={record.name} onChange={(e)=> {
+                    handleSave(e.target.value, record.key)
+                }} />
+            ),
+
+        },
+        {
+            key: 2,
+            title: "ON CHAIN NAME",
+            dataIndex: 'onChainName',
+        },
+        {
+            key: 3,
+            title: "ACTION",
+            dataIndex: 'action',
+            render: (_, record: { key: React.Key }) =>
+                roleOfContracts.length >= 1 ? (
+                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                        <a>Delete</a>
+                    </Popconfirm>
+                ) : null,
+        },
+    ]
+
     function onChangeHandle() {
-        var retAbi
         try {
-            retAbi = JSON.parse(form.getFieldValue('abi'))
+            const retAbi: AbiItem[] = JSON.parse(form.getFieldValue('abi'))
             setRegisterDto({
                 name: form.getFieldValue("name"),
                 bytecode: form.getFieldValue("bytecode"),
-                contractType: form.getFieldValue("contractType"),
+                contractType: CONTRACT_TYPES[form.getFieldValue("contractType")],
                 abi: retAbi
             })
         } catch {
@@ -118,12 +185,22 @@ export function RegisterContractDiv() {
 
     }
 
-    function onClickHandle() {
-        ContractApi.postContract(registerDto).then(
-            () => {
-                window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
-            }
-        )
+    function onFinishHandle() {
+        console.log(roleOfContracts)
+        if (registerDto)
+            ContractApi.postContract(registerDto).then(
+                (ret) => {
+                    (ret.data.id)
+                    roleOfContracts.map(item =>{
+                        ContractApi.postContractRoles(ret.data.id, {
+                            onChainName : item.onChainName,
+                            name : item.name
+                        }).then(()=>{
+                            window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
+                        })
+                    })
+                }
+            )
     }
 
     function onChangeHandleURL(targFile: UploadFile) {
@@ -133,6 +210,8 @@ export function RegisterContractDiv() {
                     .then(res => {
                         if (res['abi']) {
                             form.setFieldsValue({abi: JSON.stringify(res['abi'])})
+                            console.log('upload')
+                            extractRoles(res['abi'])
                         } else {
                             form.setFieldsValue({abi: ''})
                         }
@@ -166,7 +245,7 @@ export function RegisterContractDiv() {
         try {
             JSON.parse(value)
         } catch {
-            throw new Error("ABI must be JSON")
+            return false
         }
         return true
     }
@@ -174,7 +253,7 @@ export function RegisterContractDiv() {
     return (
         <div>
             {CONTRACT_TYPES.length > 0 &&
-                <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onClickHandle}>
+                <Form layout="vertical" form={form} onFieldsChange={onChangeHandle} onFinish={onFinishHandle}>
                     <Form.Item label="Name" name='name'
                                rules={[{required: true, message: 'Require Name'}]}>
                         <Input></Input>
@@ -185,7 +264,7 @@ export function RegisterContractDiv() {
                             {
                                 CONTRACT_TYPES.map((item, idx) => {
                                     return (
-                                        <Select.Option value={item} key={idx}> {item} </Select.Option>
+                                        <Select.Option value={idx} key={item.id}> {item.name} </Select.Option>
                                     )
                                 })
                             }
@@ -211,6 +290,9 @@ export function RegisterContractDiv() {
                     >
                         <Button icon={<UploadOutlined/>}>Click to Upload</Button>
                     </Upload>
+                    <br/>
+                    <h3>ROLES</h3>
+                    <Table columns={columns} dataSource={roleOfContracts}/>
 
                     <Button htmlType="submit"> REGISTER </Button>
                 </Form>}
@@ -218,10 +300,13 @@ export function RegisterContractDiv() {
     )
 }
 
+
+
+
 interface ContractDetail {
     contractId: string,
     name: string,
-    tokenType: string,
+    contractType?: string,
     abi: string,
     bytecode: string
 }
@@ -237,7 +322,7 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload?: boo
                     setContract({
                         contractId: res.data.id,
                         name: res.data.name,
-                        tokenType: res.data.contractType,
+                        contractType: res.data.contractType.name,
                         abi: JSON.stringify(res.data.abi),
                         bytecode: res.data.bytecode,
                     })
@@ -250,7 +335,7 @@ export function ContractByPropDiv(prop: { contractId: string, needDownload?: boo
         <div id="contract">
             {contract && <DetailView targ={contract} title="CONTRACT"/>}
             {(contract && prop.needDownload) &&
-                <DownloadContract abi={JSON.stringify(contract.abi)} bytecode={contract.bytecode}/>}
+                <DownloadContract abi={contract.abi} bytecode={contract.bytecode}/>}
         </div>)
 }
 
@@ -265,6 +350,7 @@ function MethodListDiv(prop: { contractId: string }) {
 
     return (
         <>
+            <h4>METHODS</h4>
             {
                 methodList.length > 0 &&
                 <Collapse style={{whiteSpace: 'pre'}}>
@@ -286,13 +372,60 @@ function MethodListDiv(prop: { contractId: string }) {
 
 }
 
+function RolesDiv(prop : {contractId: string}){
+    const [roleList, setRoleList] = useState<RoleAttributeType[]>([])
+    useEffect(()=>{
+        ContractApi.getContractRoles(prop.contractId).then(ret =>{
+            setRoleList(ret.data.map(item=>{
+                return{
+                    key : item.id!!,
+                    name : item.name!!,
+                    onChainName : item.onChainName!!
+                }
+            }))
+        })
+    }, [])
+
+
+    const columns = [
+        {
+            key: 1,
+            title: "ID",
+            dataIndex: 'key',
+
+        },
+        {
+            key: 2,
+            title: "NAME",
+            dataIndex: 'name',
+
+        },
+        {
+            key: 3,
+            title: "ON CHAIN NAME",
+            dataIndex: 'onChainName',
+        }
+    ]
+
+
+    return(
+        <div>
+            <h4>ROLES</h4>
+            <Table columns={columns} dataSource={roleList}/>
+        </div>
+    )
+}
+
 export function ContractDetailDiv() {
     const {contractId} = useParams()
     return (
         <>
             {contractId && <ContractByPropDiv contractId={contractId} needDownload={true}/>}
             <hr/>
-            <h4>METHODS</h4>
+
+            {contractId && <RolesDiv contractId={contractId}/>}
+            <hr/>
+
             {contractId && <MethodListDiv contractId={contractId}/>}
         </>
     )
@@ -329,7 +462,8 @@ export function DeployedContractByPropDiv(prop: { deployedId: string }) {
     return (
         <>
             {deployedContract && <DetailView targ={deployedContract} title="DEPLOYED CONTRACT"/>}
-            {contractInfo && <DetailView targ={contractInfo} title="CONTRACT"/>}
+            {contractInfo &&  <ContractByPropDiv contractId={contractInfo.id} needDownload={false}/>}
+            {contractInfo && <RolesDiv contractId={contractInfo.id}/>}
             {chainInfo && <DetailView targ={chainInfo} title="CHAIN"/>}
             {serviceInfo && <DetailView targ={serviceInfo} title="SERVICE"/>}
 
@@ -382,7 +516,7 @@ export function RegisterDeployedContract() {
             contractAddress: form.getFieldValue('contractAddress'),
             deployerAddress: '0x00'
         })
-            .then(()=>{
+            .then(() => {
                 console.log({
                     // @TODO Change AppId And DeployerAddress
                     appId: '1',
@@ -417,7 +551,7 @@ export function RegisterDeployedContract() {
                 layout={"vertical"}
                 onFinish={onFinishHandle}
                 form={form}
-                onChange={()=>{
+                onChange={() => {
                     console.log(contractId)
                 }}>
                 <Form.Item label={'Name'} name={'name'} rules={[{required: true}]}>

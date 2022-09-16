@@ -134,7 +134,7 @@ function SetConstructorParams(prop: SetConstructorParamsProp) {
     useEffect(() => {
         ContractApi.getContract(prop.contractId.toString())
             .then(res => {
-                setTokenType(res.data.contractType)
+                setTokenType(res.data.contractType.name)
                 try {
                     const abi = JSON.parse(JSON.stringify(res.data.abi))
                     setConstructorAbi(abi.filter((item: Abi) => {
@@ -216,7 +216,7 @@ export function SelectContract(prop: selectProp) {
                         return {
                             id: item.id,
                             name: item.name,
-                            contractType: item.contractType
+                            contractType: item.contractType.name
                         }
                     })
                 )

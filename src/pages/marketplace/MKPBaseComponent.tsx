@@ -131,7 +131,6 @@ export function MKPBaseComponent(prop: MkpProp) {
 
     return (
         <div>
-            <MetamaskRoleCheckDiv availableRole={'OWNER'} deployedContractId={idx}>
                 <Spin spinning={loading}>
                     {deployedContracts.length > 0 && <RadioTargListDiv targList={deployedContracts.map(item => {
                         return {
@@ -149,7 +148,7 @@ export function MKPBaseComponent(prop: MkpProp) {
                     <hr/>
                     <MKPContractInfo/>
                 </Spin>
-            </MetamaskRoleCheckDiv>
+
         </div>
     )
 }

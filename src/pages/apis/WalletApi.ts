@@ -1,5 +1,6 @@
 import {DeployedContractsDto} from "@/pages/apis/DeployedContractApi";
 import axios from "axios";
+import {ContractRoleDto} from "@/pages/apis/ContractApi";
 
 const targURL = "http://localhost:8090/wallets"
 
@@ -11,9 +12,11 @@ export interface PlatformWalletDto{
 
 export interface PlatformContractInfoDto{
     roleId : number,
-    role : string,
+    contractRoleDto : ContractRoleDto,
     deployedContractDto : DeployedContractsDto
 }
+
+
 
 export interface PlatformWalletInfoDto{
     platformWalletDto : PlatformWalletDto,
@@ -23,12 +26,12 @@ export interface PlatformWalletInfoDto{
 export class WalletGrantRequestDto{
     readonly walletId : number
     readonly deployedContractId : number
-    readonly role : string
+    readonly roleId : number
 
-    constructor(walletId : number, deployedContractId : number, role : string) {
+    constructor(walletId : number, deployedContractId : number, roleId : number) {
         this.walletId = walletId;
         this.deployedContractId = deployedContractId;
-        this.role = role
+        this.roleId = roleId
     }
 
 }
@@ -36,10 +39,6 @@ export class WalletGrantRequestDto{
 export class PlatformWalletApi{
     static getPlatformWalletList(){
         return axios.get<PlatformWalletInfoDto[]>(`${targURL}`)
-    }
-
-    static getPlatformWalletTypes(){
-        return axios.get<string[]>(`${targURL}/types`)
     }
 
     static grantWalletRole(walletGrantRequestDto : WalletGrantRequestDto){
