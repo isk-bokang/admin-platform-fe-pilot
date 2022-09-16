@@ -3,7 +3,7 @@ import { resolve } from "path";
 import { TransactionReceipt } from "web3-eth";
 import { ContractSendMethod } from "web3-eth-contract"
 import { Contract } from "web3-eth-contract"
-import { web3 } from "../DeployByMetamaks";
+import { web3 } from "../platform/DeployByMetamaks";
 
 
 (window as any).global = window;

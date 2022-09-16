@@ -1,15 +1,15 @@
-import { RouteName } from "../constants"
+import { RouteName } from "../../constants"
 import { Button, Descriptions, Input } from "antd"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
-import { ChainApi } from "./apis/ChainApi"
-import { Abi, ContractApi } from "./apis/ContractApi"
-import { DeployedContractApi } from "./apis/DeployedContractApi"
-import { GetServiceDto, ServiceApi } from "./apis/ServiceApi"
+import { ChainApi } from "../apis/ChainApi"
+import { Abi, ContractApi } from "../apis/ContractApi"
+import { DeployedContractApi } from "../apis/DeployedContractApi"
+import { GetServiceDto, ServiceApi } from "../apis/ServiceApi"
 import { ChainByPropDiv, ListViewChain } from "./Chains"
 import { ContractByPropDiv, ListViewContract } from "./Contracts"
-import { RadioTargListDiv } from "./utils/InputDiv"
-import { DetailView, TargView } from "./utils/OutputDiv"
+import { RadioTargListDiv } from "../utils/InputDiv"
+import { DetailView, TargView } from "../utils/OutputDiv"
 
 function DeployByBackEnd() {
     return (

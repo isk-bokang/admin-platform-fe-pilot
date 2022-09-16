@@ -4,10 +4,10 @@ import { RoutePage, SidebarRoute } from './common/common.interface';
 import { RouteName } from './constants';
 
 import Home from './pages/Home';
-import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/Contracts';
-import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/Chains';
-import Nodes, { NodeDetailDiv, RegisterNodeDiv } from './pages/Nodes';
-import { DeployByFrontEnd } from './pages/DeployByMetamaks';
+import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/platform/Contracts';
+import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/platform/Chains';
+import Nodes, { NodeDetailDiv, RegisterNodeDiv } from './pages/platform/Nodes';
+import { DeployByFrontEnd } from './pages/platform/DeployByMetamaks';
 import {ChangePurchaserFeePermilleDiv} from "./pages/marketplace/ChangePurchaserFeePermilleDiv";
 import {ChangeIskraIncomeWalletDiv} from "./pages/marketplace/ChangeIskraIncomeWalletDiv";
 import {ChangeGameOwnerDiv} from "./pages/marketplace/ChangeGameOwnerDiv";

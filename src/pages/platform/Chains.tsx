@@ -1,12 +1,12 @@
-import { RouteName } from "../constants"
+import { RouteName } from "../../constants"
 import { Button, Form, Input } from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { ChainApi, PostChainDto } from "./apis/ChainApi"
-import { DeployedContractApi } from "./apis/DeployedContractApi"
+import { ChainApi, PostChainDto } from "../apis/ChainApi"
+import { DeployedContractApi } from "../apis/DeployedContractApi"
 import { DeployedContracts } from "./Contracts"
 import { NodeListDiv } from "./Nodes"
-import { DetailView, TargListView } from "./utils/OutputDiv"
+import { DetailView, TargListView } from "../utils/OutputDiv"
 
 function Chains() {
     return (

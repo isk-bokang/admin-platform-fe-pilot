@@ -3,7 +3,7 @@ import {WalletListDiv} from "../pages/wallet/WalletsDiv";
 import {Button} from "antd";
 import {PlatformWalletApi} from "../pages/apis/WalletApi";
 import {ChainSelector, ContractSelector} from "../pages/utils/InputDiv";
-import {RegisterDeployedContract} from "../pages/Contracts";
+import {RegisterDeployedContract} from "./platform/Contracts";
 
 
 function Home() {

@@ -1,11 +1,11 @@
 import { Button, Form, Input } from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { NodeApi, PostNodeDto } from "./apis/NodeApi"
+import { NodeApi, PostNodeDto } from "../apis/NodeApi"
 import { SelectChain } from "./DeployByBackEnd"
-import { DetailView, TargListView } from "./utils/OutputDiv"
+import { DetailView, TargListView } from "../utils/OutputDiv"
 import qs from "query-string"
-import { RouteName } from "../constants"
+import { RouteName } from "../../constants"
 
 interface ListViewNode{
     id : string,
