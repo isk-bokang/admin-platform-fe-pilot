@@ -12,6 +12,7 @@ import {ChangePurchaserFeePermilleDiv} from "./pages/marketplace/ChangePurchaser
 import {ChangeIskraIncomeWalletDiv} from "./pages/marketplace/ChangeIskraIncomeWalletDiv";
 import {ChangeGameOwnerDiv} from "./pages/marketplace/ChangeGameOwnerDiv";
 import {ChangeGameRsRateDiv} from "./pages/marketplace/ChangeGameRsRateDiv";
+import {WalletListDiv} from "./pages/wallet/WalletsDiv";
 
 export const routePages: RoutePage[] = [
   {
@@ -84,8 +85,8 @@ export const routePages: RoutePage[] = [
     ]
   },
   {
-    key: RouteName.DEPLOY_BY_FRONTEND,
-    page: <DeployByFrontEnd />,
+    key: RouteName.WALLET,
+    page: <WalletListDiv />,
   },
   {
     key: RouteName.MKP,
@@ -139,13 +140,10 @@ export const sidebarRouters: SidebarRoute[] = [
       
     ]
   },
+
   {
-    key: RouteName.DEPLOY_CONTRACT,
-    label: "DEPLOY"
-  },
-  {
-    key: RouteName.DEPLOY_BY_FRONTEND,
-    label: "DEPLOY-BY-FRONTEND"
+    key: RouteName.WALLET,
+    label: "Wallet"
   },
   {
     key: RouteName.MKP,

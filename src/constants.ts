@@ -41,6 +41,8 @@ export enum RouteName {
     MKP_CHANGE_GAME_OWNER = 'changeGameOwner',
     MKP_CHANGE_GAME_RS_RATE = 'changeGameRsRate',
     MKP_CLAIM_REVENUE = 'claimRevenue',
+
+    WALLET = 'wallet'
 }
 
 export const UNKNOWN = -1
