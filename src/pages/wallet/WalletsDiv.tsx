@@ -26,7 +26,6 @@ export function WalletListDiv() {
     useEffect(() => {
         PlatformWalletApi.getPlatformWalletList()
             .then((ret) => {
-                console.log(ret.data)
                 setData(ret.data)
             })
             .catch((err) => {

@@ -11,26 +11,6 @@ function Home() {
     const [contractId, setContractId] = useState('')
     return (
         <div>
-            <RegisterDeployedContract/>
-            <hr></hr>
-            <hr></hr>
-            <hr></hr>
-            <Button onClick={()=>{
-                PlatformWalletApi.getPlatformWalletList().then((ret) =>{
-                        console.log(ret)
-                    }
-                )
-            }}> GET WALLET LIST </Button>
-            <hr></hr>
-            <hr></hr>
-            <hr></hr>
-            <WalletListDiv/>
-            <hr></hr>
-            <hr></hr>
-            <hr></hr>
-
-
-
 
             <hr></hr>
 
