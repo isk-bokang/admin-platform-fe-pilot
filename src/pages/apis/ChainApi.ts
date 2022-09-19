@@ -26,17 +26,20 @@ export class GetChainDto {
 }
 
 export class PostChainDto {
-    chainName: string;
+    name: string;
     chainId: string;
+    chainType: string;
     rpcUrl: string;
 
     constructor(
         chainName: string,
         chainId: string,
+        chainType: string,
         rpcUrl: string
     ) {
-        this.chainName = chainName
+        this.name = chainName
         this.chainId = chainId
+        this.chainType = chainType
         this.rpcUrl = rpcUrl
     }
 }

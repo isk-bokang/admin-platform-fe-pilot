@@ -52,6 +52,9 @@ await ChainApi.getChainList().then(ret => CHAINS = ret.data)
 export let CONTRACT_TYPES: ContractTypeDto[];
 await ContractApi.getContractTypes().then(ret => CONTRACT_TYPES = ret.data)
 
+export let CHAIN_TYPES : string[];
+await ChainApi.getChainTypes().then(ret => CHAIN_TYPES = ret.data)
+
 export let WALLET_ROLE_TYPES: string[] = []
 
 export async function validateHexString(rule: RuleObject, value: StoreValue) {

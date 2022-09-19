@@ -1,5 +1,5 @@
-import { RouteName } from "../../constants"
-import { Button, Form, Input } from "antd"
+import {CHAIN_TYPES, RouteName } from "../../constants"
+import {Button, Form, Input, Select} from "antd"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { ChainApi, PostChainDto } from "../apis/ChainApi"
@@ -115,13 +115,15 @@ export function RegisterChainDiv() {
 
     function onChangeHandle() {
         setRegisterDto({
-            chainName: form.getFieldValue("name"),
+            name: form.getFieldValue("name"),
             chainId: form.getFieldValue("chainId"),
+            chainType: form.getFieldValue("chainType"),
             rpcUrl: form.getFieldValue("rpcUrl"),
         })
     }
     function onClickHandle() {
         if (registerDto != null) {
+            console.log(registerDto)
             ChainApi.postChain(registerDto).then(
                 () => {
                     window.location.href = `/${RouteName.CHAINS}/${RouteName.CHAIN_META_DATA}`
@@ -142,6 +144,21 @@ export function RegisterChainDiv() {
                     rules={[{ required: true, message: 'Require Chain ID' }]}>
                     <Input type={"number"}/>
                 </Form.Item>
+
+                <Form.Item label="Chain Type" name='chainType'
+                           rules={[{ required: true, message: 'Require Chain Type' }]}>
+                    <Select>
+                        {CHAIN_TYPES.map(item=>{
+                            return(
+                                <Select.Option value={item} key={item} >
+                                    {item}
+                                </Select.Option>
+                            )
+                        })}
+
+                    </Select>
+                </Form.Item>
+
                 <Form.Item label="RPC URL" name='rpcUrl'
                     rules={[{ required: true, message: 'Require RPC URL' }]}>
                     <Input type={"url"}/>
