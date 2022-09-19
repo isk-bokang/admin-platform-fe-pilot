@@ -10,6 +10,7 @@ import {Contract} from "web3-eth-contract"
 import {RadioTargListDiv} from "../utils/InputDiv"
 import {AdminLogApi, PostAdminLogDto} from "../apis/AdminLogApi";
 import {TransactionReceipt} from "web3-eth";
+import {DeployedContractInfo} from "../utils/contractUtils";
 
 
 type SendTx = () => Promise<TransactionReceipt>
@@ -39,7 +40,7 @@ export function MKPBaseComponent(prop: MkpProp) {
     const [deployedContracts, setDeployedContracts] = useState<DeployedContractsDto[]>([])
     const [idx, setIdx] = useState<number>(0)
     const [owner, setOwner] = useState<string>('')
-    const [curReceiver, setCurReceiver] = useState<string>('')
+    const [iskraIncomeWallet, setIskraIncomeWallet] = useState<string>('')
     const [feeRate, setFeeRate] = useState<number>()
     const [contract, setContract] = useState<Contract>()
 
@@ -56,11 +57,13 @@ export function MKPBaseComponent(prop: MkpProp) {
         }
     }, [prop])
 
-    function prepareContract() {
+    function prepareContract(index : number) {
+        console.log(index)
         let tmpContract: Contract;
-        ContractApi.getContract(deployedContracts[idx].contract.id)
+
+        ContractApi.getContract(deployedContracts[index].contract.id)
             .then(ret => {
-                tmpContract = new web3.eth.Contract(JSON.parse(JSON.stringify(ret.data.abi)) as AbiItem[], deployedContracts[idx].address)
+                tmpContract = new web3.eth.Contract(JSON.parse(JSON.stringify(ret.data.abi)) as AbiItem[], deployedContracts[index].address)
                 prop.contractSetter(tmpContract)
                 setContract(tmpContract)
                 if (tmpContract) {
@@ -68,11 +71,12 @@ export function MKPBaseComponent(prop: MkpProp) {
                         setOwner(res)
                     })
                     callMethod(tmpContract.methods.iskraIncomeWallet()).then(res => {
-                        setCurReceiver(res)
+                        setIskraIncomeWallet(res)
                     })
                     callMethod(tmpContract.methods.purchaserFeePermille()).then(res => {
                         setFeeRate(res)
                     })
+
                 }
             })
     }
@@ -89,10 +93,10 @@ export function MKPBaseComponent(prop: MkpProp) {
                 }
                 if (prop.functionType == MKP_FUNCTION.CHANGE_ISKRA_INCOME_WALLET)
                     callMethod(contract!!.methods.iskraIncomeWallet()).then(res => {
-                        data.originValue = curReceiver
+                        data.originValue = iskraIncomeWallet
                         data.updateValue = res
                         AdminLogApi.registerAdminLogs(data)
-                        setCurReceiver(res)
+                        setIskraIncomeWallet(res)
                     })
                 else if (prop.functionType == MKP_FUNCTION.CHANGE_PURCHASER_FEE_PERMILLE) {
                     callMethod(contract!!.methods.purchaserFeePermille()).then(res => {
@@ -119,16 +123,6 @@ export function MKPBaseComponent(prop: MkpProp) {
             })
     }
 
-    function MKPContractInfo() {
-        return (
-            <Descriptions bordered title={'MKP CONTRACT INFO'}>
-                <Descriptions.Item label={'OWNER'} span={3}> {owner && owner} </Descriptions.Item>
-                <Descriptions.Item label={'FEE RECEIVER'} span={3}> {curReceiver && curReceiver} </Descriptions.Item>
-                <Descriptions.Item label={'FEE RATE'} span={3}> {feeRate && feeRate} </Descriptions.Item>
-            </Descriptions>
-        )
-    }
-
     return (
         <div>
                 <Spin spinning={loading}>
@@ -146,7 +140,7 @@ export function MKPBaseComponent(prop: MkpProp) {
                              disabled={((window.ethereum?.selectedAddress) ? (owner.toLocaleUpperCase() !== window.ethereum?.selectedAddress.toLocaleUpperCase()) : true)}>
                         SEND TX </Button>}
                     <hr/>
-                    <MKPContractInfo/>
+                    {contract != null && <DeployedContractInfo contract={contract} />}
                 </Spin>
 
         </div>

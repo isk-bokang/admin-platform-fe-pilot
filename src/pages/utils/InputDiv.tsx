@@ -62,16 +62,16 @@ export function RadioTargListDiv(prop: radioProp) {
 
     useEffect(() => {
 
-        setData(prop.targList.map(item => {
-            item.key = item.id
+        setData(prop.targList.map((item, idx) => {
+            item.key = idx
             return item
         }))
         setColumns(
-            Object.keys(prop.targList[0]).map(item => {
+            Object.keys(prop.targList[0]).map((item, idx) => {
                 return {
                     title: toUpperCase_Custom( item ),
                     dataIndex: item,
-                    key: item
+                    key: idx
                 }
             }).filter(item => {
                 return item.title !== 'KEY'
@@ -87,7 +87,7 @@ export function RadioTargListDiv(prop: radioProp) {
                     if (prop.setTarg)
                         prop.setTarg(parseInt(key.toString()))
                     if (prop.callBack)
-                        prop.callBack()
+                        prop.callBack(parseInt(key.toString()))
                 },
                 defaultSelectedRowKeys: prop.defaultId ? [parseInt(prop.defaultId)] : undefined,
 

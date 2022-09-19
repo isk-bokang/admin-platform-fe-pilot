@@ -7,17 +7,20 @@ export class GetChainDto {
     readonly seq: string;
     readonly name: string;
     readonly chainId: string;
+    readonly chainType : string;
     readonly rpcUrl: string;
 
     constructor(
         chainSeq: string,
         chainName: string,
         chainId: string,
+        chainType : string,
         rpcUrl: string
     ) {
         this.seq = chainSeq
         this.name = chainName
         this.chainId = chainId
+        this.chainType = chainType
         this.rpcUrl = rpcUrl
     }
 }

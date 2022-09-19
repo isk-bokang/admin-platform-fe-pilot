@@ -58,6 +58,11 @@ export function ChangeChainNetwork(prop: { setChainSeq ?: Dispatch<SetStateActio
             chainId: toHex(CHAINS[chainIdx].chainId),
             chainName: CHAINS[chainIdx].name,
             rpcUrls: [CHAINS[chainIdx].rpcUrl],
+            nativeCurrency : {
+                name : CHAINS[chainIdx].chainType.includes('GAME') ? 'ISKRA' : 'KLAY',
+                decimals : 18,
+                symbol : CHAINS[chainIdx].chainType.includes('GAME') ? 'ISK' : 'KLAY',
+            }
         })
 
         setIsDisable(false)

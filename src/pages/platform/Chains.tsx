@@ -18,6 +18,7 @@ export interface ListViewChain {
     id: string
     name: string
     chainId: string
+    chainType : string
     rpcUrl: string
 }
 
@@ -32,6 +33,7 @@ export function ChainListDiv() {
                             id: item.seq,
                             name: item.name,
                             chainId: item.chainId,
+                            chainType : item.chainType,
                             rpcUrl: item.rpcUrl
                         }
                     })
@@ -60,6 +62,7 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                     setChain({
                         id: res.data.seq,
                         chainId: res.data.chainId,
+                        chainType : res.data.chainType,
                         name: res.data.name,
                         rpcUrl: res.data.rpcUrl,
                     })
@@ -73,7 +76,7 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                             return {
                                 id: item.id,
                                 contractName: item.contract.name,
-                                contractType : item.contract.contractType,
+                                contractType : item.contract.contractType.name,
                                 serviceName: item.gameApp ? item.gameApp.name: 'ISKRA',
                                 chainId: item.chain.chainId,
                                 chainName : item.chain.name,
