@@ -71,7 +71,7 @@ export class ContractRoleDto{
     ) {
         this.onChainName = onChainName
         if(name === ''){
-            this.name = toUpperCase_Custom('_', onChainName)
+            this.name = toUpperCase_Custom( onChainName, '_')
         }
         else{
             this.name = name

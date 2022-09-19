@@ -1,8 +1,6 @@
 import { MetaMaskInpageProvider } from "@metamask/providers"
-import { resolve } from "path";
 import { TransactionReceipt } from "web3-eth";
 import { ContractSendMethod } from "web3-eth-contract"
-import { Contract } from "web3-eth-contract"
 import { web3 } from "../platform/DeployByMetamaks";
 
 
@@ -84,6 +82,7 @@ export function connectMetamask() {
 
 export async function addNetwork(networkInfo: AddEthereumChainParameter) {
     return new Promise<void>((resolve, reject) => {
+        console.log(networkInfo)
         window.ethereum?.request({
             method: "wallet_addEthereumChain",
             params: [networkInfo]

@@ -1,10 +1,9 @@
 import {ChainApi, GetChainDto} from "./pages/apis/ChainApi";
 import {ContractApi, ContractTypeDto} from "./pages/apis/ContractApi";
-import {PlatformWalletApi} from "./pages/apis/WalletApi";
 import {RuleObject, StoreValue} from "rc-field-form/lib/interface";
 
 export enum PlatformContractType {
-    ISKRA_MKP = 'ISKRA_MKP'
+    ISKRA_MKP = 'MARKETPLACE'
 }
 
 export enum Color {
@@ -65,7 +64,7 @@ export async function validateHexString(rule: RuleObject, value: StoreValue) {
 
 }
 
-export function toUpperCase_Custom(interFix: string = '', originStr: string) {
+export function toUpperCase_Custom(originStr: string, interFix: string = ' ') {
     let ret: string = ''
     for(const char of originStr){
         if(char >= 'A' && char <= 'Z') {

@@ -113,7 +113,7 @@ export function RegisterContractDiv() {
             }).map((item, idx)=>{
                 return {
                     key : idx,
-                    name : toUpperCase_Custom('_', item.name!!),
+                    name : toUpperCase_Custom( item.name!!, '_'),
                     onChainName : item.name!!
                 }
             }))
@@ -190,15 +190,19 @@ export function RegisterContractDiv() {
         if (registerDto)
             ContractApi.postContract(registerDto).then(
                 (ret) => {
-                    (ret.data.id)
-                    roleOfContracts.map(item =>{
-                        ContractApi.postContractRoles(ret.data.id, {
-                            onChainName : item.onChainName,
-                            name : item.name
-                        }).then(()=>{
-                            window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
+                    if(roleOfContracts.length > 0) {
+                        roleOfContracts.map(item => {
+                            ContractApi.postContractRoles(ret.data.id, {
+                                onChainName: item.onChainName,
+                                name: item.name
+                            }).then(() => {
+                                window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
+                            })
                         })
-                    })
+                    }
+                    else{
+                        window.location.href = `/${RouteName.CONTRACTS}/${RouteName.CONTRACT_META_DATA}`
+                    }
                 }
             )
     }

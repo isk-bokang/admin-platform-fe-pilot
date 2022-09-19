@@ -10,7 +10,7 @@ import {Contract} from "web3-eth-contract"
 import {RadioTargListDiv} from "../utils/InputDiv"
 import {AdminLogApi, PostAdminLogDto} from "../apis/AdminLogApi";
 import {TransactionReceipt} from "web3-eth";
-import {MetamaskRoleCheckDiv} from "../MetamaskContract";
+
 
 type SendTx = () => Promise<TransactionReceipt>
 
@@ -136,7 +136,7 @@ export function MKPBaseComponent(prop: MkpProp) {
                         return {
                             id: item.id,
                             contractName: item.contract.name,
-                            contractType: item.contract.contractType,
+                            contractType: item.contract.contractType.name,
                             chainName: item.chain.name,
                             address: item.address
                         }

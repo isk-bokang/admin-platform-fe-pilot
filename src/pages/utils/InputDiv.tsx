@@ -5,6 +5,7 @@ import Upload, {RcFile, UploadFile} from "antd/lib/upload";
 import React, { Dispatch, SetStateAction, useEffect, useState} from "react";
 import {ChainApi, GetChainDto} from "../apis/ChainApi";
 import {ContractApi, GetContractDto} from "../apis/ContractApi";
+import {toUpperCase_Custom} from "../../constants";
 
 
 export enum inputTypes {
@@ -68,12 +69,12 @@ export function RadioTargListDiv(prop: radioProp) {
         setColumns(
             Object.keys(prop.targList[0]).map(item => {
                 return {
-                    title: item,
+                    title: toUpperCase_Custom( item ),
                     dataIndex: item,
                     key: item
                 }
             }).filter(item => {
-                return item.title !== 'key'
+                return item.title !== 'KEY'
             })
         )
     }, [prop])
