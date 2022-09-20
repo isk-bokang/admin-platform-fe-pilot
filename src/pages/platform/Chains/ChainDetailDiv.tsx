@@ -8,12 +8,12 @@ import {Button} from "antd";
 import {RouteName} from "@/constants";
 import {NodeListDiv} from "@/pages/platform/Nodes/NodeListDiv";
 
-export function ChainByPropDiv(prop: { chainSeq: string }) {
+export function ChainByPropDiv(prop: { chainSeq: number }) {
     const [chain, setChain] = useState<ListViewChain>()
     const [deployedContractList, setDeployedContractList] = useState<DeployedContracts[]>([])
     useEffect(() => {
         if (prop.chainSeq != null) {
-            ChainApi.getChain(prop.chainSeq)
+            ChainApi.getChain(prop.chainSeq.toString())
                 .then(res => {
                     setChain({
                         id: res.data.seq,
@@ -24,7 +24,7 @@ export function ChainByPropDiv(prop: { chainSeq: string }) {
                     })
                 })
 
-            DeployedContractApi.getDeployedContracts({chainSeq: prop.chainSeq})
+            DeployedContractApi.getDeployedContracts({chainSeq: prop.chainSeq.toString()})
                 .then(res => {
                     console.log(res.data)
                     setDeployedContractList(
@@ -59,7 +59,7 @@ export function ChainDetailDiv() {
     const {chainSeq} = useParams()
     return (
         <div>
-            {chainSeq && <ChainByPropDiv chainSeq={chainSeq}/>}
+            {chainSeq && <ChainByPropDiv chainSeq={parseInt(chainSeq)}/>}
             {chainSeq && <NodeListDiv chainSeq={chainSeq}/>}
             <Button onClick={() => {
                 window.location.href = `/${RouteName.NODES}/${RouteName.NODE_REGISTER}?chainSeq=${chainSeq}`

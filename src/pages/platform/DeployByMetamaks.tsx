@@ -19,14 +19,14 @@ const UNKNOWN = -1
 export function DeployByFrontEnd() {
     const [contractId, setContractId] = useState<number>(UNKNOWN)
     const [serviceId, setServiceId] = useState<number>(UNKNOWN)
-    const [chainSeq, setChainSeq] = useState<string>('')
+    const [chainSeq, setChainSeq] = useState<number>(UNKNOWN)
     const [curStep, setCurStep] = useState<STEPS>(STEPS.SELECT_TARGETS)
     const [paramList, setParamList] = useState<string[]>([])
 
     function onClickNextStepHandle() {
         if (curStep === STEPS.SELECT_TARGETS) {
             console.log(chainSeq)
-            if (contractId === UNKNOWN || serviceId === UNKNOWN || chainSeq === '') {
+            if (contractId === UNKNOWN || serviceId === UNKNOWN || chainSeq === UNKNOWN) {
                 alert(" SELECT ITEM FIRST ")
             }
             else {
@@ -55,7 +55,7 @@ export function DeployByFrontEnd() {
                     console.log(receipt)
                     DeployedContractApi.postRegisterDeployedContract({
                         appId: serviceId.toString(),
-                        chainSeq: chainSeq,
+                        chainSeq: chainSeq.toString(),
                         contractAddress: receipt.contractAddress!!,
                         contractId: contractId.toString(),
                         deployerAddress : window.ethereum?.selectedAddress!!,
@@ -85,7 +85,7 @@ export function DeployByFrontEnd() {
     )
 }
 
-type settersProp = { serviceSetter: Dispatch<SetStateAction<number>>, chainSetter: Dispatch<SetStateAction<string>>, contractSetter: Dispatch<SetStateAction<number>> }
+type settersProp = { serviceSetter: Dispatch<SetStateAction<number>>, chainSetter: Dispatch<SetStateAction<number>>, contractSetter: Dispatch<SetStateAction<number>> }
 
 function SelectTargets(prop: settersProp) {
 
@@ -103,7 +103,7 @@ function SelectTargets(prop: settersProp) {
     )
 }
 
-function SelectChain(prop: { setChainSeq: Dispatch<SetStateAction<string>> }) {
+function SelectChain(prop: { setChainSeq: Dispatch<SetStateAction<number>> }) {
     const [chainList, setChainList] = useState<GetChainDto[]>([])
     useEffect(() => {
         ChainApi.getChainList().then(ret => {

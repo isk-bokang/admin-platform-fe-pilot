@@ -25,6 +25,16 @@ export function extractInfoFromAbi(abi: AbiItem[], type ?: string) {
 
 }
 
+export function extractConstructorParams(abi: AbiItem[]){
+    return new Promise<string[]>( (resolve)=>{
+        abi.map(item=>{
+            if( (item.name == '' || item.name == null)  ){
+
+            }
+        })
+    } )
+}
+
 export function DeployedContractInfo(prop: { contract : Contract }) {
     const [contractInfoCols, setContractInfoCols] = useState<string[]>([])
     const [contractInfoData, setContractInfoData] = useState<string[]>([])

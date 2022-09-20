@@ -71,7 +71,7 @@ export function RadioTargListDiv(prop: radioProp) {
                 return {
                     title: toUpperCase_Custom( item ),
                     dataIndex: item,
-                    key: idx
+                    key: item
                 }
             }).filter(item => {
                 return item.title !== 'KEY'

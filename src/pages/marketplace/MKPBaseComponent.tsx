@@ -59,7 +59,7 @@ export function MKPBaseComponent(prop: MkpProp) {
 
     function prepareContract(index : number) {
         let tmpContract: Contract;
-
+        console.log(index)
         ContractApi.getContract(deployedContracts[index].contract.id)
             .then(ret => {
                 tmpContract = new web3.eth.Contract(JSON.parse(JSON.stringify(ret.data.abi)) as AbiItem[], deployedContracts[index].address)

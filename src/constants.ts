@@ -55,8 +55,6 @@ await ContractApi.getContractTypes().then(ret => CONTRACT_TYPES = ret.data)
 export let CHAIN_TYPES : string[];
 await ChainApi.getChainTypes().then(ret => CHAIN_TYPES = ret.data)
 
-export let WALLET_ROLE_TYPES: string[] = []
-
 export async function validateHexString(rule: RuleObject, value: StoreValue) {
 
     const reg = /^0x([0-9a-f]*)$/i;
@@ -79,5 +77,7 @@ export function toUpperCase_Custom(originStr: string, interFix: string = ' ') {
     }
     return ret
 }
+
+export const NONE = -1
 
 export const ELLIPSIS_COUNT: number = 5

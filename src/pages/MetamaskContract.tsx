@@ -6,6 +6,7 @@ import { AddEthereumChainParameter, addNetwork, connectMetamask, switchNetwork }
 import { toHex } from "web3-utils"
 import {CHAINS, UNKNOWN} from '../constants';
 import {PlatformWalletApi} from "../pages/apis/WalletApi";
+import {parse} from "query-string";
 
 export function MetamaskView(props : { addrSetter ?: Dispatch<SetStateAction<string>> }) {
     const [curChainName, setCurChainName] = useState<string>('-')
@@ -49,7 +50,7 @@ export function ConnectMetamask() {
     )
 }
 
-export function ChangeChainNetwork(prop: { setChainSeq ?: Dispatch<SetStateAction<string>> }) {
+export function ChangeChainNetwork(prop: { setChainSeq ?: Dispatch<SetStateAction<number>> }) {
     const [chainParam, setChainParam] = useState<AddEthereumChainParameter>()
     const [isDisable, setIsDisable] = useState<boolean>(true)
 
@@ -72,10 +73,11 @@ export function ChangeChainNetwork(prop: { setChainSeq ?: Dispatch<SetStateActio
         if (chainParam) {
             addNetwork(chainParam)
                 .then(() => switchNetwork(chainParam.chainId).then(() => {
-                    if (prop.setChainSeq) {
+                    if (prop.setChainSeq != null) {
                         CHAINS.map(item=>{
                             if(item.chainId == chainParam.chainId){
-                                prop.setChainSeq!!(item.seq.toString())
+                                if (prop.setChainSeq != null)
+                                    prop.setChainSeq(parseInt(item.seq))
                             }
                         })
                     }

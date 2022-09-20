@@ -78,7 +78,7 @@ export function ContractDeployDiv() {
             {curStep !== STEPS.DEPLOY && <hr />}
             {curStep !== STEPS.DEPLOY && <Button onClick={onClickNextStepHandle}> NEXT STEP </Button>}
             {curStep !== STEPS.DEPLOY && <hr />}
-            {(curStep > STEPS.SELECT_TARGETS) && <ChainByPropDiv chainSeq={chainId.toString()} />}
+            {(curStep > STEPS.SELECT_TARGETS) && <ChainByPropDiv chainSeq={chainId} />}
             {(curStep > STEPS.SELECT_TARGETS) && <ServiceByPropDiv serviceId={serviceId.toString()} />}
             {(curStep > STEPS.SELECT_TARGETS) && <ContractByPropDiv contractId={contractId.toString()} />}
 
