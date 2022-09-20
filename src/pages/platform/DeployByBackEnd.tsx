@@ -1,4 +1,4 @@
-import { RouteName } from "../../constants"
+import { RouteName } from "@/constants"
 import { Button, Descriptions, Input } from "antd"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
@@ -6,10 +6,12 @@ import { ChainApi } from "../apis/ChainApi"
 import { Abi, ContractApi } from "../apis/ContractApi"
 import { DeployedContractApi } from "../apis/DeployedContractApi"
 import { GetServiceDto, ServiceApi } from "../apis/ServiceApi"
-import { ChainByPropDiv, ListViewChain } from "./Chains"
-import { ContractByPropDiv, ListViewContract } from "./Contracts"
 import { RadioTargListDiv } from "../utils/InputDiv"
-import { DetailView, TargView } from "../utils/OutputDiv"
+import { DetailView } from "../utils/OutputDiv"
+import {ListViewContract} from "@/pages/platform/Contracts/ContractListDiv";
+import {ContractByPropDiv} from "@/pages/platform/Contracts/ContractDetailDiv";
+import {ChainByPropDiv} from "@/pages/platform/Chains/ChainDetailDiv";
+import {ListViewChain} from "@/types/types";
 
 function DeployByBackEnd() {
     return (
@@ -204,7 +206,7 @@ function SelectTargets(prop: settersProp) {
 }
 
 
-type selectProp = { idSetter: Dispatch<SetStateAction<number>> , defaultId ?: string}
+type selectProp = { idSetter: Dispatch<SetStateAction<number>> , defaultId ?: number}
 
 export function SelectContract(prop: selectProp) {
     const [contractList, setContractList] = useState<ListViewContract[]>([])
@@ -225,7 +227,7 @@ export function SelectContract(prop: selectProp) {
 
     return (
         <div>
-            {contractList.length !== 0 && <RadioTargListDiv targList={contractList} setTarg={prop.idSetter} defaultId={prop.defaultId ? prop.defaultId : undefined}/>}
+            {contractList.length !== 0 && <RadioTargListDiv targList={contractList} setTarg={prop.idSetter} />}
         </div>
     )
 }
@@ -240,6 +242,7 @@ export function SelectChain(prop: selectProp) {
                         return {
                             id: item.seq,
                             name: item.name,
+                            chainType : item.chainType,
                             chainId: item.chainId,
                             rpcUrl: item.rpcUrl
                         }
@@ -249,7 +252,7 @@ export function SelectChain(prop: selectProp) {
     }, [prop.idSetter])
     return (
         <div>
-            {chainList.length !== 0 && <RadioTargListDiv targList={chainList} setTarg={prop.idSetter} defaultId={prop.defaultId ? prop.defaultId : undefined}/>}
+            {chainList.length !== 0 && <RadioTargListDiv targList={chainList} setTarg={prop.idSetter} />}
         </div>)
 }
 
@@ -272,7 +275,7 @@ export function SelectService(prop: selectProp) {
 
     return (
         <div>
-            {serviceList.length !== 0 && <RadioTargListDiv targList={serviceList} setTarg={prop.idSetter} defaultId={prop.defaultId ? prop.defaultId : undefined}/>}
+            {serviceList.length !== 0 && <RadioTargListDiv targList={serviceList} setTarg={prop.idSetter}/>}
         </div>
     )
 }
