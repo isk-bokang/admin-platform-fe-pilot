@@ -4,12 +4,10 @@ import {
     PlatformWalletApi,
     PlatformWalletInfoDto,
     PlatformContractInfoDto,
-    PlatformWalletDto,
     WalletGrantRequestDto
 } from "../apis/WalletApi";
-import {WALLET_ROLE_TYPES} from "../../constants";
 import {DeployedContractApi, DeployedContractsDto} from "../apis/DeployedContractApi";
-import {AccountDisplay} from "../../pages/utils/OutputDiv";
+import {AccountDisplay} from "@/pages/utils/OutputDiv";
 import {ContractRoleDto} from "@/pages/apis/ContractApi";
 
 const NONE = -1

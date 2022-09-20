@@ -58,7 +58,6 @@ export function MKPBaseComponent(prop: MkpProp) {
     }, [prop])
 
     function prepareContract(index : number) {
-        console.log(index)
         let tmpContract: Contract;
 
         ContractApi.getContract(deployedContracts[index].contract.id)
@@ -136,8 +135,7 @@ export function MKPBaseComponent(prop: MkpProp) {
                         }
                     })} callBack={prepareContract} setTarg={setIdx}/>}
                     {prop.InputDiv && <prop.InputDiv/>}
-                    {<Button type='primary' onClick={onClickHandle}
-                             disabled={((window.ethereum?.selectedAddress) ? (owner.toLocaleUpperCase() !== window.ethereum?.selectedAddress.toLocaleUpperCase()) : true)}>
+                    {<Button type='primary' onClick={onClickHandle}>
                         SEND TX </Button>}
                     <hr/>
                     {contract != null && <DeployedContractInfo contract={contract} />}

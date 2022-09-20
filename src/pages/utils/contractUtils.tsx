@@ -1,9 +1,7 @@
 import {AbiItem} from "web3-utils";
-import {DeployedContractsDto} from "../apis/DeployedContractApi";
 import React, {useEffect, useState} from "react";
-import {web3} from "../platform/DeployByMetamaks";
 import {callMethod} from "./metamask";
-import {Button, Descriptions} from "antd";
+import { Descriptions} from "antd";
 import {Contract} from "web3-eth-contract";
 import DescriptionsItem from "antd/es/descriptions/Item";
 
@@ -30,20 +28,20 @@ export function extractInfoFromAbi(abi: AbiItem[], type ?: string) {
 export function DeployedContractInfo(prop: { contract : Contract }) {
     const [contractInfoCols, setContractInfoCols] = useState<string[]>([])
     const [contractInfoData, setContractInfoData] = useState<string[]>([])
-    contractInfoData?.entries()
+
     useEffect(() => {
 
         extractInfoFromAbi(prop.contract.options.jsonInterface).then(res => {
-            let tmpContractInfoData: string[] = []
+            let tmpContractInfoData: string[] = Array<string>(res.length)
             setContractInfoCols(res)
-            res.map(item => {
+            res.map((item, index) => {
                 callMethod(prop.contract.methods[item]())
                     .then(val => {
-                        tmpContractInfoData.push(val)
+                        tmpContractInfoData[index] = val
                         setContractInfoData(tmpContractInfoData)
                     })
                     .catch(()=>{
-                        tmpContractInfoData.push('')
+                        tmpContractInfoData[index] = ''
                         setContractInfoData(tmpContractInfoData)
                     })
 
