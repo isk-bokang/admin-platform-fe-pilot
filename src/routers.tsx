@@ -1,18 +1,26 @@
-import React, { CSSProperties } from 'react';
-import { UserOutlined, BankOutlined, CopyrightOutlined, WalletOutlined } from '@ant-design/icons';
+import React  from 'react';
 import { RoutePage, SidebarRoute } from './common/common.interface';
 import { RouteName } from './constants';
 
 import Home from './pages/Home';
-import Contracts, { ContractDetailDiv, ContractListDiv, DeployedContractListDiv, DeployedDetailDiv, RegisterContractDiv } from './pages/platform/Contracts';
-import Chains, { ChainDetailDiv, ChainListDiv, RegisterChainDiv } from './pages/platform/Chains';
-import Nodes, { NodeDetailDiv, RegisterNodeDiv } from './pages/platform/Nodes';
-import { DeployByFrontEnd } from './pages/platform/DeployByMetamaks';
+import Contracts from './pages/platform/Contracts/Contracts';
+import Chains from './pages/platform/Chains/Chains';
+import Nodes from './pages/platform/Nodes/Nodes';
 import {ChangePurchaserFeePermilleDiv} from "./pages/marketplace/ChangePurchaserFeePermilleDiv";
 import {ChangeIskraIncomeWalletDiv} from "./pages/marketplace/ChangeIskraIncomeWalletDiv";
 import {ChangeGameOwnerDiv} from "./pages/marketplace/ChangeGameOwnerDiv";
 import {ChangeGameRsRateDiv} from "./pages/marketplace/ChangeGameRsRateDiv";
 import {WalletListDiv} from "./pages/wallet/WalletsDiv";
+import {ContractListDiv} from "@/pages/platform/Contracts/ContractListDiv";
+import {ContractRegisterDiv} from "@/pages/platform/Contracts/ContractRegisterDiv";
+import {ContractDetailDiv} from "@/pages/platform/Contracts/ContractDetailDiv";
+import {DeployedContractListDiv} from "@/pages/platform/DeployedContracts/DeployedContractListDiv";
+import {DeployedDetailDiv} from "@/pages/platform/DeployedContracts/DeployedDetailDiv";
+import {ChainDetailDiv} from "@/pages/platform/Chains/ChainDetailDiv";
+import {ChainListDiv} from "@/pages/platform/Chains/ChainListDiv";
+import {RegisterChainDiv} from "@/pages/platform/Chains/RegisterChainDiv";
+import {NodeDetailDiv} from "@/pages/platform/Nodes/NodeDetailDiv";
+import {RegisterNodeDiv} from "@/pages/platform/Nodes/RegisterNodeDiv";
 
 export const routePages: RoutePage[] = [
   {
@@ -45,7 +53,7 @@ export const routePages: RoutePage[] = [
       },
       {
         key: RouteName.REGISTER_CONTRACT,
-        page: <RegisterContractDiv />,
+        page: <ContractRegisterDiv />,
       },
 
     ]

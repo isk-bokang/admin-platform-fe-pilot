@@ -1,9 +1,9 @@
 import {Table, Descriptions, Typography, Button} from "antd"
 import {ColumnsType} from "antd/lib/table"
-import {Dispatch, SetStateAction, useEffect, useState} from "react"
-import {ELLIPSIS_COUNT} from "../../constants";
+import { useEffect, useState} from "react"
+import {ELLIPSIS_COUNT} from "@/constants";
 
-const {Paragraph, Text} = Typography;
+const {Paragraph} = Typography;
 
 type listProps = { targList: any[], connectPath?: string, title?: string }
 
@@ -30,7 +30,7 @@ export function TargListView(prop: listProps) {
                 title: 'Detail',
                 dataIndex: 'Detail',
                 key: 'Detail',
-                render(value, record, index) {
+                render(value, record) {
                     function onClickHandle() {
                         if (prop.connectPath)
                             window.location.href = `/${prop.connectPath}/${record.id}`

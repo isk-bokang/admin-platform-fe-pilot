@@ -1,16 +1,16 @@
-import { RouteName } from "../../constants"
+import { RouteName } from "@/constants"
 import { Button, Input } from "antd"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { ChainApi, GetChainDto } from "../apis/ChainApi"
 import { Abi, ContractApi } from "../apis/ContractApi"
 import { GetConstructorParams, SelectContract, SelectService, ServiceByPropDiv, STEPS } from "./DeployByBackEnd"
 import { ChangeChainNetwork } from "../MetamaskContract"
-import { ChainByPropDiv } from "./Chains"
-import { ContractByPropDiv } from "./Contracts"
 import Web3 from 'web3/dist/web3.min.js'
 import { DeployedContractApi } from "../apis/DeployedContractApi"
 import { AbiItem } from "web3-utils"
 import { toBN } from "web3-utils"
+import {ContractByPropDiv} from "@/pages/platform/Contracts/ContractDetailDiv";
+import {ChainByPropDiv} from "@/pages/platform/Chains/ChainDetailDiv";
 
 export let web3: Web3 = new Web3(Web3.givenProvider)
 
