@@ -3,15 +3,16 @@ import { Button, Descriptions, Input } from "antd"
 import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 import { ChainApi } from "../apis/ChainApi"
-import { Abi, ContractApi } from "../apis/ContractApi"
+import { ContractApi } from "../apis/ContractApi"
 import { DeployedContractApi } from "../apis/DeployedContractApi"
-import { GetServiceDto, ServiceApi } from "../apis/ServiceApi"
+import { ServiceApi } from "../apis/ServiceApi"
 import { RadioTargListDiv } from "../utils/InputDiv"
 import { DetailView } from "../utils/OutputDiv"
 import {ListViewContract} from "@/pages/platform/Contracts/ContractListDiv";
 import {ContractByPropDiv} from "@/pages/platform/Contracts/ContractDetailDiv";
 import {ChainByPropDiv} from "@/pages/platform/Chains/ChainDetailDiv";
 import {ListViewChain} from "@/types/types";
+import {Abi, GetServiceDto} from "@/pages/apis/dto";
 
 function DeployByBackEnd() {
     return (

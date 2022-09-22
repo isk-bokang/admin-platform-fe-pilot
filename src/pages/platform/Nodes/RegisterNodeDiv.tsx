@@ -1,9 +1,10 @@
 import qs from "query-string";
 import {useEffect, useState} from "react";
-import {NodeApi, PostNodeDto} from "@/pages/apis/NodeApi";
+import {NodeApi} from "@/pages/apis/NodeApi";
 import {Button, Form, Input} from "antd";
 import {RouteName} from "@/constants";
 import {SelectChain} from "@/pages/platform/DeployByBackEnd";
+import {PostNodeDto} from "@/pages/apis/dto";
 
 export function RegisterNodeDiv() {
 

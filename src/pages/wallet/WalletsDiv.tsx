@@ -1,14 +1,17 @@
 import {Button, Descriptions, Form, Modal, Select, Table, Typography} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {
-    PlatformWalletApi,
-    PlatformWalletInfoDto,
-    PlatformContractInfoDto,
-    WalletGrantRequestDto
+    PlatformWalletApi
 } from "../apis/WalletApi";
-import {DeployedContractApi, DeployedContractsDto} from "../apis/DeployedContractApi";
+import {DeployedContractApi} from "../apis/DeployedContractApi";
 import {AccountDisplay} from "@/pages/utils/OutputDiv";
-import {ContractRoleDto} from "@/pages/apis/ContractApi";
+import {
+    ContractRoleDto,
+    DeployedContractsDto,
+    PlatformContractInfoDto,
+    PlatformWalletInfoDto,
+    WalletGrantRequestDto
+} from "@/pages/apis/dto";
 
 const NONE = -1
 

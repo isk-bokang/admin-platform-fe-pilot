@@ -3,9 +3,10 @@ import {Button, Form, Input, Select} from "antd";
 import Table, {ColumnsType} from "antd/lib/table";
 import Upload, {RcFile, UploadFile} from "antd/lib/upload";
 import React, { Dispatch, SetStateAction, useEffect, useState} from "react";
-import {ChainApi, GetChainDto} from "../apis/ChainApi";
-import {ContractApi, GetContractDto} from "../apis/ContractApi";
+import {ChainApi} from "../apis/ChainApi";
+import {ContractApi} from "../apis/ContractApi";
 import {toUpperCase_Custom} from "../../constants";
+import {GetChainDto, GetContractDto} from "@/pages/apis/dto";
 
 
 export enum inputTypes {

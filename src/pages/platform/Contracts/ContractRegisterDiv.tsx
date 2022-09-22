@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {ContractApi, PostContractDto} from "@/pages/apis/ContractApi";
+import {ContractApi} from "@/pages/apis/ContractApi";
 import {Button, Form, Input, Popconfirm, Select, Upload, UploadFile} from "antd";
 import {AbiItem} from "web3-utils";
 import {CONTRACT_TYPES, RouteName, toUpperCase_Custom} from "@/constants";
@@ -9,6 +9,7 @@ import TextArea from "antd/lib/input/TextArea";
 import {UploadOutlined} from "@ant-design/icons";
 import Table from "antd/lib/table";
 import {RoleAttributeType} from "@/types/types";
+import {PostContractDto} from "@/pages/apis/dto";
 
 export function ContractRegisterDiv() {
     const [registerDto, setRegisterDto] = useState<PostContractDto>()

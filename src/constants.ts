@@ -1,6 +1,7 @@
-import {ChainApi, GetChainDto} from "./pages/apis/ChainApi";
-import {ContractApi, ContractTypeDto} from "./pages/apis/ContractApi";
+import {ChainApi} from "./pages/apis/ChainApi";
+import {ContractApi} from "./pages/apis/ContractApi";
 import {RuleObject, StoreValue} from "rc-field-form/lib/interface";
+import {ContractTypeDto, GetChainDto} from "@/pages/apis/dto";
 
 export enum PlatformContractType {
     ISKRA_MKP = 'MARKETPLACE'

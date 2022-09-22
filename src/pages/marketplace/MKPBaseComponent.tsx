@@ -3,14 +3,15 @@ import {Button, Spin, Descriptions, Modal} from "antd"
 import React, {Dispatch, SetStateAction, useEffect, useState} from "react"
 import {AbiItem, toBN} from "web3-utils"
 import {ContractApi} from "../apis/ContractApi"
-import {DeployedContractApi, DeployedContractsDto} from "../apis/DeployedContractApi"
+import {DeployedContractApi} from "../apis/DeployedContractApi"
 import {web3} from "../platform/DeployByMetamaks"
 import {callMethod} from "../utils/metamask"
 import {Contract} from "web3-eth-contract"
 import {RadioTargListDiv} from "../utils/InputDiv"
-import {AdminLogApi, PostAdminLogDto} from "../apis/AdminLogApi";
+import {AdminLogApi} from "../apis/AdminLogApi";
 import {TransactionReceipt} from "web3-eth";
 import {DeployedContractInfo} from "../utils/contractUtils";
+import {DeployedContractsDto, PostAdminLogDto} from "@/pages/apis/dto";
 
 
 type SendTx = () => Promise<TransactionReceipt>

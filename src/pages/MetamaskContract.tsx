@@ -1,12 +1,13 @@
 import { MetaMaskInpageProvider } from '@metamask/providers';
 import { Button, Select } from 'antd';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { ChainApi, GetChainDto } from './apis/ChainApi';
+import { ChainApi } from './apis/ChainApi';
 import { AddEthereumChainParameter, addNetwork, connectMetamask, switchNetwork } from './utils/metamask';
 import { toHex } from "web3-utils"
 import {CHAINS, UNKNOWN} from '../constants';
 import {PlatformWalletApi} from "../pages/apis/WalletApi";
 import {parse} from "query-string";
+import {GetChainDto} from "@/pages/apis/dto";
 
 export function MetamaskView(props : { addrSetter ?: Dispatch<SetStateAction<string>> }) {
     const [curChainName, setCurChainName] = useState<string>('-')

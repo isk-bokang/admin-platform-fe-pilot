@@ -1,22 +1,8 @@
 import axios from "axios";
+import {GetServiceDto} from "@/pages/apis/dto";
 
 
 const targURL = "http://localhost:8090/services"
-
-export class GetServiceDto {
-    readonly id: string
-    readonly name: string
-    readonly category: string
-    constructor(
-        id: string,
-        name: string,
-        category: string
-    ) {
-        this.id = id
-        this.name = name
-        this.category = category
-    }
-}
 
 
 export class ServiceApi{

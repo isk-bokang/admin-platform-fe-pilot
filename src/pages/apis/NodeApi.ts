@@ -1,42 +1,8 @@
 import axios from "axios";
-import { GetChainDto } from "./ChainApi";
+import {GetNodeDto, PostNodeDto} from "@/pages/apis/dto";
 
 
 const targURL = "http://localhost:8090/nodes"
-
-export class GetNodeDto {
-    readonly id: string
-    readonly chain: GetChainDto
-    readonly nodeType: string
-    readonly ipAddress: string
-
-    constructor(
-        id: string,
-        chain: GetChainDto,
-        nodeType: string,
-        ipAddress: string
-    ) {
-        this.id = id
-        this.chain = chain
-        this.nodeType = nodeType
-        this.ipAddress = ipAddress
-    }
-}
-
-export class PostNodeDto{
-    chainSeq : string
-    nodeType : string
-    ipAddress : string
-    constructor(
-        chainSeq : string,
-        nodeType : string,
-        ipAddress : string
-    ){
-        this.chainSeq = chainSeq
-        this.nodeType = nodeType
-        this.ipAddress = ipAddress 
-    }
-}
 
 
 export class NodeApi {

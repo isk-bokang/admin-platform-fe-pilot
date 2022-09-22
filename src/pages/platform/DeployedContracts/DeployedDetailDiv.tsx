@@ -1,12 +1,10 @@
 import {useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import {GetChainDto} from "@/pages/apis/ChainApi";
-import {GetServiceDto} from "@/pages/apis/ServiceApi";
-import {GetContractDto} from "@/pages/apis/ContractApi";
 import {DeployedContractApi} from "@/pages/apis/DeployedContractApi";
 import {DetailView} from "@/pages/utils/OutputDiv";
 import {ContractByPropDiv, RolesDiv} from "@/pages/platform/Contracts/ContractDetailDiv";
 import {DeployedContractDetail} from "@/types/types";
+import {GetChainDto, GetContractDto, GetServiceDto} from "@/pages/apis/dto";
 
 export function DeployedContractByPropDiv(prop: { deployedId: string }) {
     const [deployedContract, setDeployedContract] = useState<DeployedContractDetail>()

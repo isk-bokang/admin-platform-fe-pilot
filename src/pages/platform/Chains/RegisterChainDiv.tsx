@@ -1,7 +1,8 @@
 import {useState} from "react";
-import {ChainApi, PostChainDto} from "@/pages/apis/ChainApi";
+import {ChainApi} from "@/pages/apis/ChainApi";
 import {Button, Form, Input, Select} from "antd";
 import {CHAIN_TYPES, RouteName} from "@/constants";
+import {PostChainDto} from "@/pages/apis/dto";
 
 export function RegisterChainDiv() {
     const [registerDto, setRegisterDto] = useState<PostChainDto>()
